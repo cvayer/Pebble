@@ -23,4 +23,9 @@ public abstract class PopUp
 	{
 		manager = _manager;
 	}
+	
+	protected PopUpManager getManager()
+	{
+		return manager;
+	}
 }

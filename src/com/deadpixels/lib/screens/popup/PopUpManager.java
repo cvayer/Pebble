@@ -1,6 +1,7 @@
 package com.deadpixels.lib.screens.popup;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -25,6 +26,7 @@ public class PopUpManager {
     private		  PopUp							currentPopUp;
     private		  Stage							stage;
     private		  Skin							skin;
+    private 	  AssetManager					assetManager;
         
     private PopUpManager()
     {
@@ -36,10 +38,16 @@ public class PopUpManager {
     	currentPopUp = null;
     }
     
-    public void setup(Stage _stage, Skin _skin)
+    public void setup(Stage _stage, Skin _skin,  AssetManager _assetManager)
     {
     	stage = _stage;
     	skin = _skin;
+    	assetManager = _assetManager;
+    }
+    
+    public AssetManager getAssetmanager()
+    {
+    	return assetManager;
     }
     
     public void addPopUp(PopUp _popUp)
