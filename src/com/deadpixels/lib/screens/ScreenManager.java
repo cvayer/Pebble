@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 
 public abstract class ScreenManager implements ApplicationListener {
     private Screen  	 screen;
+    private Screen  	 nextScreen;
+    private boolean		 changeScreenPending;
     private Boolean 	 manageScreenDisposal;
     private float 		 updateTimer;
     private AssetManager assetManager;
@@ -33,7 +35,7 @@ public abstract class ScreenManager implements ApplicationListener {
 
     @Override
     public void dispose () {
-    		setScreen(null);
+    		applyNextScreen(null);
             assetManager.dispose();
     }
     
@@ -60,6 +62,13 @@ public abstract class ScreenManager implements ApplicationListener {
 
     @Override
     public void render () {
+
+    		if(changeScreenPending)
+    		{
+    			applyNextScreen(nextScreen);
+    			changeScreenPending = false;
+    		}
+    	
             if (screen != null)
             {
             	float fDt = Gdx.graphics.getDeltaTime();
@@ -88,8 +97,12 @@ public abstract class ScreenManager implements ApplicationListener {
             	screen.resize(_width, _height);
     }
 
-
     public void setScreen (Screen _screen) {
+    	changeScreenPending = true;
+    	nextScreen = _screen;
+    }
+
+    private void applyNextScreen (Screen _screen) {
     	if(appCreated && _screen != screen)
         {   
             if(_screen != null && !_screen.isLoaded())
