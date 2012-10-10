@@ -58,7 +58,7 @@ public abstract class MenuScreen extends Screen {
 			{
 				stage.clear();
 				stage.addActor(currentPage);
-				refreshCurrentPageSize();
+				currentPage.resize((int)stage.getWidth(), (int)stage.getHeight());
 				currentPage.firstActivation();
 				currentPage.onActivation();
 			}
@@ -96,14 +96,12 @@ public abstract class MenuScreen extends Screen {
 	@Override
 	protected void onResize(int width, int height) {
 		stage.setViewport(width, height, false);
-		refreshCurrentPageSize();
-	}
-	
-	protected void refreshCurrentPageSize()
-	{
-		currentPage.setWidth(stage.getWidth());
-		currentPage.setHeight(stage.getHeight());
-		currentPage.invalidate();
+		
+		if(currentPage != null)
+		{
+			currentPage.resize(width, height);
+		}
+
 	}
 
 	@Override

@@ -23,6 +23,15 @@ public abstract class MenuPage extends Table
 		}
 	}
 	
+	public void resize(int _width, int _height)
+	{
+		setWidth(_width);
+		setHeight(_height);
+		onResize(_width, _height);
+		invalidate();
+	}
+	
+	protected 	abstract void onResize(int _width, int _height);
 	protected 	abstract void onFirstActivation();
 	public 		abstract void update(float _fDt);
 	public 		abstract void onDeactivation();
