@@ -1,0 +1,9 @@
+
+Add LocalizedText class to handle automatic text change
+
+Add back system to menu, to remember to last visited page
+Add transition directly to pages
+
+add page Adapter
+
+review naming for screen and menu and pages  : exemple : onUpdate instead of update, etc

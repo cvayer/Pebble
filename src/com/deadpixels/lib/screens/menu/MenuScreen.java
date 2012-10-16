@@ -4,11 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Values;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.deadpixels.lib.screens.Screen;
 import com.deadpixels.lib.screens.ScreenManager;
+import com.deadpixels.lib.screens.popup.PopUp;
 
 public abstract class MenuScreen extends Screen {
-
+	
 	protected final Stage							stage;
 	protected final ObjectMap<String, MenuPage> 	pages;
 	protected 	    MenuPage					  	currentPage;
@@ -114,5 +118,27 @@ public abstract class MenuScreen extends Screen {
 	protected void onDeactivation() {
 		setCurrentPage(null);
 		stage.clear();
+	}
+	
+	// Events	
+	public void sendEvent(int _id, MenuEventParameters _parameters)
+	{
+		MenuEvent event = Pools.obtain(MenuEvent.class);
+		event.setParameters(_id, _parameters);
+		
+		Values<MenuPage> values = pages.values();
+		
+		while(values.hasNext())
+    	{
+			MenuPage page = values.next();
+			page.handleEvent(event);
+    	}
+		
+		Pools.free(event);
+	}
+	
+	public void sendEvent(int _id)
+	{
+		sendEvent(_id, null);
 	}
 }

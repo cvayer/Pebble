@@ -31,6 +31,11 @@ public abstract class MenuPage extends Table
 		invalidate();
 	}
 	
+	public void handleEvent(MenuEvent _event)
+	{
+		
+	}
+	
 	protected 	abstract void onResize(int _width, int _height);
 	protected 	abstract void onFirstActivation();
 	public 		abstract void update(float _fDt);
