@@ -1,29 +1,28 @@
 package com.deadpixels.lib.screens.menu;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 
 public abstract class MenuPage extends Table
 {
 	protected final MenuScreen screen;
-	private   		boolean	   hasBeenActivated;
+	private   		boolean	   hasBeenActivatedOnce;
+	private			boolean	   activated;
+	
+	private final 	Array<MenuPageAnimation> pooledAnimations;
+	private			MenuPageAnimation	currentAnimation;
 	
 	public MenuPage(MenuScreen _screen)
 	{
 		super();
 		screen = _screen;
-		hasBeenActivated = false;
+		hasBeenActivatedOnce = false;
+		
+		pooledAnimations = new Array<MenuPageAnimation>(true, 2);
+		currentAnimation = null;
 	}
 	
-	public void firstActivation()
-	{
-		if(!hasBeenActivated)
-		{
-			onFirstActivation();
-			hasBeenActivated = true;
-		}
-	}
-	
-	public void resize(int _width, int _height)
+	final void resize(int _width, int _height)
 	{
 		setWidth(_width);
 		setHeight(_height);
@@ -31,14 +30,84 @@ public abstract class MenuPage extends Table
 		invalidate();
 	}
 	
-	public void handleEvent(MenuEvent _event)
+	final void update(float _fDt)
 	{
+		// We have a running animation
+		if(currentAnimation != null)
+		{
+			if(currentAnimation.needToEnd())
+			{
+				currentAnimation.end();
+				currentAnimation = null;
+			}
+		}
 		
+		if(currentAnimation == null)
+		{
+			if(pooledAnimations.size > 0)
+			{
+				currentAnimation = pooledAnimations.first();
+				currentAnimation.start(this);
+				pooledAnimations.removeIndex(0);
+			}
+		}
+		
+		onUpdate(_fDt);
 	}
 	
-	protected 	abstract void onResize(int _width, int _height);
-	protected 	abstract void onFirstActivation();
-	public 		abstract void update(float _fDt);
-	public 		abstract void onDeactivation();
-	public 		abstract void onActivation();	
+	private final void firstActivation()
+	{
+		if(!hasBeenActivatedOnce)
+		{
+			onFirstActivation();
+			hasBeenActivatedOnce = true;
+		}
+	}
+	
+	final void activate(boolean _activate)
+	{
+		if(activated != _activate)
+		{
+			activated = _activate;
+			
+			if(activated)
+			{
+				firstActivation();
+				onActivation();
+			}
+			else
+			{
+				clearAnimations();
+				onDeactivation();
+			}
+		}
+	}
+	
+	final void handleEvent(MenuEvent _event)
+	{
+		onEvent(_event);	
+	}
+	
+	protected abstract void onResize(int _width, int _height);
+	protected abstract void onFirstActivation();
+	protected abstract void onUpdate(float _fDt);
+	protected abstract void onDeactivation();
+	protected abstract void onActivation();
+	protected abstract void onEvent(MenuEvent _event);	
+	
+	// Animations
+	
+	public final void addPageAnimation(MenuPageAnimation _animation)
+	{
+		if(_animation == null)
+			return;
+		
+		pooledAnimations.add(_animation);
+	}
+	
+	private final void clearAnimations()
+	{
+		pooledAnimations.clear();
+		currentAnimation = null;
+	}
 }

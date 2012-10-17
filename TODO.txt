@@ -7,5 +7,6 @@ Add transition directly to pages
 add page Adapter
 
 review naming for screen and menu and pages  : example : onUpdate instead of update, etc
+visibility, final classes, etc
 
 Language Manager in the lib

@@ -50,7 +50,7 @@ public abstract class MenuScreen extends Screen {
 		{
 			if(currentPage != null)
 			{
-				currentPage.onDeactivation();
+				currentPage.activate(false);
 			}
 			
 			MenuPage oldPage  = currentPage;
@@ -61,8 +61,7 @@ public abstract class MenuScreen extends Screen {
 				stage.clear();
 				stage.addActor(currentPage);
 				currentPage.resize((int)stage.getWidth(), (int)stage.getHeight());
-				currentPage.firstActivation();
-				currentPage.onActivation();
+				currentPage.activate(true);
 			}
 			
 			onPageChange(oldPage, currentPage);
