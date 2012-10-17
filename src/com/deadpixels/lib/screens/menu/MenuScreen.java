@@ -65,6 +65,7 @@ public abstract class MenuScreen extends Screen {
 		{
 			if(currentPage != null)
 			{
+				stage.getRoot().removeActor(currentPage.table());
 				currentPage.activate(false, null);
 			}
 			
@@ -73,8 +74,7 @@ public abstract class MenuScreen extends Screen {
 			
 			if(currentPage != null)
 			{
-				stage.clear();
-				stage.addActor(currentPage);
+				stage.addActor(currentPage.table());
 				currentPage.resize((int)stage.getWidth(), (int)stage.getHeight());
 				MenuPage backPage = _backPage ? oldPage : null;
 				currentPage.activate(true, backPage);

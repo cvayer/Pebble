@@ -3,8 +3,9 @@ package com.deadpixels.lib.screens.menu;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 
-public abstract class MenuPage extends Table
+public abstract class MenuPage
 {
+	private	  final	Table	   table;
 	protected final MenuScreen screen;
 	protected 		MenuPage   backPage;
 	private   		boolean	   hasBeenActivatedOnce;
@@ -27,14 +28,22 @@ public abstract class MenuPage extends Table
 		currentAnimation = null;
 		
 		backAnimation = new BackAnimation();
+		
+		table = new Table();
 	}
+	
+	public final Table table()
+	{
+		return table;
+	}
+	
 	
 	final void resize(int _width, int _height)
 	{
-		setWidth(_width);
-		setHeight(_height);
+		table.setWidth(_width);
+		table.setHeight(_height);
 		onResize(_width, _height);
-		invalidate();
+		table.invalidate();
 	}
 	
 	final void update(float _fDt)
