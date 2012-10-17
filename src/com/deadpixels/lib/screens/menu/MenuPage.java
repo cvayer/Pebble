@@ -6,11 +6,14 @@ import com.badlogic.gdx.utils.Array;
 public abstract class MenuPage extends Table
 {
 	protected final MenuScreen screen;
+	protected 		MenuPage   backPage;
 	private   		boolean	   hasBeenActivatedOnce;
 	private			boolean	   activated;
 	
-	private final 	Array<MenuPageAnimation> pooledAnimations;
-	private			MenuPageAnimation	currentAnimation;
+	private final 	Array<MenuPageAnimation> 	pooledAnimations;
+	private			MenuPageAnimation			currentAnimation;
+	
+	private final	BackAnimation				backAnimation;
 	
 	public MenuPage(MenuScreen _screen)
 	{
@@ -18,8 +21,12 @@ public abstract class MenuPage extends Table
 		screen = _screen;
 		hasBeenActivatedOnce = false;
 		
+		backPage = null;
+		
 		pooledAnimations = new Array<MenuPageAnimation>(true, 2);
 		currentAnimation = null;
+		
+		backAnimation = new BackAnimation();
 	}
 	
 	final void resize(int _width, int _height)
@@ -64,7 +71,7 @@ public abstract class MenuPage extends Table
 		}
 	}
 	
-	final void activate(boolean _activate)
+	final void activate(boolean _activate, MenuPage _backPage)
 	{
 		if(activated != _activate)
 		{
@@ -72,6 +79,8 @@ public abstract class MenuPage extends Table
 			
 			if(activated)
 			{
+				if(_backPage != null)
+					backPage = _backPage;
 				firstActivation();
 				onActivation();
 			}
@@ -93,7 +102,12 @@ public abstract class MenuPage extends Table
 	protected abstract void onUpdate(float _fDt);
 	protected abstract void onDeactivation();
 	protected abstract void onActivation();
-	protected abstract void onEvent(MenuEvent _event);	
+	protected abstract void onEvent(MenuEvent _event);
+	
+	protected void onBack()
+	{
+		backAnimation.notifyEnd();
+	}
 	
 	// Animations
 	
@@ -109,5 +123,29 @@ public abstract class MenuPage extends Table
 	{
 		pooledAnimations.clear();
 		currentAnimation = null;
+	}
+	
+	public void back()
+	{
+		if(backPage != null)
+			addPageAnimation(backAnimation);
+	}
+	
+	protected MenuPageAnimation getBackAnimation()
+	{
+		return backAnimation;
+	}
+	
+	class BackAnimation extends MenuPageAnimation
+	{
+		@Override
+		public void onStart() {
+			onBack();	
+		}
+
+		@Override
+		public void onEnd() {
+			screen.setCurrentPage(backPage, false);	
+		}
 	}
 }

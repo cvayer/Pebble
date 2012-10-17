@@ -1,6 +1,9 @@
 package com.deadpixels.lib.screens.menu;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -14,12 +17,19 @@ public abstract class MenuScreen extends Screen {
 	protected final Stage							stage;
 	protected final ObjectMap<String, MenuPage> 	pages;
 	protected 	    MenuPage					  	currentPage;
+	private	  final InputListener					inputListener;
 	
 	public MenuScreen(String _name, ScreenManager _Manager) {
 		super(_name, _Manager);
 		
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		
+		inputListener = new InputListener();
+		
 		inputMultiplexer.addProcessor(stage);
+		inputMultiplexer.addProcessor(inputListener);
+		
+		Gdx.input.setCatchBackKey(true);
 		
 		pages = new ObjectMap<String, MenuPage>(4);
 		currentPage = null;
@@ -46,11 +56,16 @@ public abstract class MenuScreen extends Screen {
 	
 	public void setCurrentPage(MenuPage _page)
 	{
+		setCurrentPage(_page, true);
+	}
+	
+	protected void setCurrentPage(MenuPage _page, boolean _backPage)
+	{
 		if(_page != currentPage)
 		{
 			if(currentPage != null)
 			{
-				currentPage.activate(false);
+				currentPage.activate(false, null);
 			}
 			
 			MenuPage oldPage  = currentPage;
@@ -61,7 +76,8 @@ public abstract class MenuScreen extends Screen {
 				stage.clear();
 				stage.addActor(currentPage);
 				currentPage.resize((int)stage.getWidth(), (int)stage.getHeight());
-				currentPage.activate(true);
+				MenuPage backPage = _backPage ? oldPage : null;
+				currentPage.activate(true, backPage);
 			}
 			
 			onPageChange(oldPage, currentPage);
@@ -137,5 +153,26 @@ public abstract class MenuScreen extends Screen {
 	public void sendEvent(int _id)
 	{
 		sendEvent(_id, null);
+	}
+	
+	class InputListener extends InputAdapter
+	{
+		public boolean keyDown (int keycode) {
+			
+			if(keycode == Input.Keys.BACK || keycode == Keys.BACKSPACE)
+			{
+				if(currentPage != null)
+				{
+					currentPage.back();
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public boolean keyUp (int keycode) {
+			return false;
+		}
+		
 	}
 }
