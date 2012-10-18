@@ -1,6 +1,7 @@
 package com.deadpixels.lib.screens.menu;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
 public abstract class MenuPage
@@ -32,11 +33,18 @@ public abstract class MenuPage
 		table = new Table();
 	}
 	
-	public final Table table()
+	void setDefaultBackground(Drawable _background)
 	{
-		return table;
+		if(_background != null)
+		{
+			table.setBackground(_background);
+		}
 	}
 	
+	protected final Table table()
+	{
+		return table;
+	}	
 	
 	final void resize(int _width, int _height)
 	{

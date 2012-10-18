@@ -76,18 +76,18 @@ public abstract class ScreenManager implements ApplicationListener {
             	float fUpdateDt = screen.getUpdateDt();
             	
             	if(fUpdateDt <= 0.0f)
-            		screen.update(fDt);
+            		screen.onUpdate(fDt);
             	else
             	{
             		updateTimer -= fDt;
                 	if(updateTimer <= 0.0f)
                 	{
                 		updateTimer = screen.getUpdateDt();
-                		screen.update(updateTimer);	
+                		screen.onUpdate(updateTimer);	
                 	}
             	}
             		
-            	screen.render(fDt);
+            	screen.onRender(fDt);
             }
     }
 
@@ -113,7 +113,7 @@ public abstract class ScreenManager implements ApplicationListener {
             	screen.activate(false);
             	screen.unload();
             	if(manageScreenDisposal)
-            		screen.dispose();
+            		screen.onDispose();
             }
             
             screen = _screen;

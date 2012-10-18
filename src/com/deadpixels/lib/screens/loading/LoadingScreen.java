@@ -38,7 +38,7 @@ public abstract class LoadingScreen extends Screen {
 	}
 
 	@Override
-	protected void update(float _fDt) 
+	protected void onUpdate(float _fDt) 
 	{		
 		if(screenToLoad != null && !nextIsLoaded)
 		{

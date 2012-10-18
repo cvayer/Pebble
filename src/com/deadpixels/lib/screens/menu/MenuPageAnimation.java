@@ -7,20 +7,14 @@ public abstract class MenuPageAnimation
 	private boolean notifyEnd;
 	private MenuPage page;
 	
-	private final Runnable endRunnable; // Convenience runnable to add to actions when the animation is finished
+	private final EndFlag endFlag; // Convenience runnable to add to actions when the animation is finished
 
 	public MenuPageAnimation()
 	{
 		isRunning = false;
 		notifyEnd = false;
 		
-		endRunnable = new Runnable() {
-			
-			@Override
-			public void run() {
-				notifyEnd();
-			}
-		};
+		endFlag = new EndFlag();
 	}
 	
 	public void notifyEnd() 
@@ -33,9 +27,9 @@ public abstract class MenuPageAnimation
 		return page;
 	}
 	
-	public Runnable getEndRunnable()
+	public Runnable getEndFlag()
 	{
-		return endRunnable;
+		return endFlag;
 	}
 	
 	protected boolean needToEnd()
@@ -71,5 +65,14 @@ public abstract class MenuPageAnimation
 
 	public abstract void onStart();
 	public abstract void onEnd();
+	
+	public class EndFlag implements Runnable
+	{
+		@Override
+		public void run() {
+			notifyEnd();
+		}
+		
+	}
 	
 }

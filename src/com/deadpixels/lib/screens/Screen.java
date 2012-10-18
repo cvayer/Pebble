@@ -2,9 +2,8 @@ package com.deadpixels.lib.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.utils.Disposable;
 
-public abstract class Screen implements Disposable {
+public abstract class Screen {
 	
 	protected final String 				name;
 	protected final ScreenManager 		manager;
@@ -119,11 +118,9 @@ public abstract class Screen implements Disposable {
     	}
     }
     
-
-    @Override
-	public 			abstract void dispose ();
-    protected 		abstract void update (float _fDt);
-    protected 		abstract void render (float _fDt);
+    protected 		abstract void onDispose ();
+    protected 		abstract void onUpdate (float _fDt);
+    protected 		abstract void onRender (float _fDt);
     protected		abstract void onLoad ();
     protected		abstract void onUnload ();
     protected 		abstract void onResize (int width, int height);
