@@ -146,6 +146,8 @@ public abstract class MenuPage
 	{
 		if(backPage != null)
 			addPageAnimation(backAnimation);
+		else
+			onBack();
 	}
 	
 	protected MenuPageAnimation getBackAnimation()
