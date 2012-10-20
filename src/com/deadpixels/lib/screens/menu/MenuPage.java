@@ -134,6 +134,7 @@ public abstract class MenuPage
 			return;
 		
 		pooledAnimations.add(_animation);
+		_animation.onAdd();
 	}
 	
 	private final void clearAnimations()
@@ -165,6 +166,11 @@ public abstract class MenuPage
 		@Override
 		public void onEnd() {
 			screen.setCurrentPage(backPage, false);	
+		}
+
+		@Override
+		public void onAdd() {
+			
 		}
 	}
 }

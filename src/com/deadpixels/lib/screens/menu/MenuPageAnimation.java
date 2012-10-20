@@ -62,7 +62,8 @@ public abstract class MenuPageAnimation
 	{
 		return isRunning;
 	}
-
+	
+	public abstract void onAdd();
 	public abstract void onStart();
 	public abstract void onEnd();
 	
