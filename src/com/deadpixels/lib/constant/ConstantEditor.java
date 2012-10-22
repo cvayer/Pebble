@@ -125,12 +125,11 @@ public class ConstantEditor  implements Disposable
 	 * ConstantEditor constructor.
 	 * @param _manager {@link ConstantManager} to display. Cannot be null.
 	 * @param _skinPath String, path to the skin to use. Will create a new skin, disposed when the CE is disposed.
-	 * @param _width Initial width of the Stage.
-	 * @param _height Initial Height of the Stage.
+	 * @param _createStage, To tell the CE to create and manage its own Stage. If not you can add it to your stage by getting the mainTable
 	 */
-	public ConstantEditor(ConstantManager _manager, String _skinPath, int _width, int _height)
+	public ConstantEditor(ConstantManager _manager, String _skinPath, boolean _createStage)
 	{
-		this(_manager, new Skin(Gdx.files.internal(_skinPath + ".json")), _width, _height);
+		this(_manager, new Skin(Gdx.files.internal(_skinPath + ".json")), _createStage);
 		// As we have created a new Skin we dispose when dispose is called it to avoid memory leak.
 		disposeSkin = true;
 	}
@@ -142,7 +141,7 @@ public class ConstantEditor  implements Disposable
 	 * @param _width Initial width of the Stage.
 	 * @param _height Initial Height of the Stage.
 	 */
-	public ConstantEditor(ConstantManager _manager, Skin _skin, int _width, int _height)
+	public ConstantEditor(ConstantManager _manager, Skin _skin, boolean _createStage)
 	{
 		if(_manager == null)
 			throw new InvalidParameterException("ConstantEditor ctor : _manager must not be null");
@@ -158,7 +157,7 @@ public class ConstantEditor  implements Disposable
 		disposeSkin = false;
 		
 		// Stage creation
-		stage = new Stage(_width, _height, false);
+		stage = (_createStage ) ? new Stage() : null;
 		
 		// Pools creation
 		buttonPool		= new Array<TextButton>(false, 4);
@@ -190,7 +189,9 @@ public class ConstantEditor  implements Disposable
 		saveButton.setTouchable(Touchable.disabled);
 				
 		mainTable = new Table();
-		stage.addActor(mainTable);
+
+		if(stage != null)
+			stage.addActor(mainTable);
 		
 		flickTable = new Table();
 		flickTable.top();	
@@ -214,10 +215,11 @@ public class ConstantEditor  implements Disposable
 		mainTable.add(optionsTable).expand().fill();
 	}
 	
-	/**Disposes the Stage and the Skin if it was created by the CE. **/
+	/**Disposes the Stage if owned and the Skin if it was created by the CE. */
 	@Override
 	public void dispose() {
-		stage.dispose();
+		if(stage != null)
+			stage.dispose();
 		
 		if(disposeSkin)
 			skin.dispose();
@@ -318,7 +320,8 @@ public class ConstantEditor  implements Disposable
 	 */
 	public void resize(int _width, int _height, boolean _stretch)
 	{
-		stage.setViewport(_width, _height, _stretch);
+		if(stage != null)
+			stage.setViewport(_width, _height, _stretch);
 		
 		mainTable.setWidth(_width);
 		mainTable.setHeight(_height);
@@ -343,15 +346,28 @@ public class ConstantEditor  implements Disposable
 	}
 	
 	/**
-	 * Render function must be called in the Render function of your application. At the end to have an overlay.
+	 * If the CE has not created its own stage, you should add the main Table to your own.
+	 * @return the main table of the CE.
+	 */
+	public Table getRoot()
+	{
+		return mainTable;
+	}
+	
+	/**
+	 * Render function must be called in the Render function of your application. At the end to have an overlay. 
+	 * If the CE has not created it's own Stage, you don't have to call that function
 	 */
 	public void render(float _fDt)
 	{
-		stage.act(_fDt);
-		stage.draw();
-		
-		if(debug)
-			Table.drawDebug(stage);
+		if(stage != null)
+		{
+			stage.act(_fDt);
+			stage.draw();
+			
+			if(debug)
+				Table.drawDebug(stage);
+		}
 	}
 	
 	/**
@@ -615,7 +631,7 @@ public class ConstantEditor  implements Disposable
 			mainTable.add(flickScrollpane).expand().fill();
 			
 			// we launch the openAnimation on the Table
-			float xOffset = stage.getWidth() * 0.65f;
+			float xOffset = mainTable.getWidth() * 0.65f;
 			mainTable.setX(xOffset);
 		    mainTable.addAction(Actions.sequence(Actions.moveBy(-xOffset, mainTablePadding, 0.15f, Interpolation.pow3In), Actions.run(m_ActionListener.setMode(ActionCompletedListener.OPEN))));
 		}
@@ -626,7 +642,7 @@ public class ConstantEditor  implements Disposable
 		void close()
 		{
 			// We launch the close animation.
-			float xOffset = stage.getWidth() - openButton.getX() - openButton.getWidth() - mainTablePadding;
+			float xOffset = mainTable.getWidth() - openButton.getX() - openButton.getWidth() - mainTablePadding;
 			mainTable.addAction(Actions.sequence(Actions.moveBy(xOffset, -mainTablePadding, 0.15f, Interpolation.pow3In), Actions.run(m_ActionListener.setMode(ActionCompletedListener.CLOSE))));
 		}
 		

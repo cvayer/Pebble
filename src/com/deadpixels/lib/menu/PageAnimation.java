@@ -1,15 +1,15 @@
-package com.deadpixels.lib.screens.menu;
+package com.deadpixels.lib.menu;
 
-public abstract class MenuPageAnimation 
+public abstract class PageAnimation 
 {
 
 	private boolean isRunning;
 	private boolean notifyEnd;
-	private MenuPage page;
+	private Page page;
 	
 	private final EndFlag endFlag; // Convenience runnable to add to actions when the animation is finished
 
-	public MenuPageAnimation()
+	public PageAnimation()
 	{
 		isRunning = false;
 		notifyEnd = false;
@@ -22,7 +22,7 @@ public abstract class MenuPageAnimation
 		notifyEnd = true; 
 	}
 	
-	public MenuPage getPage()
+	public Page getPage()
 	{
 		return page;
 	}
@@ -37,7 +37,7 @@ public abstract class MenuPageAnimation
 		return notifyEnd;
 	}
 	
-	protected void start(MenuPage _page)
+	protected void start(Page _page)
 	{
 		if(!isRunning)
 		{

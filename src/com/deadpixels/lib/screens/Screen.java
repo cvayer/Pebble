@@ -118,6 +118,12 @@ public abstract class Screen {
     	}
     }
     
+    public void dispose()
+    {
+    	log("onDispose");
+    	onDispose();
+    }
+    
     protected 		abstract void onDispose ();
     protected 		abstract void onUpdate (float _fDt);
     protected 		abstract void onRender (float _fDt);

@@ -113,7 +113,7 @@ public abstract class ScreenManager implements ApplicationListener {
             	screen.activate(false);
             	screen.unload();
             	if(manageScreenDisposal)
-            		screen.onDispose();
+            		screen.dispose();
             }
             
             screen = _screen;

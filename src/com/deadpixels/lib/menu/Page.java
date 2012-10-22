@@ -1,31 +1,31 @@
-package com.deadpixels.lib.screens.menu;
+package com.deadpixels.lib.menu;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public abstract class MenuPage
+public abstract class Page
 {
 	private	  final	Table	   table;
-	protected final MenuScreen screen;
-	protected 		MenuPage   backPage;
+	protected  		Menu 	   menu;
+	protected 		Page   backPage;
 	private   		boolean	   hasBeenActivatedOnce;
 	private			boolean	   activated;
 	
-	private final 	Array<MenuPageAnimation> 	pooledAnimations;
-	private			MenuPageAnimation			currentAnimation;
+	private final 	Array<PageAnimation> 	pooledAnimations;
+	private			PageAnimation			currentAnimation;
 	
 	private final	BackAnimation				backAnimation;
 	
-	public MenuPage(MenuScreen _screen)
+	public Page()
 	{
 		super();
-		screen = _screen;
+		
 		hasBeenActivatedOnce = false;
 		
 		backPage = null;
 		
-		pooledAnimations = new Array<MenuPageAnimation>(true, 2);
+		pooledAnimations = new Array<PageAnimation>(true, 2);
 		currentAnimation = null;
 		
 		backAnimation = new BackAnimation();
@@ -33,12 +33,11 @@ public abstract class MenuPage
 		table = new Table();
 	}
 	
-	void setDefaultBackground(Drawable _background)
+	protected void setMenu(Menu _menu)
 	{
-		if(_background != null)
-		{
-			table.setBackground(_background);
-		}
+		if(_menu == null)
+			throw new GdxRuntimeException("Menu::SetMenu : _menu must not be null");
+		menu = _menu;
 	}
 	
 	protected final Table table()
@@ -88,7 +87,7 @@ public abstract class MenuPage
 		}
 	}
 	
-	final void activate(boolean _activate, MenuPage _backPage)
+	final void activate(boolean _activate, Page _backPage)
 	{
 		if(activated != _activate)
 		{
@@ -109,11 +108,22 @@ public abstract class MenuPage
 		}
 	}
 	
+	public final void sendEvent(int _id, MenuEventParameters _parameters)
+	{
+		menu.sendEvent(_id, _parameters);
+	}
+	
+	public final void sendEvent(int _id)
+	{
+		menu.sendEvent(_id);
+	}
+	
 	final void handleEvent(MenuEvent _event)
 	{
 		onEvent(_event);	
 	}
 	
+	protected abstract void onDispose();
 	protected abstract void onResize(int _width, int _height);
 	protected abstract void onFirstActivation();
 	protected abstract void onUpdate(float _fDt);
@@ -128,7 +138,7 @@ public abstract class MenuPage
 	
 	// Animations
 	
-	public final void addPageAnimation(MenuPageAnimation _animation)
+	public final void addPageAnimation(PageAnimation _animation)
 	{
 		if(_animation == null)
 			return;
@@ -151,12 +161,12 @@ public abstract class MenuPage
 			onBack();
 	}
 	
-	protected MenuPageAnimation getBackAnimation()
+	protected PageAnimation getBackAnimation()
 	{
 		return backAnimation;
 	}
 	
-	class BackAnimation extends MenuPageAnimation
+	class BackAnimation extends PageAnimation
 	{
 		@Override
 		public void onStart() {
@@ -165,7 +175,7 @@ public abstract class MenuPage
 
 		@Override
 		public void onEnd() {
-			screen.setCurrentPage(backPage, false);	
+			menu.setCurrentPage(backPage, false);	
 		}
 
 		@Override

@@ -1,4 +1,4 @@
-package com.deadpixels.lib.screens.menu;
+package com.deadpixels.lib.menu;
 
 import com.badlogic.gdx.utils.Pool.Poolable;
 

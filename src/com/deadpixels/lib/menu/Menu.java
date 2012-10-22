@@ -1,0 +1,226 @@
+package com.deadpixels.lib.menu;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.ObjectMap.Values;
+
+public class Menu {
+	
+	protected  		Stage							stage;
+	protected final ObjectMap<String, Page> 	pages;
+	protected 	    Page					  	currentPage;
+	private	  final InputListener					inputListener;
+	private   		Drawable 						defaultPageBackground;
+	private			MenuListener					listener;
+	
+	public Menu() 
+	{
+		this(null);
+	}
+	
+	public Menu(Stage _stage) 
+	{
+		stage = _stage;
+		inputListener = new InputListener();
+	
+		setCatchBackKey(true);
+		
+		pages = new ObjectMap<String, Page>(4);
+		currentPage = null;
+		defaultPageBackground = null;
+	}
+	
+	public InputListener getInputListener()
+	{
+		return inputListener;
+	}
+	
+	public void setCatchBackKey(boolean _catch)
+	{
+		Gdx.input.setCatchBackKey(_catch);
+	}
+	
+	public void setStage(Stage _stage)
+	{
+		stage = _stage;
+	}
+	
+	public void setListener(MenuListener _listener)
+	{
+		listener = _listener;
+	}
+	
+	public void addPage(String _name, Page _page)
+	{
+		if(_page == null)
+			return;
+		if(defaultPageBackground != null && _page.table().getBackground() == null)
+			_page.table().setBackground(defaultPageBackground);
+		
+		_page.setMenu(this);
+		pages.put(_name, _page);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends Page> T getPage(String _key, Class<T> _type)
+	{
+		Page page = pages.get(_key);
+		if(_type.isInstance(page))
+			return (T)page;
+		return null;
+	}
+	
+	public void setCurrentPageByKey(String _name)
+	{
+		setCurrentPage(pages.get(_name));
+	}
+	
+	public void setCurrentPage(Page _page)
+	{
+		setCurrentPage(_page, true);
+	}
+	
+	protected void setCurrentPage(Page _page, boolean _backPage)
+	{
+		if(stage == null)
+			throw new GdxRuntimeException("Menu::setCurrentPage : You must set a stage to your menu");
+		
+		if(_page != currentPage && stage != null)
+		{
+			if(currentPage != null)
+			{
+				stage.getRoot().removeActor(currentPage.table());
+				currentPage.activate(false, null);
+			}
+			
+			Page oldPage  = currentPage;
+			currentPage = _page;
+			
+			if(currentPage != null)
+			{
+				stage.addActor(currentPage.table());
+				Page backPage = _backPage ? oldPage : null;
+				currentPage.activate(true, backPage);
+				currentPage.resize((int)stage.getWidth(), (int)stage.getHeight());
+			}
+			
+			if(listener != null)
+				listener.onPageChange(oldPage, currentPage);
+		}
+	}
+	
+	public void setDefaultPagesBackground(Drawable _background)
+	{
+		if(defaultPageBackground == _background)
+			return;
+		
+		
+		Values<Page> values = pages.values();
+		
+		while(values.hasNext())
+    	{
+			Page page = values.next();
+			
+			// We want to set the default background
+			if(_background != null)
+			{
+				// We set it if the table has not a background already
+				if(page.table().getBackground() == null)
+					page.table().setBackground(_background);
+			}
+			else // We want to remove the default background
+			{
+				// We remove it only if the table has the default background as a background
+				if(page.table().getBackground() == defaultPageBackground)
+					page.table().setBackground(null);
+			}
+    	}
+
+		defaultPageBackground = _background;	
+	}
+	
+	public void update(float _fDt) 
+	{
+		if(currentPage != null)
+			currentPage.update(_fDt);
+	}
+	
+	public void resize(int width, int height) 
+	{
+		if(currentPage != null)
+		{
+			currentPage.resize(width, height);
+		}
+	}
+	
+	public void dispose()
+	{
+		setCurrentPage(null);
+		Values<Page> values = pages.values();
+		
+		while(values.hasNext())
+    	{
+			Page page = values.next();
+			page.onDispose();
+    	}
+		pages.clear();
+	}
+	
+	// Events	
+	public final void sendEvent(int _id, MenuEventParameters _parameters)
+	{
+		MenuEvent event = Pools.obtain(MenuEvent.class);
+		event.setParameters(_id, _parameters);
+		
+		Values<Page> values = pages.values();
+		
+		while(values.hasNext())
+    	{
+			Page page = values.next();
+			page.handleEvent(event);
+    	}
+		
+		Pools.free(event);
+	}
+	
+	public final void sendEvent(int _id)
+	{
+		sendEvent(_id, null);
+	}
+		
+	//-------------------------------------------------------------------
+	//----  InputListener
+	//-------------------------------------------------------------------
+	class InputListener extends InputAdapter
+	{
+		public boolean keyDown (int keycode) {
+			
+			if(keycode == Input.Keys.BACK || keycode == Keys.BACKSPACE)
+			{
+				if(currentPage != null)
+				{
+					currentPage.back();
+					return true;
+				}
+			}
+			return false;
+		}		
+	}
+
+	
+	//-------------------------------------------------------------------
+	//----  MenuListener
+	//-------------------------------------------------------------------
+	public interface MenuListener
+	{
+		void onPageChange(Page _oldPage, Page _newPage);
+	}
+
+}

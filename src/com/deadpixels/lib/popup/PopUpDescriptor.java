@@ -1,4 +1,4 @@
-package com.deadpixels.lib.screens.popup;
+package com.deadpixels.lib.popup;
 
 public final class  PopUpDescriptor<T extends PopUp> 
 {

@@ -1,4 +1,4 @@
-package com.deadpixels.lib.screens.popup;
+package com.deadpixels.lib.popup;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -98,6 +98,8 @@ public class PopUpManager {
     			currentPopUp.init(currentDescriptor, skin);
     			currentPopUp.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     			currentPopUp.open();
+    			if(listener != null)
+    	        	listener.onOpen(currentDescriptor);
     		}	
     	}
     }    

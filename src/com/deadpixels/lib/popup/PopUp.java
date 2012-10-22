@@ -1,4 +1,4 @@
-package com.deadpixels.lib.screens.popup;
+package com.deadpixels.lib.popup;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
