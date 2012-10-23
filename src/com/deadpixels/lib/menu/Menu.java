@@ -14,8 +14,8 @@ import com.badlogic.gdx.utils.ObjectMap.Values;
 public class Menu {
 	
 	protected  		Stage							stage;
-	protected final ObjectMap<String, Page> 	pages;
-	protected 	    Page					  	currentPage;
+	protected final ObjectMap<String, Page> 		pages;
+	protected 	    Page					  		currentPage;
 	private	  final InputListener					inputListener;
 	private   		Drawable 						defaultPageBackground;
 	private			MenuListener					listener;
@@ -98,6 +98,8 @@ public class Menu {
 			{
 				stage.getRoot().removeActor(currentPage.table());
 				currentPage.activate(false, null);
+				if(listener != null)
+					listener.onPageClose(currentPage);
 			}
 			
 			Page oldPage  = currentPage;
@@ -109,10 +111,9 @@ public class Menu {
 				Page backPage = _backPage ? oldPage : null;
 				currentPage.activate(true, backPage);
 				currentPage.resize((int)stage.getWidth(), (int)stage.getHeight());
+				if(listener != null)
+					listener.onPageOpen(currentPage);
 			}
-			
-			if(listener != null)
-				listener.onPageChange(oldPage, currentPage);
 		}
 	}
 	
@@ -213,14 +214,4 @@ public class Menu {
 			return false;
 		}		
 	}
-
-	
-	//-------------------------------------------------------------------
-	//----  MenuListener
-	//-------------------------------------------------------------------
-	public interface MenuListener
-	{
-		void onPageChange(Page _oldPage, Page _newPage);
-	}
-
 }
