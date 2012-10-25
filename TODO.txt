@@ -1,9 +1,7 @@
 
-Add LocalizedText class to handle automatic text change
-
-add page Adapter
-
-review naming for screen and menu and pages  : example : onUpdate instead of update, etc
-visibility, final classes, etc
-
 Language Manager in the lib
+
+Menu and pop Ups
+
+Add group to menu
+remove stage from menu

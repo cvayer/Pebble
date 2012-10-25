@@ -32,7 +32,7 @@ public abstract class PageAnimation
 		return endFlag;
 	}
 	
-	protected boolean needToEnd()
+	protected boolean doesNeedToEnd()
 	{
 		return notifyEnd;
 	}
@@ -63,9 +63,23 @@ public abstract class PageAnimation
 		return isRunning;
 	}
 	
-	public abstract void onAdd();
+	public void onAdd()
+	{
+		
+	}
+	
+	public void onEnd()
+	{
+		
+	}
+	
+	public void update(float _fDt)
+	{
+		
+	}
+	
 	public abstract void onStart();
-	public abstract void onEnd();
+	
 	
 	public class EndFlag implements Runnable
 	{

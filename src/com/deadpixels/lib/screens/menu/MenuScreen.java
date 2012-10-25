@@ -3,7 +3,6 @@ package com.deadpixels.lib.screens.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.deadpixels.lib.menu.Menu;
 import com.deadpixels.lib.menu.MenuListener;
 import com.deadpixels.lib.menu.Page;
 import com.deadpixels.lib.screens.Screen;
@@ -77,12 +76,12 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 
 	@Override
 	protected void onActivation() {
-		menu.setCurrentPageByKey(getStartPageKey());
+		menu.open(getStartPageKey());
 	}
 
 	@Override
 	protected void onDeactivation() {
-		menu.setCurrentPage(null);
+		menu.clear();
 		stage.clear();
 	}
 }

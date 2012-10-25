@@ -3,21 +3,32 @@ package com.deadpixels.lib.menu;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pools;
 
 public abstract class Page
 {
-	private	  final	Table	   table;
-	protected  		Menu 	   menu;
-	protected 		Page   backPage;
-	private   		boolean	   hasBeenActivatedOnce;
-	private			boolean	   activated;
+	public static final String OPEN 	= "Open";
+	public static final String CLOSE 	= "Close";
+	public static final String BACK 	= "Back";
 	
-	private final 	Array<PageAnimation> 	pooledAnimations;
-	private			PageAnimation			currentAnimation;
+	private	  final	Table	   	table;
+	protected  		Menu 	   	menu;
+	protected 		Page   		backPage;
+	protected 		Page   		nextPage;
+	private   		boolean	   	hasBeenActivatedOnce;
+	private			boolean	   	activated;
 	
-	private final	BackAnimation				backAnimation;
+	private final 	Array<KeyPageAnimationPair> 					pooledAnimations;
+	private			KeyPageAnimationPair							currentAnimation;
+	private	final 	ObjectMap<String, PageAnimation> 				animations;
 	
 	public Page()
+	{
+		this(true);
+	}
+	
+	public Page(boolean _fillStage)
 	{
 		super();
 		
@@ -25,12 +36,37 @@ public abstract class Page
 		
 		backPage = null;
 		
-		pooledAnimations = new Array<PageAnimation>(true, 2);
+		animations = new ObjectMap<String, PageAnimation>(4);
+		
+		pooledAnimations = new Array<KeyPageAnimationPair>(true, 2);
 		currentAnimation = null;
 		
-		backAnimation = new BackAnimation();
-		
 		table = new Table();
+		table.setFillParent(_fillStage);
+	}
+	
+	public void registerAnimation(String _key, PageAnimation _animation)
+	{
+		if(_key == null || _animation == null)
+			return;
+		animations.put(_key, _animation);
+	}
+	
+	public void unregisterAnimation(String _key)
+	{
+		if(_key == null)
+			return;
+		
+		PageAnimation animation = getAnimation(_key);
+		if(animation != null)
+		{
+			animations.put(_key, null);
+		}
+	}
+	
+	protected void setNextPage(Page _next)
+	{
+		nextPage = _next;
 	}
 	
 	protected void setMenu(Menu _menu)
@@ -47,10 +83,7 @@ public abstract class Page
 	
 	final void resize(int _width, int _height)
 	{
-		table.setWidth(_width);
-		table.setHeight(_height);
 		onResize(_width, _height);
-		table.invalidate();
 	}
 	
 	final void update(float _fDt)
@@ -58,10 +91,24 @@ public abstract class Page
 		// We have a running animation
 		if(currentAnimation != null)
 		{
-			if(currentAnimation.needToEnd())
+			currentAnimation.animation.update(_fDt);
+			if(currentAnimation.animation.doesNeedToEnd())
 			{
-				currentAnimation.end();
+				currentAnimation.animation.end();
+				
+				String key = currentAnimation.key;
+				
+				Pools.free(currentAnimation);
 				currentAnimation = null;
+				
+				if(key == CLOSE)
+				{
+					menu.setCurrentPage(nextPage, true);
+				}
+				else if(key == BACK)
+				{
+					menu.setCurrentPage(backPage, false);
+				}
 			}
 		}
 		
@@ -70,7 +117,11 @@ public abstract class Page
 			if(pooledAnimations.size > 0)
 			{
 				currentAnimation = pooledAnimations.first();
-				currentAnimation.start(this);
+				currentAnimation.animation.start(this);
+				if(currentAnimation.key == BACK)
+				{
+					onBack();
+				}
 				pooledAnimations.removeIndex(0);
 			}
 		}
@@ -102,7 +153,7 @@ public abstract class Page
 			}
 			else
 			{
-				clearAnimations();
+				clearCurrentAnimations();
 				onDeactivation();
 			}
 		}
@@ -123,6 +174,12 @@ public abstract class Page
 		onEvent(_event);	
 	}
 	
+	protected final void dispose()
+	{
+		clearCurrentAnimations();
+		onDispose();
+	}
+	
 	protected abstract void onDispose();
 	protected abstract void onResize(int _width, int _height);
 	protected abstract void onFirstActivation();
@@ -130,57 +187,61 @@ public abstract class Page
 	protected abstract void onDeactivation();
 	protected abstract void onActivation();
 	protected abstract void onEvent(MenuEvent _event);
-	
-	protected void onBack()
-	{
-		backAnimation.notifyEnd();
-	}
+	protected abstract void onBack();
 	
 	// Animations
-	
-	public final void addPageAnimation(PageAnimation _animation)
+
+	protected PageAnimation getAnimation(String _key)
 	{
-		if(_animation == null)
-			return;
-		
-		pooledAnimations.add(_animation);
-		_animation.onAdd();
+		if(animations.containsKey(_key))
+			return animations.get(_key);
+		return null;
 	}
 	
-	private final void clearAnimations()
+	public final boolean playAnimation(String _key)
 	{
+		if(_key == null)
+			return false;
+		
+		PageAnimation animation = getAnimation(_key);
+		
+		if(animation == null)
+			return false;
+		
+		KeyPageAnimationPair pair = Pools.obtain(KeyPageAnimationPair.class);
+		pair.key = _key;
+		pair.animation = animation;
+		pooledAnimations.add(pair);
+		animation.onAdd();
+		return true;
+	}
+	
+	private final void clearCurrentAnimations()
+	{
+		for(int i=0; i < pooledAnimations.size; ++i)
+		{
+			Pools.free(pooledAnimations.get(i));
+		}
+
 		pooledAnimations.clear();
-		currentAnimation = null;
+		if(currentAnimation != null)
+		{
+			Pools.free(currentAnimation);
+			currentAnimation = null;
+		}
 	}
 	
 	public void back()
 	{
 		if(backPage != null)
-			addPageAnimation(backAnimation);
+		{
+			if( ! playAnimation(BACK) )
+			{
+				onBack();
+				menu.setCurrentPage(backPage, false);
+			}
+		}
 		else
 			onBack();
-	}
-	
-	protected PageAnimation getBackAnimation()
-	{
-		return backAnimation;
-	}
-	
-	class BackAnimation extends PageAnimation
-	{
-		@Override
-		public void onStart() {
-			onBack();	
-		}
-
-		@Override
-		public void onEnd() {
-			menu.setCurrentPage(backPage, false);	
-		}
-
-		@Override
-		public void onAdd() {
-			
-		}
-	}
+	}	
 }

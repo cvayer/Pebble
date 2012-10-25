@@ -13,12 +13,12 @@ import com.badlogic.gdx.utils.ObjectMap.Values;
 
 public class Menu {
 	
-	protected  		Stage							stage;
-	protected final ObjectMap<String, Page> 		pages;
-	protected 	    Page					  		currentPage;
-	private	  final InputListener					inputListener;
-	private   		Drawable 						defaultPageBackground;
-	private			MenuListener					listener;
+	protected  		Stage									stage;
+	protected final ObjectMap<String, Page> 				pages;
+	protected 	    Page					  				currentPage;
+	private	  final InputListener							inputListener;
+	private   		Drawable 								defaultPageBackground;
+	private			MenuListener							listener;
 	
 	public Menu() 
 	{
@@ -77,16 +77,6 @@ public class Menu {
 		return null;
 	}
 	
-	public void setCurrentPageByKey(String _name)
-	{
-		setCurrentPage(pages.get(_name));
-	}
-	
-	public void setCurrentPage(Page _page)
-	{
-		setCurrentPage(_page, true);
-	}
-	
 	protected void setCurrentPage(Page _page, boolean _backPage)
 	{
 		if(stage == null)
@@ -113,15 +103,52 @@ public class Menu {
 				currentPage.resize((int)stage.getWidth(), (int)stage.getHeight());
 				if(listener != null)
 					listener.onPageOpen(currentPage);
+				currentPage.playAnimation(Page.OPEN);
 			}
 		}
 	}
 	
+	public void open(String _name)
+	{
+		open(pages.get(_name), true);
+	}
+	
+	public void close()
+	{
+		open(null, false);
+	}
+	
+	public void clear()
+	{
+		setCurrentPage(null, false);	
+	}
+	
+	protected void open(Page _page, boolean _isBackPage)
+	{
+		if(_page == currentPage)
+			return;
+		
+		// there is no current Page
+		if(currentPage == null)
+		{
+			setCurrentPage(_page, _isBackPage);		
+		}
+		else
+		{
+			// is there is no Close animation on the current page we set it
+			if(!currentPage.playAnimation(Page.CLOSE))
+				setCurrentPage(_page, _isBackPage);	
+			else // There is a close animation we store the nextPage
+			{
+				currentPage.setNextPage(_page);
+			}
+		}
+	}
+		
 	public void setDefaultPagesBackground(Drawable _background)
 	{
 		if(defaultPageBackground == _background)
 			return;
-		
 		
 		Values<Page> values = pages.values();
 		
@@ -163,13 +190,13 @@ public class Menu {
 	
 	public void dispose()
 	{
-		setCurrentPage(null);
+		clear();
 		Values<Page> values = pages.values();
 		
 		while(values.hasNext())
     	{
 			Page page = values.next();
-			page.onDispose();
+			page.dispose();
     	}
 		pages.clear();
 	}

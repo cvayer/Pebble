@@ -38,4 +38,10 @@ public class PageAdapter extends Page
 	protected void onEvent(MenuEvent _event) {
 		
 	}
+	
+	@Override
+	protected void onBack()
+	{
+		
+	}
 }
