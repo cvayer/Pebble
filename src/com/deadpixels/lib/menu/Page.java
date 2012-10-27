@@ -14,8 +14,8 @@ public abstract class Page
 	
 	private	  final	Table	   	table;
 	protected  		Menu 	   	menu;
-	protected 		Page   		backPage;
-	protected 		Page   		nextPage;
+	protected 		PageDescriptor<? extends Page>   		backDescriptor;
+	protected 		PageDescriptor<? extends Page>   		nextDescriptor;
 	private   		boolean	   	hasBeenActivatedOnce;
 	private			boolean	   	activated;
 	
@@ -34,7 +34,8 @@ public abstract class Page
 		
 		hasBeenActivatedOnce = false;
 		
-		backPage = null;
+		backDescriptor = null;
+		nextDescriptor = null;
 		
 		animations = new ObjectMap<String, PageAnimation>(4);
 		
@@ -64,9 +65,9 @@ public abstract class Page
 		}
 	}
 	
-	protected void setNextPage(Page _next)
+	protected void setNextPage(PageDescriptor<? extends Page> _next)
 	{
-		nextPage = _next;
+		nextDescriptor = _next;
 	}
 	
 	protected void setMenu(Menu _menu)
@@ -103,11 +104,11 @@ public abstract class Page
 				
 				if(key == CLOSE)
 				{
-					menu.setCurrentPage(nextPage, true);
+					menu.setCurrentPage(nextDescriptor, true);
 				}
 				else if(key == BACK)
 				{
-					menu.setCurrentPage(backPage, false);
+					menu.setCurrentPage(backDescriptor, false);
 				}
 			}
 		}
@@ -129,16 +130,16 @@ public abstract class Page
 		onUpdate(_fDt);
 	}
 	
-	private final void firstActivation()
+	private final void firstActivation(PageDescriptor<? extends Page> _descriptor)
 	{
 		if(!hasBeenActivatedOnce)
 		{
-			onFirstActivation();
+			onFirstActivation(_descriptor);
 			hasBeenActivatedOnce = true;
 		}
 	}
 	
-	final void activate(boolean _activate, Page _backPage)
+	final void activate(boolean _activate, PageDescriptor<? extends Page> _descriptor, PageDescriptor<? extends Page> _backDescriptor)
 	{
 		if(activated != _activate)
 		{
@@ -146,10 +147,10 @@ public abstract class Page
 			
 			if(activated)
 			{
-				if(_backPage != null)
-					backPage = _backPage;
-				firstActivation();
-				onActivation();
+				if(_backDescriptor != null)
+					backDescriptor = _backDescriptor;
+				firstActivation(_descriptor);
+				onActivation(_descriptor);
 			}
 			else
 			{
@@ -182,10 +183,10 @@ public abstract class Page
 	
 	protected abstract void onDispose();
 	protected abstract void onResize(int _width, int _height);
-	protected abstract void onFirstActivation();
+	protected abstract void onFirstActivation(PageDescriptor<? extends Page> _descriptor);
 	protected abstract void onUpdate(float _fDt);
 	protected abstract void onDeactivation();
-	protected abstract void onActivation();
+	protected abstract void onActivation(PageDescriptor<? extends Page> _descriptor);
 	protected abstract void onEvent(MenuEvent _event);
 	protected abstract void onBack();
 	
@@ -233,12 +234,12 @@ public abstract class Page
 	
 	public void back()
 	{
-		if(backPage != null)
+		if(backDescriptor != null)
 		{
 			if( ! playAnimation(BACK) )
 			{
 				onBack();
-				menu.setCurrentPage(backPage, false);
+				menu.setCurrentPage(backDescriptor, false);
 			}
 		}
 		else

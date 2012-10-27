@@ -15,7 +15,7 @@ public class PageAdapter extends Page
 	}
 
 	@Override
-	protected void onFirstActivation() {
+	protected void onFirstActivation(PageDescriptor<? extends Page> _descriptor) {
 		
 	}
 
@@ -30,7 +30,7 @@ public class PageAdapter extends Page
 	}
 
 	@Override
-	protected void onActivation() {
+	protected void onActivation(PageDescriptor<? extends Page> _descriptor) {
 		
 	}
 

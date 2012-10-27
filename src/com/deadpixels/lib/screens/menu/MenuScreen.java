@@ -5,6 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.deadpixels.lib.menu.MenuListener;
 import com.deadpixels.lib.menu.Page;
+import com.deadpixels.lib.menu.PageDescriptor;
+import com.deadpixels.lib.menu.PageParameters;
 import com.deadpixels.lib.screens.Screen;
 import com.deadpixels.lib.screens.ScreenManager;
 
@@ -33,14 +35,14 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 		return menu;
 	}
 	
-	protected abstract String 	getStartPageKey();
+	protected abstract PageDescriptor<? extends Page> 	getStartPageDescriptor();
 	
-	public void onPageOpen(Page _Page)
+	public void onPageOpen(Page _Page, PageDescriptor<? extends Page> _descriptor)
 	{
 		
 	}
 	
-	public void onPageClose(Page _Page)
+	public void onPageClose(Page _Page, PageDescriptor<? extends Page> _descriptor)
 	{
 		
 	}
@@ -78,7 +80,7 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 
 	@Override
 	protected void onActivation() {
-		menu.open(getStartPageKey());
+		menu.open(getStartPageDescriptor());
 	}
 
 	@Override

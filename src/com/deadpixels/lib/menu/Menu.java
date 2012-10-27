@@ -4,19 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.ObjectMap.Values;
 
 public class Menu {
 	
-	protected final WidgetGroup								root;
-	protected final ObjectMap<String, Page> 				pages;
+	private final 	WidgetGroup								root;
+	private final	ObjectMap<Class<? extends Page>, Page> 	pages;
+	private		  	PageDescriptor<? extends Page>			currentDescriptor;
 	protected 	    Page					  				currentPage;
 	private	  final InputListener							inputListener;
 	private   		Drawable 								defaultPageBackground;
@@ -29,8 +27,9 @@ public class Menu {
 	
 		setCatchBackKey(true);
 		
-		pages = new ObjectMap<String, Page>(4);
+		pages = new ObjectMap<Class<? extends Page>, Page>(4);
 		currentPage = null;
+		currentDescriptor = null;
 		defaultPageBackground = null;
 		
 		root.setFillParent(true);
@@ -56,7 +55,7 @@ public class Menu {
 		listener = _listener;
 	}
 	
-	public void addPage(String _name, Page _page)
+	public void addPage(Page _page)
 	{
 		if(_page == null)
 			return;
@@ -64,49 +63,54 @@ public class Menu {
 			_page.table().setBackground(defaultPageBackground);
 		
 		_page.setMenu(this);
-		pages.put(_name, _page);
+		pages.put(_page.getClass(), _page);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T extends Page> T getPage(String _key, Class<T> _type)
+	private <T extends Page> T getPage(Class<T> _type)
 	{
-		Page page = pages.get(_key);
-		if(_type.isInstance(page))
-			return (T)page;
+		if(pages.containsKey(_type))
+		{
+			return (T)pages.get(_type);
+		}
 		return null;
 	}
 	
-	protected void setCurrentPage(Page _page, boolean _backPage)
+	protected void setCurrentPage(PageDescriptor<? extends Page> _descriptor, boolean _backPage)
 	{
-		if(_page != currentPage)
+		if(_descriptor != currentDescriptor)
 		{
-			if(currentPage != null)
+			if(currentDescriptor != null && currentPage != null)
 			{
 				root.removeActor(currentPage.table());
-				currentPage.activate(false, null);
+				currentPage.activate(false, null, null);
 				if(listener != null)
-					listener.onPageClose(currentPage);
+					listener.onPageClose(currentPage, currentDescriptor);
 			}
 			
-			Page oldPage  = currentPage;
-			currentPage = _page;
+			PageDescriptor<? extends Page> oldDesc  = currentDescriptor;
+			currentDescriptor = _descriptor;
+			if(currentDescriptor != null)
+				currentPage = getPage(currentDescriptor.getType());
+			else
+				currentPage = null;
 			
-			if(currentPage != null)
+			if(currentDescriptor != null && currentPage != null)
 			{
 				root.addActor(currentPage.table());
-				Page backPage = _backPage ? oldPage : null;
-				currentPage.activate(true, backPage);
+				PageDescriptor<? extends Page> backDesc = _backPage ? oldDesc : null;
+				currentPage.activate(true, currentDescriptor, backDesc);
 				currentPage.resize((int)root.getWidth(), (int)root.getHeight());
 				if(listener != null)
-					listener.onPageOpen(currentPage);
+					listener.onPageOpen(currentPage, currentDescriptor);
 				currentPage.playAnimation(Page.OPEN);
 			}
 		}
 	}
 	
-	public void open(String _name)
+	public void open(PageDescriptor<? extends Page> _descriptor)
 	{
-		open(pages.get(_name), true);
+		open(_descriptor, true);
 	}
 	
 	public void close()
@@ -119,24 +123,24 @@ public class Menu {
 		setCurrentPage(null, false);	
 	}
 	
-	protected void open(Page _page, boolean _isBackPage)
+	protected void open(PageDescriptor<? extends Page> _descriptor, boolean _isBackPage)
 	{
-		if(_page == currentPage)
+		if(_descriptor == currentDescriptor)
 			return;
 		
 		// there is no current Page
-		if(currentPage == null)
+		if(currentDescriptor == null)
 		{
-			setCurrentPage(_page, _isBackPage);		
+			setCurrentPage(_descriptor, _isBackPage);		
 		}
 		else
 		{
 			// is there is no Close animation on the current page we set it
 			if(!currentPage.playAnimation(Page.CLOSE))
-				setCurrentPage(_page, _isBackPage);	
+				setCurrentPage(_descriptor, _isBackPage);	
 			else // There is a close animation we store the nextPage
 			{
-				currentPage.setNextPage(_page);
+				currentPage.setNextPage(_descriptor);
 			}
 		}
 	}

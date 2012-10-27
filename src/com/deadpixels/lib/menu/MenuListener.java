@@ -5,6 +5,6 @@ package com.deadpixels.lib.menu;
 //-------------------------------------------------------------------
 public interface MenuListener
 {
-	void onPageOpen(Page _Page);
-	void onPageClose(Page _Page);
+	void onPageOpen(Page _page, PageDescriptor<? extends Page> _descriptor);
+	void onPageClose(Page _page, PageDescriptor<? extends Page> _descriptor);
 }
