@@ -23,6 +23,8 @@ public abstract class Page
 	private			KeyPageAnimationPair							currentAnimation;
 	private	final 	ObjectMap<String, PageAnimation> 				animations;
 	
+	private			boolean											canUseDefaultBackground;
+	
 	public Page()
 	{
 		this(true);
@@ -33,6 +35,7 @@ public abstract class Page
 		super();
 		
 		hasBeenActivatedOnce = false;
+		canUseDefaultBackground = true;
 		
 		backDescriptor = null;
 		nextDescriptor = null;
@@ -44,6 +47,16 @@ public abstract class Page
 		
 		table = new Table();
 		table.setFillParent(_fillStage);
+	}
+	
+	public void setCanUseDefaultBackground(boolean _canUse)
+	{
+		canUseDefaultBackground = _canUse;
+	}
+	
+	public boolean canUseDefaultBackground()
+	{
+		return canUseDefaultBackground;
 	}
 	
 	public void registerAnimation(String _key, PageAnimation _animation)

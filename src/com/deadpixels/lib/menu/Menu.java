@@ -59,7 +59,7 @@ public class Menu {
 	{
 		if(_page == null)
 			return;
-		if(defaultPageBackground != null && _page.table().getBackground() == null)
+		if(_page.canUseDefaultBackground() && defaultPageBackground != null && _page.table().getBackground() == null)
 			_page.table().setBackground(defaultPageBackground);
 		
 		_page.setMenu(this);
@@ -155,6 +155,9 @@ public class Menu {
 		while(values.hasNext())
     	{
 			Page page = values.next();
+			
+			if(!page.canUseDefaultBackground())
+				continue;
 			
 			// We want to set the default background
 			if(_background != null)
