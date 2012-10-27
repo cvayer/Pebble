@@ -18,7 +18,9 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 		
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		
-		menu = new ScreenMenu(stage, this);
+		menu = new ScreenMenu(this);
+		
+		stage.addActor(menu.getRoot());
 		
 		menu.setListener(this);
 		

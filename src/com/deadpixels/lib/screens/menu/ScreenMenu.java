@@ -1,6 +1,5 @@
 package com.deadpixels.lib.screens.menu;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.deadpixels.lib.menu.Menu;
 import com.deadpixels.lib.screens.Screen;
 
@@ -11,12 +10,6 @@ public class ScreenMenu extends Menu {
 	
 	public ScreenMenu(Screen _screen) 
 	{
-		this(null, _screen);
-	}
-	
-	public ScreenMenu(Stage _stage, Screen _screen) 
-	{
-		super(_stage);
 		screen = _screen;
 	}
 	

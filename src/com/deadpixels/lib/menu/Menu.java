@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -13,7 +15,7 @@ import com.badlogic.gdx.utils.ObjectMap.Values;
 
 public class Menu {
 	
-	protected  		Stage									stage;
+	protected final WidgetGroup								root;
 	protected final ObjectMap<String, Page> 				pages;
 	protected 	    Page					  				currentPage;
 	private	  final InputListener							inputListener;
@@ -22,12 +24,7 @@ public class Menu {
 	
 	public Menu() 
 	{
-		this(null);
-	}
-	
-	public Menu(Stage _stage) 
-	{
-		stage = _stage;
+		root = new WidgetGroup();
 		inputListener = new InputListener();
 	
 		setCatchBackKey(true);
@@ -35,6 +32,13 @@ public class Menu {
 		pages = new ObjectMap<String, Page>(4);
 		currentPage = null;
 		defaultPageBackground = null;
+		
+		root.setFillParent(true);
+	}
+	
+	public WidgetGroup getRoot()
+	{
+		return root;
 	}
 	
 	public InputListener getInputListener()
@@ -45,11 +49,6 @@ public class Menu {
 	public void setCatchBackKey(boolean _catch)
 	{
 		Gdx.input.setCatchBackKey(_catch);
-	}
-	
-	public void setStage(Stage _stage)
-	{
-		stage = _stage;
 	}
 	
 	public void setListener(MenuListener _listener)
@@ -79,14 +78,11 @@ public class Menu {
 	
 	protected void setCurrentPage(Page _page, boolean _backPage)
 	{
-		if(stage == null)
-			throw new GdxRuntimeException("Menu::setCurrentPage : You must set a stage to your menu");
-		
-		if(_page != currentPage && stage != null)
+		if(_page != currentPage)
 		{
 			if(currentPage != null)
 			{
-				stage.getRoot().removeActor(currentPage.table());
+				root.removeActor(currentPage.table());
 				currentPage.activate(false, null);
 				if(listener != null)
 					listener.onPageClose(currentPage);
@@ -97,10 +93,10 @@ public class Menu {
 			
 			if(currentPage != null)
 			{
-				stage.addActor(currentPage.table());
+				root.addActor(currentPage.table());
 				Page backPage = _backPage ? oldPage : null;
 				currentPage.activate(true, backPage);
-				currentPage.resize((int)stage.getWidth(), (int)stage.getHeight());
+				currentPage.resize((int)root.getWidth(), (int)root.getHeight());
 				if(listener != null)
 					listener.onPageOpen(currentPage);
 				currentPage.playAnimation(Page.OPEN);
