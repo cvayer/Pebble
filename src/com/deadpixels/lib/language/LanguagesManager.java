@@ -115,7 +115,8 @@ public abstract class LanguagesManager {
 								NamedNodeMap attributes = strings.item(j).getAttributes();
 								String key = attributes.getNamedItem("key").getTextContent();
 								String value = attributes.getNamedItem("value").getTextContent();
-								value = value.replace("<br />", "\n");
+								value = value.replace("<br/>", "\n");
+								value = value.replace("\\n", "\n");
 								languageMap.put(key, value);
 							}
                          
