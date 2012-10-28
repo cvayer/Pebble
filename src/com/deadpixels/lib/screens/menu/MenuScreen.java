@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.deadpixels.lib.menu.MenuListener;
 import com.deadpixels.lib.menu.Page;
 import com.deadpixels.lib.menu.PageDescriptor;
-import com.deadpixels.lib.menu.PageParameters;
 import com.deadpixels.lib.screens.Screen;
 import com.deadpixels.lib.screens.ScreenManager;
 

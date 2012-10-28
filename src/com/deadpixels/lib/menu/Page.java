@@ -14,6 +14,7 @@ public abstract class Page
 	
 	private	  final	Table	   	table;
 	protected  		Menu 	   	menu;
+	protected		MenuLayer	menuLayer;
 	protected 		PageDescriptor<? extends Page>   		backDescriptor;
 	protected 		PageDescriptor<? extends Page>   		nextDescriptor;
 	private   		boolean	   	hasBeenActivatedOnce;
@@ -115,13 +116,16 @@ public abstract class Page
 				Pools.free(currentAnimation);
 				currentAnimation = null;
 				
-				if(key == CLOSE)
+				if(menuLayer != null)
 				{
-					menu.setCurrentPage(nextDescriptor, true);
-				}
-				else if(key == BACK)
-				{
-					menu.setCurrentPage(backDescriptor, false);
+					if(key == CLOSE)
+					{
+						menuLayer.setCurrentPage(nextDescriptor, true);
+					}
+					else if(key == BACK)
+					{
+						menuLayer.setCurrentPage(backDescriptor, false);
+					}
 				}
 			}
 		}
@@ -152,24 +156,30 @@ public abstract class Page
 		}
 	}
 	
-	final void activate(boolean _activate, PageDescriptor<? extends Page> _descriptor, PageDescriptor<? extends Page> _backDescriptor)
+	final void activate(MenuLayer _menuLayer, PageDescriptor<? extends Page> _descriptor, PageDescriptor<? extends Page> _backDescriptor)
 	{
-		if(activated != _activate)
+		if(!activated)
 		{
-			activated = _activate;
+			activated = true;
+
+			if(_backDescriptor != null)
+				backDescriptor = _backDescriptor;
 			
-			if(activated)
-			{
-				if(_backDescriptor != null)
-					backDescriptor = _backDescriptor;
-				firstActivation(_descriptor);
-				onActivation(_descriptor);
-			}
-			else
-			{
-				clearCurrentAnimations();
-				onDeactivation();
-			}
+			menuLayer = _menuLayer;
+			firstActivation(_descriptor);
+			onActivation(_descriptor);
+
+		}
+	}
+	
+	final void deactivate()
+	{
+		if(activated)
+		{
+			menuLayer = null;
+			activated = false;
+			clearCurrentAnimations();
+			onDeactivation();
 		}
 	}
 	
@@ -212,6 +222,11 @@ public abstract class Page
 		return null;
 	}
 	
+	public final  boolean isAnAnimationRunning()
+	{
+		return currentAnimation != null;
+	}
+	
 	public final boolean playAnimation(String _key)
 	{
 		if(_key == null)
@@ -252,10 +267,13 @@ public abstract class Page
 			if( ! playAnimation(BACK) )
 			{
 				onBack();
-				menu.setCurrentPage(backDescriptor, false);
+				if(menuLayer != null)
+					menuLayer.setCurrentPage(backDescriptor, false);
 			}
 		}
 		else
+		{
 			onBack();
+		}
 	}	
 }
