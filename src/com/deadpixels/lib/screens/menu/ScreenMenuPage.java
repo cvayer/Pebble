@@ -15,16 +15,24 @@ public class ScreenMenuPage extends PageAdapter
 	
 	public AssetManager getAssetManager()
 	{
-		return getScreenManager().getAssetManager();
+		ScreenManager manager = getScreenManager();
+		if(manager != null)
+			return manager.getAssetManager();
+		return null;
 	}
 	
 	public ScreenManager getScreenManager()
-	{
-		return getScreen().getManager();
+	{   
+		Screen screen = getScreen();
+		if(screen != null)
+			return screen.getManager();
+		return null;
 	}
 	
 	public Screen getScreen()
 	{
-		return ((ScreenMenu)menu).getScreen();
+		if(menu != null)
+			return ((ScreenMenu)menu).getScreen();
+		return null;
 	}
 }
