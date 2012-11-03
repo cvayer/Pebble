@@ -121,6 +121,17 @@ public class Menu {
 			layer.open(_descriptor);
 	}
 	
+	public PageDescriptor<? extends Page> getCurrentPage()
+	{
+		if(layers.size > 0)
+		{
+			MenuLayer layer = layers.peek();
+			if(layer != null)
+				return layer.getCurrentPage();
+		}
+		return null;
+	}
+	
 	public void close()
 	{	
 		if(layers.size > 0)
@@ -128,6 +139,16 @@ public class Menu {
 			MenuLayer layer = layers.peek();
 			if(layer != null)
 				layer.close();
+		}
+	}
+	
+	public void back()
+	{	
+		if(layers.size > 0)
+		{
+			MenuLayer layer = layers.peek();
+			if(layer != null)
+				layer.back();
 		}
 	}
 	

@@ -41,6 +41,11 @@ public class MenuLayer implements Poolable
 		return currentDescriptor == null;
 	}
 	
+	public PageDescriptor<? extends Page> getCurrentPage()
+	{
+		return currentDescriptor;
+	}
+	
 	void setCurrentPage(PageDescriptor<? extends Page> _descriptor, boolean _backPage)
 	{
 		if(menu == null)

@@ -63,8 +63,6 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 	@Override
 	protected void onRender(float _fDt) {
 		stage.draw();
-		// TODO  : remove the drawdebug
-		Table.drawDebug(stage);
 	}
 
 	@Override

@@ -17,7 +17,7 @@ public abstract class ScreenManager implements ApplicationListener {
     public ScreenManager()
     {
     	updateTimer = 0.0f;
-    	manageScreenDisposal = false;
+    	manageScreenDisposal = true;
     	appCreated = false;
     	assetManager = new AssetManager();
     	Texture.setAssetManager(assetManager);
