@@ -44,4 +44,10 @@ public class PageAdapter extends Page
 	{
 		
 	}
+
+	@Override
+	protected void onRender(float _fDt) {
+		// TODO Auto-generated method stub
+		
+	}
 }

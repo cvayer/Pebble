@@ -106,7 +106,7 @@ public abstract class Page
 		// We have a running animation
 		if(currentAnimation != null)
 		{
-			currentAnimation.animation.update(_fDt);
+			currentAnimation.animation.onUpdate(_fDt);
 			if(currentAnimation.animation.doesNeedToEnd())
 			{
 				currentAnimation.animation.end();
@@ -145,6 +145,15 @@ public abstract class Page
 		}
 		
 		onUpdate(_fDt);
+	}
+	
+	final void render(float _fDt)
+	{
+		onRender(_fDt);
+		if(currentAnimation != null)
+		{
+			currentAnimation.animation.onRender(_fDt);
+		}
 	}
 	
 	private final void firstActivation(PageDescriptor<? extends Page> _descriptor)
@@ -208,6 +217,7 @@ public abstract class Page
 	protected abstract void onResize(int _width, int _height);
 	protected abstract void onFirstActivation(PageDescriptor<? extends Page> _descriptor);
 	protected abstract void onUpdate(float _fDt);
+	protected abstract void onRender(float _fDt);
 	protected abstract void onDeactivation();
 	protected abstract void onActivation(PageDescriptor<? extends Page> _descriptor);
 	protected abstract void onEvent(MenuEvent _event);

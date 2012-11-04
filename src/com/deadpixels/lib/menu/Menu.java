@@ -229,6 +229,16 @@ public class Menu {
 		}
 	}
 	
+	public void render(float _fDt) 
+	{			
+		for(int i=0; i < layers.size; ++i)
+		{
+			MenuLayer layer = layers.get(i);
+			if(layer !=null)
+				layer.render(_fDt);
+		}
+	}
+	
 	public void resize(int width, int height) 
 	{		
 		for(int i=0; i < layers.size; ++i)

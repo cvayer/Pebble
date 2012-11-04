@@ -1,7 +1,6 @@
 
 Language Manager in the lib
 
-Menu and pop Ups
+Add screen componant and make menu componant and FSM componant
 
-Add group to menu
-remove stage from menu
+Separate Menu with Group and Menu tout court

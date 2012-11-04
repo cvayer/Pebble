@@ -73,7 +73,7 @@ public abstract class PageAnimation
 		
 	}
 	
-	public void update(float _fDt)
+	public void onUpdate(float _fDt)
 	{
 		
 	}
@@ -87,6 +87,10 @@ public abstract class PageAnimation
 		public void run() {
 			notifyEnd();
 		}
+		
+	}
+
+	public void onRender(float _fDt) {
 		
 	}
 	

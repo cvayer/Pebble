@@ -120,6 +120,12 @@ public class MenuLayer implements Poolable
 			currentPage.update(_fDt);
 	}
 	
+	void render(float _fDt)
+	{
+		if(currentPage != null)
+			currentPage.render(_fDt);
+	}
+	
 	void resize(int width, int height) 
 	{
 		if(currentPage != null)
