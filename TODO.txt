@@ -4,3 +4,5 @@ Language Manager in the lib
 Add screen componant and make menu componant and FSM componant
 
 Separate Menu with Group and Menu tout court
+
+TODO : find a system to automatically register musics and sound to the manager via callbacks
