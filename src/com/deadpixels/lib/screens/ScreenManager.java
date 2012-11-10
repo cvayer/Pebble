@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 
 public abstract class ScreenManager implements ApplicationListener {
     private Screen  	 screen;
@@ -76,7 +77,10 @@ public abstract class ScreenManager implements ApplicationListener {
             	float fUpdateDt = screen.getUpdateDt();
             	
             	if(fUpdateDt <= 0.0f)
-            		screen.onUpdate(fDt);
+            	{
+            		float maxedDt = MathUtils.clamp(fDt, 0.0f, 1.0f/60.0f);
+            		screen.onUpdate(maxedDt);
+            	}
             	else
             	{
             		updateTimer -= fDt;
