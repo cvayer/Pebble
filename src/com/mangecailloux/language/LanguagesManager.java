@@ -16,25 +16,42 @@ import org.xml.sax.SAXException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-public abstract class LanguagesManager {       
-     
-        private ObjectMap<String, String> 	languageMap;
-        private String 						languageName;
-        private final String 				filePath;
-        private final String 				defaultLanguage;
+public class LanguagesManager {       
+    
+		public static  LanguagesManager  get() {
+	        if (null == m_Instance) { 
+	        	m_Instance = new LanguagesManager();
+	        }
+	        return m_Instance;
+		}
 
-		private final DocumentBuilderFactory dbf;
-        private 	  DocumentBuilder db;
+		private static LanguagesManager m_Instance;
+		
+        public static String getSystemLanguage()
+        {
+        	return java.util.Locale.getDefault().toString();
+        }
+	
+        private final 	ObjectMap<String, String> 	languageMap;
+        private 		String 						currentLanguage;
+        private 		String 						filePath;
+        private 		String 						defaultLanguage;
+        private final	Array<LanguageListener>		listeners;
+
+		private final DocumentBuilderFactory 		dbf;
+        private 	  DocumentBuilder 				db;
         
+
         
-        public LanguagesManager(String _path, String _defaultLanguage) {
-                // Create language map
+        private LanguagesManager() {
+            // Create language map
         	languageMap = new ObjectMap<String, String>();
-            filePath = _path;
-            defaultLanguage = _defaultLanguage;
-            languageName = null;
+            currentLanguage = null;
+            
+            listeners = new Array<LanguageListener>(false, 1);
             
             dbf = DocumentBuilderFactory.newInstance();
             try {
@@ -43,14 +60,15 @@ public abstract class LanguagesManager {
 				Gdx.app.log("LanguagesManager", "News Document Error.");
 			}
         }
-        
-        public String getLanguage() {
-                return languageName;
-        }
-        
-        public static String getSystemLanguage()
+          
+        public void init(String _path, String _defaultLanguage)
         {
-        	return java.util.Locale.getDefault().toString();
+            filePath = _path;
+            defaultLanguage = _defaultLanguage;
+        }  
+        
+        public String getCurrentLanguage() {
+                return currentLanguage;
         }
 
         public String getString(String _key) {
@@ -80,7 +98,7 @@ public abstract class LanguagesManager {
     		if(_languageName == null)
     			return false;
     		
-    		if(_languageName.equals(languageName))
+    		if(_languageName.equals(currentLanguage))
     			return true;
     	
     		FileHandle fileHandle = Gdx.files.internal(filePath);
@@ -104,7 +122,7 @@ public abstract class LanguagesManager {
                     	Node language = languages.item(i);    
                         if (language.getAttributes().getNamedItem("name").getTextContent().equals(_languageName)) 
                         {
-                    	 	languageName = _languageName;
+                    	 	currentLanguage = _languageName;
                     	 	languageMap.clear();
                             Element languageElement = (Element)language;
                             NodeList strings = languageElement.getElementsByTagName("string");
@@ -120,7 +138,9 @@ public abstract class LanguagesManager {
 								languageMap.put(key, value);
 							}
                          
-                         	OnLoad();
+							for(int k=0; k < listeners.size; ++k)
+								listeners.get(k).onLoad(getCurrentLanguage());
+							
                     		success = true;
                         }
                    }   	
@@ -150,5 +170,25 @@ public abstract class LanguagesManager {
 	    	return success;
         }
         
-        protected abstract void OnLoad();
+        public void addListener(LanguageListener _listener)
+        {
+        	if(_listener != null)
+        		listeners.add(_listener);
+        }
+        
+        public void removeListener(LanguageListener _listener)
+        {
+        	if(_listener != null)
+        		listeners.removeValue(_listener, true);
+        }
+        
+        public void clearListeners()
+        {
+        	listeners.clear();
+        }
+        
+        public static interface LanguageListener
+        {
+        	public void onLoad(String _language);
+        }
 }
