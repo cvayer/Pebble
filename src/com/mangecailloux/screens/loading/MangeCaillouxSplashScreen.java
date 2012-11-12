@@ -2,9 +2,7 @@ package com.mangecailloux.screens.loading;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -28,36 +26,31 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 	private 	final 	 Image 		textImage;
 	private 	final 	 Image 		whiteImage;
 	
-	private 	final 	 Texture	caillou;
-	private 	final 	 Texture	eatenCaillou;
-	private 	final 	 Texture	text;
-	private 	final 	 Texture	white;
+	private 	final 	 TextureAtlas atlas;
 	
 	private				 boolean	startAnimation;
 	private				 boolean	readyToChangeScreen;
 	
 	private 	final	 TextureRegionDrawable eatenCaillouDrawable;
+	private 	final	 TextureRegionDrawable caillouDrawable;
 	
 	public MangeCaillouxSplashScreen(ScreenManager _Manager, Screen _ToLoad) {
 		super("MangeCaillouxSplashScreen", _Manager, _ToLoad, false);
 		
-		caillou = new Texture("data/splash/caillou.png");
-		caillou.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		String folder = "HD/";
+		if(Gdx.graphics.getWidth() < (800 + 480)/2)
+			folder = "SD/";
 		
-		eatenCaillou = new Texture("data/splash/caillou_mange.png");
-		eatenCaillou.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		atlas = new TextureAtlas("data/splash/" + folder + "MCG-Splash.pack");
 		
-		text = new Texture("data/splash/MangeCailloux.png");
-		text.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		white = new Texture("data/splash/white.png");
-		white.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-	
-		caillouImage = new Image(caillou);
-		textImage = new Image(text);
-		whiteImage = new Image(white);
+		textImage = new Image(atlas.findRegion("MangeCailloux"));
+		whiteImage = new Image(atlas.findRegion("white"));
 		
-		eatenCaillouDrawable = new TextureRegionDrawable(new TextureRegion(eatenCaillou));
+		caillouDrawable = new TextureRegionDrawable(atlas.findRegion("caillou"));
+		eatenCaillouDrawable = new TextureRegionDrawable(atlas.findRegion("caillou_mange"));
+		
+		caillouImage = new Image(caillouDrawable);
 		
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		
@@ -214,10 +207,7 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 	public void onDispose() {
 		stage.dispose();
 
-		caillou.dispose();
-		eatenCaillou.dispose();
-		text.dispose();
-		white.dispose();
+		atlas.dispose();
 	}
 	
 	@Override
