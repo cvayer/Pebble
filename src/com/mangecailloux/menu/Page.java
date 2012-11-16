@@ -1,6 +1,8 @@
 package com.mangecailloux.menu;
 
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -12,7 +14,10 @@ public abstract class Page
 	public static final String CLOSE 	= "Close";
 	public static final String BACK 	= "Back";
 	
-	private	  final	Table	   	table;
+	private	  final	Table	   		table;
+	private	  final WidgetGroup		group;
+	private   final Table 			background;
+	
 	protected  		Menu 	   	menu;
 	protected		MenuLayer	menuLayer;
 	protected 		PageDescriptor<? extends Page>   		backDescriptor;
@@ -46,13 +51,30 @@ public abstract class Page
 		pooledAnimations = new Array<KeyPageAnimationPair>(true, 2);
 		currentAnimation = null;
 		
+		group = new WidgetGroup();
+		background = new Table();
 		table = new Table();
+		
 		table.setFillParent(_fillStage);
+		background.setFillParent(_fillStage);
+		
+		group.setFillParent(true);
+		group.addActor(background);
+		group.addActor(table);
+		
+		group.setTouchable(Touchable.childrenOnly);
 	}
 	
 	public void setCanUseDefaultBackground(boolean _canUse)
 	{
-		canUseDefaultBackground = _canUse;
+		if(canUseDefaultBackground != _canUse)
+		{
+			canUseDefaultBackground = _canUse;
+			if(menu != null)
+			{
+				menu.setDefaultPageBackground(menu.getDefaultPagesBackground(), this);
+			}
+		}
 	}
 	
 	public boolean canUseDefaultBackground()
@@ -95,6 +117,16 @@ public abstract class Page
 	{
 		return table;
 	}	
+	
+	protected final Table background()
+	{
+		return background;
+	}	
+	
+	protected final WidgetGroup group()
+	{
+		return group;
+	}
 	
 	final void resize(int _width, int _height)
 	{

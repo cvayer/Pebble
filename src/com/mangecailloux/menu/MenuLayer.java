@@ -55,7 +55,7 @@ public class MenuLayer implements Poolable
 		{
 			if(currentDescriptor != null && currentPage != null)
 			{
-				menu.getRoot().removeActor(currentPage.table());
+				menu.getRoot().removeActor(currentPage.group());
 				currentPage.deactivate();
 				if(listener != null)
 					listener.onPageClose(currentPage, currentDescriptor);
@@ -70,7 +70,7 @@ public class MenuLayer implements Poolable
 			
 			if(currentDescriptor != null && currentPage != null)
 			{
-				menu.getRoot().addActorAt(index, currentPage.table());
+				menu.getRoot().addActorAt(index, currentPage.group());
 				
 				PageDescriptor<? extends Page> backDesc = _backPage ? oldDesc : null;
 				currentPage.activate(this, currentDescriptor, backDesc);

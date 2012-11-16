@@ -72,8 +72,8 @@ public class Menu {
 	{
 		if(_page == null)
 			return;
-		if(_page.canUseDefaultBackground() && defaultPageBackground != null && _page.table().getBackground() == null)
-			_page.table().setBackground(defaultPageBackground);
+		
+		setDefaultPageBackground(defaultPageBackground, _page);
 		
 		_page.setMenu(this);
 		pages.put(_page.getClass(), _page);
@@ -174,6 +174,31 @@ public class Menu {
 		}
 		layers.clear();
 	}
+	
+	protected void setDefaultPageBackground(Drawable _background, Page _page)
+	{
+		if(_page != null && _page.canUseDefaultBackground())
+		{
+			// We want to set the default background
+			if(_background != null)
+			{
+				// We set it if the table has not a background already
+				if(_page.background().getBackground() == null)
+					_page.background().setBackground(_background);
+			}
+			else // We want to remove the default background
+			{
+				// We remove it only if the table has the default background as a background
+				if(_page.background().getBackground() == defaultPageBackground)
+					_page.background().setBackground(null);
+			}
+		}
+	}
+	
+	public Drawable getDefaultPagesBackground()
+	{
+		return defaultPageBackground;
+	}
 		
 	public void setDefaultPagesBackground(Drawable _background)
 	{
@@ -186,22 +211,7 @@ public class Menu {
     	{
 			Page page = values.next();
 			
-			if(!page.canUseDefaultBackground())
-				continue;
-			
-			// We want to set the default background
-			if(_background != null)
-			{
-				// We set it if the table has not a background already
-				if(page.table().getBackground() == null)
-					page.table().setBackground(_background);
-			}
-			else // We want to remove the default background
-			{
-				// We remove it only if the table has the default background as a background
-				if(page.table().getBackground() == defaultPageBackground)
-					page.table().setBackground(null);
-			}
+			setDefaultPageBackground(_background, page);
     	}
 
 		defaultPageBackground = _background;	
