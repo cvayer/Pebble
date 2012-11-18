@@ -1,8 +1,8 @@
 package com.mangecailloux.screens.loading;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
+import com.mangecailloux.audio.SoundManager;
 import com.mangecailloux.screens.Screen;
 import com.mangecailloux.screens.ScreenManager;
 
@@ -34,6 +35,8 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 	
 	private 	final	 TextureRegionDrawable eatenCaillouDrawable;
 	private 	final	 TextureRegionDrawable caillouDrawable;
+	
+	private  	final	 Sound					crunch;
 	
 	public MangeCaillouxSplashScreen(ScreenManager _Manager, Screen _ToLoad) {
 		super("MangeCaillouxSplashScreen", _Manager, _ToLoad, false);
@@ -79,6 +82,8 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 				readyToChangeScreen = true;
 			}
 		});
+		
+		crunch = Gdx.audio.newSound(Gdx.files.internal("data/sounds/sound/crunch.mp3"));
 		
 	//	table.debug();
 	}
@@ -162,6 +167,10 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 		
 		@Override
 		public void run() {
+			
+			if(SoundManager.get().isActivated())
+				crunch.play();
+			
 			SequenceAction action = Actions.sequence(	Actions.alpha(0.0f),
 														Actions.show(),
 														Actions.delay(whiteDelay),
@@ -191,7 +200,6 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 	@Override
 	protected void onActivation() 
 	{
-		initUI();
 		whiteTable.setVisible(false);
 		textImage.setVisible(false);
 		caillouImage.setVisible(false);
@@ -209,6 +217,8 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 		stage.dispose();
 
 		atlas.dispose();
+		
+		crunch.dispose();
 	}
 	
 	@Override
