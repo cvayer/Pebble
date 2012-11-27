@@ -25,7 +25,6 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 	private    	final	 Table		whiteTable;
 	
 	private 	final 	 Image 		caillouImage;
-	private 	final 	 Image 		textImage;
 	private 	final 	 Image 		whiteImage;
 	
 	private 	final 	 TextureAtlas atlas;
@@ -45,21 +44,19 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 		if(Gdx.graphics.getWidth() < (800 + 480)/2)
 			folder = "SD/";
 		
-		atlas = new TextureAtlas("data/splash/" + folder + "MCG-Splash.pack");
+		atlas = new TextureAtlas("data/splash/" + folder + "Reversi-Splash.pack");
 		
 		
-		textImage = new Image(atlas.findRegion("MangeCailloux"));
 		whiteImage = new Image(atlas.findRegion("white"));
 		
-		caillouDrawable = new TextureRegionDrawable(atlas.findRegion("caillou"));
-		eatenCaillouDrawable = new TextureRegionDrawable(atlas.findRegion("caillou_mange"));
+		caillouDrawable = new TextureRegionDrawable(atlas.findRegion("splash_cailloux", 0));
+		eatenCaillouDrawable = new TextureRegionDrawable(atlas.findRegion("splash_cailloux", 1));
 		
 		caillouImage = new Image(caillouDrawable);
 		
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		
 		caillouImage.setScaling(Scaling.fit);
-		textImage.setScaling(Scaling.fit);
 		
 		table = new Table();
 		
@@ -98,31 +95,27 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 		float leftRightPadding = width*0.15f;
 		
 		float topPadding = height*0.05f;
-		float inBetweenPadding = height*0.05f;
-		float bottomPadding = height*0.1f;
-		
-		float textHeight = height*0.25f;
 		
 		table.add(caillouImage).pad(topPadding, leftRightPadding, 0.0f, leftRightPadding).prefHeight(width - 2.0f*leftRightPadding);
-		table.row();
-		table.add(textImage).pad(inBetweenPadding, leftRightPadding, bottomPadding, leftRightPadding).prefHeight(textHeight);
 	}
 	
 	private final float firstDelay = 0.5f;
 	private final float caillouFadeInDuration = 0.25f;
 	private final float whiteDelay = 0.5f;
 	private final float whiteHalfDuration = 0.2f;
-	private final float delayBeforeText = 0.5f;
-	private final float textFadeInDuration = 0.5f;
 	private final float delayBeforeGlobalFade = 1.0f;
 	private final float globalFadeDuration = 0.5f;
-	private final float delayBeforeScreenSwap = 1.0f;
+	private final float delayBeforeScreenSwap = 0.25f;
 	
 	private Runnable swapImage = new Runnable() {
 		
 		@Override
 		public void run() {
-			caillouImage.setDrawable(eatenCaillouDrawable);
+			if(caillouImage.getDrawable() == caillouDrawable)
+				caillouImage.setDrawable(eatenCaillouDrawable);
+			else
+				caillouImage.setDrawable(caillouDrawable);
+				
 		}
 	};
 	
@@ -148,21 +141,6 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 		}
 	};
 	
-	private Runnable textAnimation = new Runnable() {
-		
-		@Override
-		public void run() {
-			SequenceAction action = Actions.sequence(	Actions.delay(delayBeforeText),
-														Actions.alpha(0.0f),
-														Actions.show(),
-														Actions.alpha(1.0f, textFadeInDuration, Interpolation.sineIn),
-														Actions.run(globalFade)
-													);
-
-			textImage.addAction(action);
-		}
-	};
-	
 	private Runnable whiteAnimation = new Runnable() {
 		
 		@Override
@@ -178,7 +156,7 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 														Actions.run(swapImage),
 														Actions.alpha(0.0f, whiteHalfDuration, Interpolation.sineOut),
 														Actions.hide(),
-														Actions.run(textAnimation)
+														Actions.run(globalFade)
 													);
 
 			whiteTable.addAction(action);
@@ -190,8 +168,7 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 		SequenceAction action = Actions.sequence(	Actions.alpha(0.0f),
 													Actions.show(),
 													Actions.delay(firstDelay),
-													Actions.alpha(1.0f, caillouFadeInDuration, Interpolation.sineIn),
-													Actions.run(whiteAnimation)
+													Actions.alpha(1.0f, caillouFadeInDuration, Interpolation.sineIn)
 												);
 
 		caillouImage.addAction(action);
@@ -201,7 +178,6 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 	protected void onActivation() 
 	{
 		whiteTable.setVisible(false);
-		textImage.setVisible(false);
 		caillouImage.setVisible(false);
 		startAnimation = true;
 		readyToChangeScreen = false;
@@ -223,6 +199,9 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 	
 	@Override
 	protected void onUpdate(float _fDt) {
+		
+		boolean isloaded = nextIsLoaded;
+		
 		super.onUpdate(_fDt);
 		
 		if(startAnimation)
@@ -230,6 +209,10 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 			startAnimation = false;
 			startAnimation();
 		}
+		
+		if(! isloaded && nextIsLoaded)
+			whiteAnimation.run();
+		
 		
 		if(readyToChangeScreen && nextIsLoaded)
 			changeScreen();
