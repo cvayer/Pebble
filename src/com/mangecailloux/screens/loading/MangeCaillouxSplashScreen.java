@@ -115,6 +115,9 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 				caillouImage.setDrawable(eatenCaillouDrawable);
 			else
 				caillouImage.setDrawable(caillouDrawable);
+			
+			if(SoundManager.get().isActivated())
+				crunch.play();
 				
 		}
 	};
@@ -145,9 +148,6 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 		
 		@Override
 		public void run() {
-			
-			if(SoundManager.get().isActivated())
-				crunch.play();
 			
 			SequenceAction action = Actions.sequence(	Actions.alpha(0.0f),
 														Actions.show(),
