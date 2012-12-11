@@ -7,8 +7,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
+import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
+import com.mangecailloux.debug.Debuggable;
 
-public abstract class Page
+public abstract class Page extends Debuggable 
 {
 	public static final String OPEN 	= "Open";
 	public static final String CLOSE 	= "Close";
@@ -64,6 +66,15 @@ public abstract class Page
 		
 		group.setTouchable(Touchable.childrenOnly);
 	}
+	
+	@Override
+	protected 	void onDebug (boolean _debug) 
+    {
+		if(_debug)
+			table.debug();
+		else
+			table.debug(Debug.none);
+    }
 	
 	public void setCanUseDefaultBackground(boolean _canUse)
 	{
@@ -186,6 +197,9 @@ public abstract class Page
 		{
 			currentAnimation.animation.onRender(_fDt);
 		}
+		
+		if(isDebug() && menu != null && menu.getStage() != null)
+			Table.drawDebug(menu.getStage());
 	}
 	
 	private final void firstActivation(PageDescriptor<? extends Page> _descriptor)

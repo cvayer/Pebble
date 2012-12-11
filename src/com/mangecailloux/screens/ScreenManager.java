@@ -5,18 +5,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.mangecailloux.debug.Debuggable;
 
-public abstract class ScreenManager implements ApplicationListener {
+public abstract class ScreenManager extends Debuggable implements ApplicationListener {
     private Screen  	 screen;
     private Screen  	 nextScreen;
     private boolean		 changeScreenPending;
-    private Boolean 	 manageScreenDisposal;
+    private boolean 	 manageScreenDisposal;
     private float 		 updateTimer;
     private AssetManager assetManager;
-    private Boolean		 appCreated;
+    private boolean		 appCreated;
     
     public ScreenManager()
     {
+    	super();
     	updateTimer = 0.0f;
     	manageScreenDisposal = true;
     	appCreated = false;
@@ -29,9 +31,16 @@ public abstract class ScreenManager implements ApplicationListener {
     	return assetManager;
     }
     
-    public void manageScreenDisposal(Boolean _Manage)
+    public void manageScreenDisposal(boolean _Manage)
     {
     	manageScreenDisposal = _Manage;
+    }
+    
+    @Override
+    protected 	void onDebug (boolean _debug) 
+    {
+		if(screen != null)
+			screen.debug(_debug);
     }
 
     @Override
@@ -78,7 +87,7 @@ public abstract class ScreenManager implements ApplicationListener {
             	
             	if(fUpdateDt <= 0.0f)
             	{
-            		float maxedDt = MathUtils.clamp(fDt, 0.0f, 1.0f/60.0f);
+            		float maxedDt = MathUtils.clamp(fDt, 0.0f, screen.getMaxUpdateDt());
             		screen.onUpdate(maxedDt);
             	}
             	else
@@ -125,6 +134,7 @@ public abstract class ScreenManager implements ApplicationListener {
             if(screen != null)
             {
 	            Gdx.input.setInputProcessor(screen.getInputMultiplexer());
+	            screen.debug(isDebug());
 		        screen.activate(true);
 		        screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             }

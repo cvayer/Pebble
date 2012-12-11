@@ -2,8 +2,9 @@ package com.mangecailloux.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.mangecailloux.debug.Debuggable;
 
-public abstract class Screen {
+public abstract class Screen  extends Debuggable {
 	
 	protected final String 				name;
 	protected final ScreenManager 		manager;
@@ -12,9 +13,12 @@ public abstract class Screen {
 	protected		boolean				hasBeenActivated;
 	
     private float updateDt;
+    private float maxUpdateDt;
 	
 	public Screen(String _name, ScreenManager _Manager)
 	{
+		super();
+		
 		if(_Manager == null) 
 			throw new IllegalArgumentException("Screen : ScreenManager must not be null");
 		
@@ -24,6 +28,7 @@ public abstract class Screen {
 			name = this.getClass().getSimpleName();
 		manager = _Manager;
     	updateDt = -1.0f;
+    	maxUpdateDt = 1/24.0f;
     	loaded = false;
     	hasBeenActivated = false;
     	inputMultiplexer = new InputMultiplexer();
@@ -39,6 +44,11 @@ public abstract class Screen {
     	updateDt = 1.0f / _FPS;
     }
     
+    public void setMaxUpdateFPS(int _FPS)
+    {
+    	maxUpdateDt = 1.0f / _FPS;
+    }
+    
     public Boolean isLoaded()
     {
     	return loaded;
@@ -49,14 +59,20 @@ public abstract class Screen {
     	return updateDt;
     }
     
+    public float getMaxUpdateDt()
+    {
+    	return maxUpdateDt;
+    }
+    
     public InputMultiplexer getInputMultiplexer()
     {
     	return inputMultiplexer;
     }
     
-    private void log(String _message)
+    public void log(String _message)
     {
-    	Gdx.app.log("Screen : " + name, _message);
+    	if(isDebug())
+    		Gdx.app.log("Screen : " + name, _message);
     }
     
     public final void load()

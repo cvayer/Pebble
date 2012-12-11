@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -11,8 +12,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.ObjectMap.Values;
+import com.mangecailloux.debug.Debuggable;
 
-public class Menu {
+public class Menu   extends Debuggable {
 	
 	private final 	WidgetGroup								root;
 	private final	ObjectMap<Class<? extends Page>, Page> 	pages;
@@ -21,6 +23,8 @@ public class Menu {
 	private			MenuListener							listener;
 	
 	private final	Array<MenuLayer>						layers;
+	
+	private			Stage									stage;
 	
 	public Menu() 
 	{
@@ -37,6 +41,31 @@ public class Menu {
 		defaultPageBackground = null;
 		
 		root.setFillParent(true);
+	}
+	
+	@Override
+	protected 	void onDebug (boolean _debug) 
+    {
+		for(int i=0; i < layers.size; ++i)
+		{
+			MenuLayer layer = layers.get(i);
+			if(layer !=null)
+				layer.debug(_debug);
+		}
+    }
+	
+	public Stage	  getStage()
+	{
+		return stage;
+	}
+	
+	public void addToStage(Stage _stage)
+	{
+		if(_stage != null)
+		{
+			stage = _stage;
+			stage.addActor(root);
+		}
 	}
 	
 	public WidgetGroup getRoot()
@@ -97,6 +126,7 @@ public class Menu {
 		
 		layer.init(this, (layers.size - 1));
 		layer.setListener(listener);
+		layer.debug(isDebug());
 	}
 	
 	public void open(PageDescriptor<? extends Page> _descriptor)
