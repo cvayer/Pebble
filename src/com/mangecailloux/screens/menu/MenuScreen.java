@@ -2,7 +2,6 @@ package com.mangecailloux.screens.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mangecailloux.menu.MenuListener;
 import com.mangecailloux.menu.Page;
 import com.mangecailloux.menu.PageDescriptor;
@@ -42,7 +41,6 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 	@Override
 	protected void onDebug (boolean _debug)
 	{
-		menu.debug(_debug);
 	}
 	
 	protected abstract PageDescriptor<? extends Page> 	getStartPageDescriptor();
@@ -67,8 +65,8 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 
 	@Override
 	protected void onUpdate(float _fDt) {
+		stage.act(_fDt);	
 		menu.update(_fDt);
-		stage.act(_fDt);		
 	}
 
 	//! Renders the stage

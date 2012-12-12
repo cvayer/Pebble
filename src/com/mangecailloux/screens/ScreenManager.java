@@ -39,8 +39,6 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     @Override
     protected 	void onDebug (boolean _debug) 
     {
-		if(screen != null)
-			screen.debug(_debug);
     }
 
     @Override
@@ -134,7 +132,6 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
             if(screen != null)
             {
 	            Gdx.input.setInputProcessor(screen.getInputMultiplexer());
-	            screen.debug(isDebug());
 		        screen.activate(true);
 		        screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             }

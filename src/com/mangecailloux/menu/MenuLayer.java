@@ -30,8 +30,6 @@ public class MenuLayer  extends Debuggable implements Poolable
 	@Override
 	protected 	void onDebug (boolean _debug) 
     {
-		if(currentPage != null)
-			currentPage.debug(_debug);
     }
 	
 	void init(Menu _menu, int _index)
@@ -81,7 +79,6 @@ public class MenuLayer  extends Debuggable implements Poolable
 			{
 				menu.getRoot().addActorAt(index, currentPage.group());
 				
-				currentPage.debug(isDebug());
 				PageDescriptor<? extends Page> backDesc = _backPage ? oldDesc : null;
 				currentPage.activate(this, currentDescriptor, backDesc);
 				currentPage.resize((int)menu.getRoot().getWidth(), (int)menu.getRoot().getHeight());

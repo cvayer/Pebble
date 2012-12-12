@@ -46,12 +46,7 @@ public class Menu   extends Debuggable {
 	@Override
 	protected 	void onDebug (boolean _debug) 
     {
-		for(int i=0; i < layers.size; ++i)
-		{
-			MenuLayer layer = layers.get(i);
-			if(layer !=null)
-				layer.debug(_debug);
-		}
+		
     }
 	
 	public Stage	  getStage()
@@ -126,7 +121,6 @@ public class Menu   extends Debuggable {
 		
 		layer.init(this, (layers.size - 1));
 		layer.setListener(listener);
-		layer.debug(isDebug());
 	}
 	
 	public void open(PageDescriptor<? extends Page> _descriptor)
