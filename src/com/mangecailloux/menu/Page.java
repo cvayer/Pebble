@@ -198,8 +198,8 @@ public abstract class Page extends Debuggable
 			currentAnimation.animation.onRender(_fDt);
 		}
 		
-		if(isDebug() && menu != null && menu.getStage() != null)
-			Table.drawDebug(menu.getStage());
+	//	if(isDebug() && menu != null && menu.getStage() != null)
+		//	Table.drawDebug(menu.getStage());
 	}
 	
 	private final void firstActivation(PageDescriptor<? extends Page> _descriptor)
