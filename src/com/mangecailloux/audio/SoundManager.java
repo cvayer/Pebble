@@ -105,6 +105,15 @@ public class SoundManager {
 		}
 	}
 	
+	public void play(int _key, float _volume)
+	{
+		Sound sound = get(_key);
+		if(sound != null)
+		{
+			sound.play(_volume);
+		}
+	}
+	
 	public void stop(int _key)
 	{
 		Sound sound = get(_key);

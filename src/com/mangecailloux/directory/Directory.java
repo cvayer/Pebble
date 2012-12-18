@@ -60,10 +60,8 @@ public class Directory <E extends DirectoryElement>
 	/** Parent Directory, used for backward navigation */
 	public		Directory<E> 							parent;	
 	/** Children Directory, can be null */
-	// TODO use sortable ObjectMap ?
 	public		Array<Directory<E> > 					children;
 	/** Constants store in that directory, can be null */
-	// TODO use sortable ObjectMap ?
 	public		Array<E>			 					elements;
 	/** name of the directory */
 	public 		String									name;
