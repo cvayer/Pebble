@@ -3,7 +3,6 @@ package com.mangecailloux.screens;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.mangecailloux.debug.Debuggable;
 
@@ -23,7 +22,7 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     	manageScreenDisposal = true;
     	appCreated = false;
     	assetManager = new AssetManager();
-    	Texture.setAssetManager(assetManager);
+ //   	Texture.setAssetManager(assetManager);
     }
     
     public AssetManager getAssetManager()
