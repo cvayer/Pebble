@@ -2,7 +2,7 @@ package com.mangecailloux.webpage;
 
 
 
-public interface IWebPageManager {
+public interface IWebPageInterface {
 	
 	public enum EMode
 	{

@@ -1,12 +1,12 @@
-package com.mangecailloux.webpage;
+package com.mangecailloux.desktop.webpage;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import com.mangecailloux.webpage.IWebPageManager;
+import com.mangecailloux.webpage.IWebPageInterface;
 
-public class WebPageManager implements IWebPageManager
+public class WebPageInterface implements IWebPageInterface
 {
 	@Override
 	public void open(String _url, EMode _mode) {

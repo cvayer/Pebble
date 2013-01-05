@@ -214,7 +214,7 @@ public class Menu   extends Debuggable {
 			{
 				// We remove it only if the table has the default background as a background
 				if(_page.background().getBackground() == defaultPageBackground)
-					_page.background().setBackground(null);
+					_page.background().setBackground((Drawable)null);
 			}
 		}
 	}
