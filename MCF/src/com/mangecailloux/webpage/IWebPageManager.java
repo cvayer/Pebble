@@ -1,8 +1,8 @@
-package com.mangecailloux.plateformspecific;
+package com.mangecailloux.webpage;
 
 
 
-public interface IWebPageOpener {
+public interface IWebPageManager {
 	
 	public enum EMode
 	{
