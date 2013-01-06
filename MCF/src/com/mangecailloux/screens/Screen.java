@@ -2,6 +2,7 @@ package com.mangecailloux.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.math.MathUtils;
 import com.mangecailloux.debug.Debuggable;
 
 public abstract class Screen  extends Debuggable {
@@ -12,8 +13,9 @@ public abstract class Screen  extends Debuggable {
 	protected final InputMultiplexer 	inputMultiplexer;
 	protected		boolean				hasBeenActivated;
 	
-    private float updateDt;
-    private float maxUpdateDt;
+    private 		float updateDt;
+    private 		float maxUpdateDt;
+    private 		float updateTimer;
 	
 	public Screen(String _name, ScreenManager _Manager)
 	{
@@ -27,6 +29,8 @@ public abstract class Screen  extends Debuggable {
 		else
 			name = this.getClass().getSimpleName();
 		manager = _Manager;
+		
+		updateTimer = 0.0f;
     	updateDt = -1.0f;
     	maxUpdateDt = 1/24.0f;
     	loaded = false;
@@ -41,12 +45,14 @@ public abstract class Screen  extends Debuggable {
 	
     public void setUpdateFPS(int _FPS)
     {
-    	updateDt = 1.0f / _FPS;
+    	if(_FPS > 0)
+    		updateDt = 1.0f / _FPS;
     }
     
     public void setMaxUpdateFPS(int _FPS)
     {
-    	maxUpdateDt = 1.0f / _FPS;
+    	if(_FPS > 0)
+    		maxUpdateDt = 1.0f / _FPS;
     }
     
     public Boolean isLoaded()
@@ -67,6 +73,29 @@ public abstract class Screen  extends Debuggable {
     public InputMultiplexer getInputMultiplexer()
     {
     	return inputMultiplexer;
+    }
+    
+    public void render()
+    {
+    	float fDt = manager.getDt();
+    	
+    	if(updateDt <= 0.0f)
+    	{
+    		float maxedDt = MathUtils.clamp(fDt, 0.0f, maxUpdateDt);
+    		onUpdate(maxedDt);
+    	}
+    	else
+    	{
+    		float maxedDt = MathUtils.clamp(fDt, 0.0f, maxUpdateDt);
+    		updateTimer -= maxedDt;
+        	if(updateTimer <= 0.0f)
+        	{
+        		updateTimer += updateDt;
+        		onUpdate(updateDt);	
+        	}
+    	}
+    		
+    	onRender(fDt);
     }
     
     public void log(String _message)
@@ -101,7 +130,7 @@ public abstract class Screen  extends Debuggable {
     	onResize(_width, _height);
     }
     
-    public void activate(boolean _activate)
+    public final void activate(boolean _activate)
     {
     	if(_activate)
     	{
@@ -112,6 +141,7 @@ public abstract class Screen  extends Debuggable {
     			hasBeenActivated = true;
     		}
     		onActivation();
+    		updateTimer = -1.0f;
     	}
     	else
     	{
@@ -120,7 +150,7 @@ public abstract class Screen  extends Debuggable {
     	}
     }
     
-    public void pause(boolean _pause)
+    public final void pause(boolean _pause)
     {
     	if(_pause)
     	{
@@ -134,7 +164,7 @@ public abstract class Screen  extends Debuggable {
     	}
     }
     
-    public void dispose()
+    public final void dispose()
     {
     	log("onDispose");
     	onDispose();

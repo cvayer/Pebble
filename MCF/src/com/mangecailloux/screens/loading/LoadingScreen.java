@@ -53,14 +53,10 @@ public abstract class LoadingScreen extends Screen {
 			changeScreen();
 	}
 	
-	@Override
-	public void activate(boolean _activate)
-    {
-    	if(_activate)
-    		timer = duration;
-    	
-    	super.activate(_activate);
-    }
+	protected void onActivation()
+	{
+		timer = duration;
+	}
 	
 	protected void onLoad ()
 	{

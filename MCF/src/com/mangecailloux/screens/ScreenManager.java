@@ -3,7 +3,6 @@ package com.mangecailloux.screens;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.math.MathUtils;
 import com.mangecailloux.debug.Debuggable;
 
 public abstract class ScreenManager extends Debuggable implements ApplicationListener {
@@ -11,14 +10,12 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     private Screen  	 nextScreen;
     private boolean		 changeScreenPending;
     private boolean 	 manageScreenDisposal;
-    private float 		 updateTimer;
     private AssetManager assetManager;
     private boolean		 appCreated;
     
     public ScreenManager()
     {
     	super();
-    	updateTimer = 0.0f;
     	manageScreenDisposal = true;
     	appCreated = false;
     	assetManager = new AssetManager();
@@ -66,6 +63,11 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
             if (screen != null) 
             	screen.pause(false);
     }
+    
+    public float getDt()
+    {
+    	return Gdx.graphics.getDeltaTime();
+    }
 
     @Override
     public void render () {
@@ -78,26 +80,7 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     	
             if (screen != null)
             {
-            	float fDt = Gdx.graphics.getDeltaTime();
-            	
-            	float fUpdateDt = screen.getUpdateDt();
-            	
-            	if(fUpdateDt <= 0.0f)
-            	{
-            		float maxedDt = MathUtils.clamp(fDt, 0.0f, screen.getMaxUpdateDt());
-            		screen.onUpdate(maxedDt);
-            	}
-            	else
-            	{
-            		updateTimer -= fDt;
-                	if(updateTimer <= 0.0f)
-                	{
-                		updateTimer = screen.getUpdateDt();
-                		screen.onUpdate(updateTimer);	
-                	}
-            	}
-            		
-            	screen.onRender(fDt);
+            	screen.render();
             }
     }
 

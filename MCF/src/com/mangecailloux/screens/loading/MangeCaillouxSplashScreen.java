@@ -177,6 +177,7 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 	@Override
 	protected void onActivation() 
 	{
+		super.onActivation();
 		whiteTable.setVisible(false);
 		caillouImage.setVisible(false);
 		startAnimation = true;
