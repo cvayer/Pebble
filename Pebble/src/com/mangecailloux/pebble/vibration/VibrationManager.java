@@ -18,7 +18,7 @@ public class VibrationManager {
 	    	return true;
 	    }
 
-	    private final int hapticDuration = 100;
+	    private final int hapticDuration = 20;
 	    private boolean activated;
 	    
 	    private VibrationManager()
