@@ -6,7 +6,7 @@ public class EntityWorld
 	
 	public EntityWorld()
 	{
-		entityManager = new EntityManager();
+		entityManager = new EntityManager(this);
 	}
 	
 	public EntityManager getEntityManager()

@@ -1,6 +1,6 @@
 package com.mangecailloux.pebble.entity;
 
-public class Component 
+public abstract class Component 
 {
 	public static final int InvalidID = -1;
 	
@@ -11,18 +11,20 @@ public class Component
 		entity = null;
 	}
 	
-	public Entity getEntity()
-	{
-		return entity;
-	}
-	
 	protected void setEntity(Entity _entity)
 	{
 		entity = _entity;
 	}
 	
-	public void update(float _fDt)
+	public Entity getEntity()
 	{
-		
+		return entity;
 	}
+	
+	public <T extends Entity> T getEntity(Class<T> type)
+	{
+		return type.cast(entity);
+	}
+	
+	public abstract void update(float _fDt);
 }
