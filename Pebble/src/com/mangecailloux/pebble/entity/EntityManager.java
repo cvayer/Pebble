@@ -16,17 +16,20 @@ public class EntityManager
 		toDelete = new Array<Entity>(false, 8);
 	}
 	
-	public <T extends Entity> T NewEntity(Class<T> type)
+	public Entity newEntity(EntityArchetype _archetype)
 	{
-		 T entity = Pools.obtain(type);
+		if(_archetype == null)
+			throw new RuntimeException("EntityManager::NewEntity -> Archetype cannot be null");
+		
+		if(_archetype.getComponentTypesCount() == 0)
+			throw new RuntimeException("EntityManager::NewEntity -> Archetype cannot be empty");
+			
+		 Entity entity = Pools.obtain(Entity.class);
 		 entity.setWorld(world);
+		 entity.setup(_archetype);
+		 
 		 registerEntity(entity);
 		 return entity;
-	}
-	
-	public Entity NewEntity()
-	{
-		return NewEntity(Entity.class);
 	}
 	
 	public void freeEntity(Entity _entity)
