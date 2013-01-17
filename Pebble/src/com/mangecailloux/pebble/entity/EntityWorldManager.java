@@ -29,4 +29,9 @@ public class EntityWorldManager implements EntityObserver
 		
 	}
 	
+	public void update(float _dt)
+	{
+		
+	}
+	
 }

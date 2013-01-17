@@ -8,7 +8,7 @@ public class Entity
 	
 	protected Entity()
 	{
-		components = new ComponentSet();
+		components = new ComponentSet(this);
 		deletePending = false;
 	}
 	

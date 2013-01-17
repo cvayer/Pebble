@@ -6,19 +6,15 @@ import com.badlogic.gdx.utils.Pools;
 
 public class ComponentSet 
 {
-	private			Entity			 entity;
+	private	final	Entity			 entity;
 	private final 	Array<Component> components;
-	private final 	ObjectMap<Class<? extends Component>, Component> componentsPerType;
+	private final 	ObjectMap<Class<? extends Component>, Component> componentsByType;
 	
-	protected ComponentSet()
-	{
-		components = new Array<Component>(false, 2);
-		componentsPerType = new ObjectMap<Class<? extends Component>, Component>(8);
-	}
-	
-	protected void setEntity(Entity	_entity)
+	protected ComponentSet(Entity _entity)
 	{
 		entity = _entity;
+		components = new Array<Component>(false, 2);
+		componentsByType = new ObjectMap<Class<? extends Component>, Component>(8);
 	}
 	
 	protected void init(EntityArchetype _archetype)
@@ -28,7 +24,7 @@ public class ComponentSet
 		
 		Array<Class<? extends Component>> componentTypes = _archetype.getComponentTypes();
 		
-		if(componentTypes.size != 0)
+		if(componentTypes.size == 0)
 			throw new RuntimeException("ComponentSet::setup -> Archetype must not be empty");
 		
 		for(int i=0; i < componentTypes.size; i++)
@@ -42,7 +38,7 @@ public class ComponentSet
 			
 			component.setEntity(entity);
 			components.add(component);
-			componentsPerType.put(type, component);
+			componentsByType.put(type, component);
 			component.onAddToEntity();
 		}
 	}
@@ -56,12 +52,12 @@ public class ComponentSet
 			Pools.free(component);
 		}
 		components.clear();
-		componentsPerType.clear();
+		componentsByType.clear();
 	}
 	
 	protected <C extends Component> C getComponent(Class<C> _type)
 	{
-		return _type.cast(componentsPerType.get(_type));
+		return _type.cast(componentsByType.get(_type));
 	}
 	
 	protected void update(float _fDt)

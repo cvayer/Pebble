@@ -5,10 +5,10 @@ import com.badlogic.gdx.utils.Pools;
 
 public class EntityManager 
 {
-	private final EntityWorld	    world;
-	private final Array<Entity> 	entities;
-	private final Array<Entity> 	toDelete;
-	private final Array<Entity> 	toAdd;
+	private final EntityWorld	   		world;
+	private final Array<Entity> 		entities;
+	private final Array<Entity> 		toDelete;
+	private final Array<Entity> 		toAdd;
 	private final Array<EntityObserver> obervers;
 	
 	protected EntityManager(EntityWorld _world)
@@ -47,7 +47,7 @@ public class EntityManager
 		}
 	}
 	
-	protected void addOberver(EntityObserver _observer)
+	protected void addObserver(EntityObserver _observer)
 	{
 		if(_observer != null && !obervers.contains(_observer, true))
 		{
@@ -55,7 +55,7 @@ public class EntityManager
 		}
 	}
 	
-	protected void removeOberver(EntityObserver _observer)
+	protected void removeObserver(EntityObserver _observer)
 	{
 		if(_observer != null)
 		{
@@ -84,7 +84,7 @@ public class EntityManager
 	
 	private void addEntities() 
 	{
-		for(int i = 0;  i < toDelete.size; ++i) {
+		for(int i = 0;  i < toAdd.size; ++i) {
 			Entity e = toAdd.get(i);
 			
 			entities.add(e);
