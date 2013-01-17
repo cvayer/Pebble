@@ -26,5 +26,13 @@ public abstract class Component
 		return type.cast(entity);
 	}
 	
-	public abstract void update(float _fDt);
+	protected void update(float _fDt)		{}
+	
+	protected void onAddToEntity()			{}
+	
+	protected void onRemoveFromEntity()		{}
+	
+	protected void onAddToWorld()			{}
+	
+	protected void onRemoveFromWorld() 		{}
 }

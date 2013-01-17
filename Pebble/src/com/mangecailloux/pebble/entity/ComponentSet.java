@@ -2,6 +2,7 @@ package com.mangecailloux.pebble.entity;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pools;
 
 public class ComponentSet 
 {
@@ -20,15 +21,42 @@ public class ComponentSet
 		entity = _entity;
 	}
 	
-	protected void addComponent(Component _component)
+	protected void init(EntityArchetype _archetype)
 	{
-		if(_component != null && !components.contains(_component, true))
+		if(components.size != 0)
+			throw new RuntimeException("ComponentSet::setup -> components must be empty");
+		
+		Array<Class<? extends Component>> componentTypes = _archetype.getComponentTypes();
+		
+		if(componentTypes.size != 0)
+			throw new RuntimeException("ComponentSet::setup -> Archetype must not be empty");
+		
+		for(int i=0; i < componentTypes.size; i++)
 		{
-			_component.setEntity(entity);
-			components.add(_component);
+			Class<? extends Component> type = componentTypes.get(i);
 			
-			componentsPerType.put(_component.getClass(), _component);
+			Component component = Pools.obtain(type);
+			
+			if(getComponent(type) != null)
+				throw new RuntimeException("ComponentSet::setup -> Component is duplicated : " + type.getSimpleName());
+			
+			component.setEntity(entity);
+			components.add(component);
+			componentsPerType.put(type, component);
+			component.onAddToEntity();
 		}
+	}
+	
+	protected void deinit()
+	{
+		for(int i=0; i < components.size; ++i)
+		{
+			Component component = components.get(i);
+			component.onRemoveFromEntity();
+			Pools.free(component);
+		}
+		components.clear();
+		componentsPerType.clear();
 	}
 	
 	protected <C extends Component> C getComponent(Class<C> _type)
@@ -41,6 +69,22 @@ public class ComponentSet
 		for(int i = 0; i < components.size; ++i)
 		{
 			components.get(i).update(_fDt);
+		}
+	}
+	
+	public void onAddToWorld()
+	{
+		for(int i = 0; i < components.size; ++i)
+		{
+			components.get(i).onAddToWorld();
+		}
+	}
+	
+	public void onRemoveFromWorld()
+	{
+		for(int i = 0; i < components.size; ++i)
+		{
+			components.get(i).onRemoveFromWorld();
 		}
 	}
 }

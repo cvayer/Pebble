@@ -19,4 +19,14 @@ public class EntityWorld
 		// Update entities
 		entityManager.update(_dt);
 	}
+	
+	public Entity addEntity(EntityArchetype _archetype)
+	{
+		 return entityManager.addEntity(_archetype);
+	}
+	
+	public void removeEntity(Entity _entity)
+	{
+		entityManager.removeEntity(_entity);
+	}
 }

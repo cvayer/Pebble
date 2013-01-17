@@ -4,10 +4,22 @@ public class Entity
 {
 	private  		EntityWorld	   	 world;
 	private final   ComponentSet	 components;
+	private 		boolean			 deletePending;
 	
 	protected Entity()
 	{
 		components = new ComponentSet();
+		deletePending = false;
+	}
+	
+	protected void setDeletePending(boolean	_deletePending)
+	{
+		deletePending = _deletePending;
+	}
+	
+	protected boolean isDeletePending()
+	{
+		return deletePending;
 	}
 	
 	protected void setWorld(EntityWorld _world)
@@ -20,14 +32,13 @@ public class Entity
 		return world;
 	}
 	
-	public void setup(EntityArchetype _archetype)
+	protected void initComponents(EntityArchetype _archetype)
 	{
-		
+		components.init(_archetype);
 	}
 	
-	public void addComponent(Component _component)
-	{
-		components.addComponent(_component);
+	protected void deinitComponents() {
+		components.deinit();
 	}
 	
 	public <C extends Component> C getComponent(Class<C> _type)
@@ -35,8 +46,18 @@ public class Entity
 		return components.getComponent(_type);
 	}
 	
-	public void update(float _fDt)
+	protected void update(float _fDt)
 	{
 		components.update(_fDt);
+	}
+	
+	protected void onAddToWorld()
+	{
+		components.onAddToWorld();
+	}
+	
+	protected void onRemoveFromWorld()
+	{
+		components.onRemoveFromWorld();
 	}
 }

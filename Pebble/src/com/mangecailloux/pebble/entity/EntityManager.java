@@ -5,18 +5,22 @@ import com.badlogic.gdx.utils.Pools;
 
 public class EntityManager 
 {
-	private final EntityWorld	   world;
-	private final Array<Entity> entities;
-	private final Array<Entity> toDelete;
+	private final EntityWorld	    world;
+	private final Array<Entity> 	entities;
+	private final Array<Entity> 	toDelete;
+	private final Array<Entity> 	toAdd;
+	private final Array<EntityObserver> obervers;
 	
 	protected EntityManager(EntityWorld _world)
 	{
 		world = _world;
 		entities = new Array<Entity>(false, 8);
-		toDelete = new Array<Entity>(false, 8);
+		toDelete = new Array<Entity>(false, 4);
+		toAdd = new Array<Entity>(false, 4);
+		obervers = new Array<EntityObserver>(false, 4);
 	}
 	
-	public Entity newEntity(EntityArchetype _archetype)
+	protected Entity addEntity(EntityArchetype _archetype)
 	{
 		if(_archetype == null)
 			throw new RuntimeException("EntityManager::NewEntity -> Archetype cannot be null");
@@ -26,30 +30,36 @@ public class EntityManager
 			
 		 Entity entity = Pools.obtain(Entity.class);
 		 entity.setWorld(world);
-		 entity.setup(_archetype);
+		 entity.initComponents(_archetype);
 		 
-		 registerEntity(entity);
+		 toAdd.add(entity);
 		 return entity;
 	}
 	
-	public void freeEntity(Entity _entity)
-	{
-		unregisterEntity(_entity);
-	}
-	
-	private void registerEntity(Entity _entity)
-	{
-		if(_entity != null && !entities.contains(_entity, true))
-		{
-			entities.add(_entity);
-		}
-	}
-	
-	private void unregisterEntity(Entity _entity)
+	protected void removeEntity(Entity _entity)
 	{
 		if(_entity != null)
 		{
+			_entity.deinitComponents();
+			_entity.setWorld(null);
+			_entity.setDeletePending(true);
 			toDelete.add(_entity);
+		}
+	}
+	
+	protected void addOberver(EntityObserver _observer)
+	{
+		if(_observer != null && !obervers.contains(_observer, true))
+		{
+			obervers.add(_observer);
+		}
+	}
+	
+	protected void removeOberver(EntityObserver _observer)
+	{
+		if(_observer != null)
+		{
+			obervers.removeValue(_observer, true);
 		}
 	}
 	
@@ -59,9 +69,33 @@ public class EntityManager
 			Entity e = toDelete.get(i);
 			
 			entities.removeValue(e, true);
+			e.setDeletePending(false);
+			
+			e.onRemoveFromWorld();
+			for(int o =0; o < obervers.size; ++o)
+			{
+				obervers.get(o).onRemoveFromWorld(e);
+			}
+			
 			Pools.free(e);
 		}
 		toDelete.clear();
+	}
+	
+	private void addEntities() 
+	{
+		for(int i = 0;  i < toDelete.size; ++i) {
+			Entity e = toAdd.get(i);
+			
+			entities.add(e);
+			
+			e.onAddToWorld();
+			for(int o =0; o < obervers.size; ++o)
+			{
+				obervers.get(o).onAddToWorld(e);
+			}
+		}
+		toAdd.clear();
 	}
 	
 	protected void update(float _fDt)
@@ -71,9 +105,16 @@ public class EntityManager
 			deleteEntities();
 		}
 		
+		if(toAdd.size > 0)
+		{
+			addEntities();
+		}
+		
 		for(int i = 0; i < entities.size; ++i)
 		{
-			entities.get(i).update(_fDt);
+			Entity e = entities.get(i);
+			if(!e.isDeletePending())
+				e.update(_fDt);
 		}
 	}
 }

@@ -8,7 +8,14 @@ public class EntityArchetype
 	
 	public EntityArchetype()
 	{
-		componentTypes = new Array<>(4);
+		componentTypes = new Array<Class<? extends Component>>(4);
+	}
+	
+	public EntityArchetype(Class<? extends Component>... _componentTypes)
+	{
+		this();
+		
+		AddComponent(_componentTypes);
 	}
 	
 	public void AddComponent(Class<? extends Component> _componentType)
@@ -19,6 +26,14 @@ public class EntityArchetype
 		}
 		else
 			throw new RuntimeException("EntityArchetype::AddComponent : you cannot have two components of the same type in one entity");
+	}
+	
+	public void AddComponent(Class<? extends Component>... _componentTypes)
+	{
+		for(int i=0; i < _componentTypes.length; ++i)
+		{
+			AddComponent(_componentTypes[i]);
+		}
 	}
 	
 	public Array<Class<? extends Component>> getComponentTypes()
