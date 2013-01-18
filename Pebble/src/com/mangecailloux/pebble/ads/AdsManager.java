@@ -3,19 +3,10 @@ package com.mangecailloux.pebble.ads;
 
 
 public class AdsManager {
-	
-	// Singleton part
-	public static  AdsManager  get() {
-        if (null == m_Instance) { 
-        	m_Instance = new AdsManager();
-        }
-        return m_Instance;
-    }
-    private static AdsManager m_Instance;
-    
+	    
     IAdsInterface ads;
     
-    private AdsManager()
+    public AdsManager()
     {
     	
     }

@@ -3,7 +3,14 @@ package com.mangecailloux.pebble.screens;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.mangecailloux.pebble.Pebble;
+import com.mangecailloux.pebble.ads.AdsManager;
+import com.mangecailloux.pebble.audio.MusicManager;
+import com.mangecailloux.pebble.audio.SoundManager;
 import com.mangecailloux.pebble.debug.Debuggable;
+import com.mangecailloux.pebble.language.LanguagesManager;
+import com.mangecailloux.pebble.vibration.VibrationManager;
+import com.mangecailloux.pebble.webpage.WebPageManager;
 
 public abstract class ScreenManager extends Debuggable implements ApplicationListener {
     private Screen  	 screen;
@@ -16,6 +23,14 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     public ScreenManager()
     {
     	super();
+    	// Pebble creation
+    	Pebble.musics = new MusicManager();
+    	Pebble.sounds = new SoundManager();
+    	Pebble.languages = new LanguagesManager();
+    	Pebble.vibrations = new VibrationManager();
+    	Pebble.ads = new AdsManager();
+    	Pebble.webpages = new WebPageManager();
+    
     	manageScreenDisposal = true;
     	appCreated = false;
     	assetManager = new AssetManager();

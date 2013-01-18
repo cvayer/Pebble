@@ -5,15 +5,6 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Values;
 
 public class MusicManager {
-	
-	// Singleton part
-	public static  MusicManager  get() {
-	    if (null == m_Instance) { 
-	    	m_Instance = new MusicManager();
-	    }
-	    return m_Instance;
-	}
-	private static MusicManager m_Instance;
 	    
 	public static boolean getDefaultActivation()
 	{
@@ -36,7 +27,7 @@ public class MusicManager {
 		}
 	};
    
-	private MusicManager()
+	public MusicManager()
 	{
 		activated = getDefaultActivation();
 		musics = new IntMap<Music>(2);

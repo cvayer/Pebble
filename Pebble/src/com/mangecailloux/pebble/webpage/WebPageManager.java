@@ -1,20 +1,10 @@
 package com.mangecailloux.pebble.webpage;
 
 public class WebPageManager {
-	// Singleton part
-	public static  WebPageManager  get() 
-	{
-	    if (null == m_Instance) 
-	    { 
-	    	m_Instance = new WebPageManager();
-	    }
-	    return m_Instance;
-	}
-	private static WebPageManager m_Instance;
 	
 	private IWebPageInterface pageOpener;
 	
-	private WebPageManager()
+	public WebPageManager()
 	{
 		
 	}

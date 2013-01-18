@@ -4,17 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Values;
 
-public class SoundManager {
-	
-	// Singleton part
-	public static  SoundManager  get() {
-	    if (null == m_Instance) { 
-	    	m_Instance = new SoundManager();
-	    }
-	    return m_Instance;
-	}
-	private static SoundManager m_Instance;
-	    
+public class SoundManager {	    
 	public static boolean getDefaultActivation()
 	{
 		return true;
@@ -35,7 +25,7 @@ public class SoundManager {
 		}
 	};
    
-	private SoundManager()
+	public SoundManager()
 	{
 		activated = getDefaultActivation();
 		sounds = new IntMap<Sound>(2);

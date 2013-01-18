@@ -3,15 +3,6 @@ package com.mangecailloux.pebble.vibration;
 import com.badlogic.gdx.Gdx;
 
 public class VibrationManager {
-
-	// Singleton part
-		public static  VibrationManager  get() {
-	        if (null == m_Instance) { 
-	        	m_Instance = new VibrationManager();
-	        }
-	        return m_Instance;
-	    }
-	    private static VibrationManager m_Instance;
 	    
 	    public static boolean getDefaultVibrationState()
 	    {
@@ -21,7 +12,7 @@ public class VibrationManager {
 	    private final int hapticDuration = 20;
 	    private boolean activated;
 	    
-	    private VibrationManager()
+	    public VibrationManager()
 	    {
 	    	activated = true;
 	    }

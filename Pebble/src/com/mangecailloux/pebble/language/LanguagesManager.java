@@ -20,16 +20,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class LanguagesManager {       
-    
-		public static  LanguagesManager  get() {
-	        if (null == m_Instance) { 
-	        	m_Instance = new LanguagesManager();
-	        }
-	        return m_Instance;
-		}
-
-		private static LanguagesManager m_Instance;
-		
+    		
         public static String getSystemLanguage()
         {
         	return java.util.Locale.getDefault().toString();
@@ -46,7 +37,7 @@ public class LanguagesManager {
         
 
         
-        private LanguagesManager() {
+        public LanguagesManager() {
             // Create language map
         	languageMap = new ObjectMap<String, String>();
             currentLanguage = null;

@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
-import com.mangecailloux.pebble.audio.SoundManager;
+import com.mangecailloux.pebble.Pebble;
 import com.mangecailloux.pebble.screens.Screen;
 import com.mangecailloux.pebble.screens.ScreenManager;
 
@@ -116,7 +116,7 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 			else
 				caillouImage.setDrawable(caillouDrawable);
 			
-			if(SoundManager.get().isActivated())
+			if(Pebble.sounds.isActivated())
 				crunch.play();
 				
 		}

@@ -1,12 +1,14 @@
 package com.mangecailloux.pebble.language;
 
+import com.mangecailloux.pebble.Pebble;
+
 public class LanguageHelper {
 
 	public static String getOnOff(boolean _on)
 	{
 		if(_on)
-    		return LanguagesManager.get().getString("On");
+    		return Pebble.languages.getString("On");
     	else
-    		return LanguagesManager.get().getString("Off");		
+    		return Pebble.languages.getString("Off");		
 	}
 }
