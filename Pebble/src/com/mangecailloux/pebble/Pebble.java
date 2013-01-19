@@ -1,6 +1,7 @@
 package com.mangecailloux.pebble;
 
 import com.mangecailloux.pebble.ads.AdsManager;
+import com.mangecailloux.pebble.assets.AssetsManager;
 import com.mangecailloux.pebble.audio.MusicManager;
 import com.mangecailloux.pebble.audio.SoundManager;
 import com.mangecailloux.pebble.language.LanguagesManager;
@@ -15,4 +16,5 @@ public class Pebble
 	public static VibrationManager 	vibrations;
 	public static AdsManager		ads;
 	public static WebPageManager 	webpages;
+	public static AssetsManager		assets;
 }

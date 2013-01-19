@@ -1,8 +1,9 @@
 package com.mangecailloux.pebble.audio;
 
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.IntMap.Values;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Values;
 
 public class MusicManager {
 	    
@@ -12,7 +13,7 @@ public class MusicManager {
 	}
 	
 	private boolean activated ;
-	private final 	IntMap<Music>	musics;
+	private final 	ObjectMap<String, Music>	musics;
 	
 	//------------------------------------------
 	// Iterators
@@ -30,7 +31,7 @@ public class MusicManager {
 	public MusicManager()
 	{
 		activated = getDefaultActivation();
-		musics = new IntMap<Music>(2);
+		musics = new ObjectMap<String, Music>(2);
 	}
 	   
 	public void activate(boolean _activate)
@@ -70,23 +71,37 @@ public class MusicManager {
 		return activated;
 	}
 	
-	// We don't dispose it as it's done by the assetManager : TODO : find a system to automatically register musics and sound to the manager via callbacks
-	public void register(int _key, Music _music)
+	public void register(String _key, Music _music)
 	{
 		if(_music == null)
-			return;
+			throw new IllegalArgumentException("MusicManager::register : _music must not be null");
 		
 		musics.put(_key, _music);
 	}
 	
-	private Music get(int _key)
+	public void unregister(String _key)
+	{
+		musics.remove(_key);
+	}
+	
+	public void clear()
+	{
+		musics.clear();
+	}
+	
+	public boolean contains(String _key)
+	{
+		return get(_key) != null;
+	}
+	
+	private Music get(String _key)
 	{
 		if(activated)
 		 return musics.get(_key);
 		return null;
 	}
 	
-	public void play(int _key, boolean _looping)
+	public void play(String _key, boolean _looping)
 	{
 		Music music = get(_key);
 		if(music != null && !music.isPlaying())
@@ -96,7 +111,7 @@ public class MusicManager {
 		}
 	}
 	
-	public void stop(int _key)
+	public void stop(String _key)
 	{
 		Music music = get(_key);
 		if(music != null)
@@ -105,7 +120,7 @@ public class MusicManager {
 		}
 	}
 	
-	public boolean isPlaying(int _key)
+	public boolean isPlaying(String _key)
 	{
 		Music music = get(_key);
 		if(music != null)
@@ -115,6 +130,20 @@ public class MusicManager {
 		return false;
 	}
 	
+	public void play(AssetDescriptor<Music> _asset, boolean _looping)
+	{
+		play(_asset.fileName, _looping);
+	}
+	
+	public void stop(AssetDescriptor<Music> _asset)
+	{
+		stop(_asset.fileName);
+	}
+	
+	public boolean isPlaying(AssetDescriptor<Music> _asset)
+	{
+		return isPlaying(_asset);
+	}
 
 	//******************************************
 	interface MusicVisitor

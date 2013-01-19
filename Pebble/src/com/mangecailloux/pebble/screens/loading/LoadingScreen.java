@@ -1,5 +1,6 @@
 package com.mangecailloux.pebble.screens.loading;
 
+import com.mangecailloux.pebble.Pebble;
 import com.mangecailloux.pebble.screens.Screen;
 import com.mangecailloux.pebble.screens.ScreenManager;
 
@@ -42,7 +43,7 @@ public abstract class LoadingScreen extends Screen {
 	{		
 		if(screenToLoad != null && !nextIsLoaded)
 		{
-			if(manager.getAssetManager().update())
+			if(Pebble.assets.isFinishedLoading())
 				nextIsLoaded = true;
 		}
 		

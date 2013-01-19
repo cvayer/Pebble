@@ -1,10 +1,11 @@
 package com.mangecailloux.pebble.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.mangecailloux.pebble.Pebble;
 import com.mangecailloux.pebble.ads.AdsManager;
+import com.mangecailloux.pebble.assets.AssetsManager;
 import com.mangecailloux.pebble.audio.MusicManager;
 import com.mangecailloux.pebble.audio.SoundManager;
 import com.mangecailloux.pebble.debug.Debuggable;
@@ -17,13 +18,13 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     private Screen  	 nextScreen;
     private boolean		 changeScreenPending;
     private boolean 	 manageScreenDisposal;
-    private AssetManager assetManager;
     private boolean		 appCreated;
     
     public ScreenManager()
     {
     	super();
     	// Pebble creation
+    	Pebble.assets = new AssetsManager();
     	Pebble.musics = new MusicManager();
     	Pebble.sounds = new SoundManager();
     	Pebble.languages = new LanguagesManager();
@@ -33,13 +34,6 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     
     	manageScreenDisposal = true;
     	appCreated = false;
-    	assetManager = new AssetManager();
- //   	Texture.setAssetManager(assetManager);
-    }
-    
-    public AssetManager getAssetManager()
-    {
-    	return assetManager;
     }
     
     public void manageScreenDisposal(boolean _Manage)
@@ -50,12 +44,29 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     @Override
     protected 	void onDebug (boolean _debug) 
     {
+    	if(Gdx.app != null)
+    	{
+	    	if(_debug)
+	    		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+	    	else
+	    		Gdx.app.setLogLevel(Application.LOG_ERROR);
+    	}
+    	
+    	Pebble.assets.debug(_debug);
     }
 
     @Override
     public void dispose () {
     		applyNextScreen(null);
-            assetManager.dispose();
+    		Pebble.assets.dispose();
+    		
+    		Pebble.assets 		= null;
+        	Pebble.musics 		= null;
+        	Pebble.sounds 		= null;
+        	Pebble.languages 	= null;
+        	Pebble.vibrations 	= null;
+        	Pebble.ads 			= null;
+        	Pebble.webpages 	= null;
     }
     
     @Override
@@ -63,6 +74,7 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     {
     	appCreated = true;
     	setScreen(getInitialScreen());
+    	onDebug (isDebug()); 
     }
     
     protected abstract Screen getInitialScreen();
@@ -113,9 +125,9 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     private void applyNextScreen (Screen _screen) {
     	if(appCreated && _screen != screen)
         {   
-            if(_screen != null && !_screen.isLoaded())
-            	_screen.load();
-            
+    		 if(_screen != null && !_screen.isLoaded())
+             	_screen.load();
+    		 
     		if (screen != null) 
             {
             	screen.activate(false);

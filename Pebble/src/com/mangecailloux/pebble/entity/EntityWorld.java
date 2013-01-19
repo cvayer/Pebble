@@ -46,6 +46,16 @@ public class EntityWorld
 		 return entityManager.addEntity(_archetype);
 	}
 	
+	public Entity newEntity(EntityArchetype _archetype)
+	{
+		return entityManager.newEntity(_archetype);
+	}
+	
+	protected void addEntity(Entity _entity)
+	{
+		 entityManager.addEntity(_entity);
+	}
+	
 	public void removeEntity(Entity _entity)
 	{
 		entityManager.removeEntity(_entity);
@@ -74,5 +84,15 @@ public class EntityWorld
 	
 	public <M extends EntityWorldManager> M getManager(Class<M> type) {
 		return type.cast(managersPerType.get(type));
+	}
+	
+	public void addObserver(EntityObserver _observer)
+	{
+		entityManager.addObserver(_observer);
+	}
+	
+	public void removeObserver(EntityObserver _observer)
+	{
+		entityManager.removeObserver(_observer);
 	}
 }

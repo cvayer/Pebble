@@ -20,7 +20,7 @@ public class EntityManager
 		obervers = new Array<EntityObserver>(false, 4);
 	}
 	
-	protected Entity addEntity(EntityArchetype _archetype)
+	protected Entity newEntity(EntityArchetype _archetype)
 	{
 		if(_archetype == null)
 			throw new RuntimeException("EntityManager::NewEntity -> Archetype cannot be null");
@@ -31,9 +31,20 @@ public class EntityManager
 		 Entity entity = Pools.obtain(Entity.class);
 		 entity.setWorld(world);
 		 entity.initComponents(_archetype);
-		 
-		 toAdd.add(entity);
 		 return entity;
+	}
+	
+	protected void addEntity(Entity _entity)
+	{
+		if(_entity != null)
+		 toAdd.add(_entity);
+	}
+	
+	protected Entity addEntity(EntityArchetype _archetype)
+	{
+		Entity entity = newEntity(_archetype);
+		addEntity(entity);
+		return entity;
 	}
 	
 	protected void removeEntity(Entity _entity)

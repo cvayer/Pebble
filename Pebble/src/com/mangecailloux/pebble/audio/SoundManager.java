@@ -1,8 +1,9 @@
 package com.mangecailloux.pebble.audio;
 
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.IntMap.Values;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Values;
 
 public class SoundManager {	    
 	public static boolean getDefaultActivation()
@@ -11,7 +12,7 @@ public class SoundManager {
 	}
 	
 	private boolean activated ;
-	private final 	IntMap<Sound>	sounds;
+	private final 	ObjectMap<String, Sound>	sounds;
 	
 	//------------------------------------------
 	// Iterators
@@ -28,7 +29,7 @@ public class SoundManager {
 	public SoundManager()
 	{
 		activated = getDefaultActivation();
-		sounds = new IntMap<Sound>(2);
+		sounds = new ObjectMap<String, Sound>(2);
 	}
 
 	
@@ -69,24 +70,38 @@ public class SoundManager {
 		return activated;
 	}
 	
-	// We don't dispose it as it's done by the assetManager : TODO : find a system to automatically register musics and sound to the manager via callbacks
-	public void register(int _key, Sound _sound)
+	public void register(String _key, Sound _sound)
 	{
 		if(_sound == null)
-			return;
+			throw new IllegalArgumentException("SoundManager::register : _sound must not be null");
 		
 		sounds.put(_key, _sound);
 	}
 	
-	private Sound get(int _key)
+	public void unregister(String _key)
+	{
+		sounds.remove(_key);
+	}
+	
+	public void clear()
+	{
+		sounds.clear();
+	}
+	
+	private Sound get(String _key)
 	{
 		if(activated)
 		 return sounds.get(_key);
 		return null;
 	}
 	
+	public boolean contains(String _key)
+	{
+		return get(_key) != null;
+	}
+	
 	// TODO : find a way to deal with sound handles to stop sounds instance, for now it's ok as we don't ever stop a particular sound instance
-	public void play(int _key)
+	public void play(String _key)
 	{
 		Sound sound = get(_key);
 		if(sound != null)
@@ -95,7 +110,7 @@ public class SoundManager {
 		}
 	}
 	
-	public void play(int _key, float _volume)
+	public void play(String _key, float _volume)
 	{
 		Sound sound = get(_key);
 		if(sound != null)
@@ -104,13 +119,28 @@ public class SoundManager {
 		}
 	}
 	
-	public void stop(int _key)
+	public void stop(String _key)
 	{
 		Sound sound = get(_key);
 		if(sound != null)
 		{
 			sound.stop();
 		}
+	}
+	
+	public void play(AssetDescriptor<Sound> _asset)
+	{
+		play(_asset.fileName);
+	}
+	
+	public void play(AssetDescriptor<Sound> _asset, float _volume)
+	{
+		play(_asset.fileName, _volume);
+	}
+	
+	public void stop(AssetDescriptor<Sound> _asset)
+	{
+		stop(_asset.fileName);
 	}
 	
 
