@@ -20,7 +20,7 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     private boolean 	 manageScreenDisposal;
     private boolean		 appCreated;
     
-    public ScreenManager()
+    public ScreenManager(ScreenManagerParameters _parameters)
     {
     	super();
     	// Pebble creation
@@ -34,6 +34,9 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     
     	manageScreenDisposal = true;
     	appCreated = false;
+    	
+		Pebble.ads.setInterface(_parameters.adsInterface);
+		Pebble.webpages.setInterface(_parameters.webPageInterface);
     }
     
     public void manageScreenDisposal(boolean _Manage)
