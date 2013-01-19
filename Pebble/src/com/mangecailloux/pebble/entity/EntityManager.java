@@ -80,13 +80,13 @@ public class EntityManager
 			Entity e = toDelete.get(i);
 			
 			entities.removeValue(e, true);
-			e.setDeletePending(false);
 			
-			e.onRemoveFromWorld();
 			for(int o =0; o < obervers.size; ++o)
 			{
 				obervers.get(o).onRemoveFromWorld(e);
 			}
+			e.onRemoveFromWorld();
+			e.setDeletePending(false);
 			
 			Pools.free(e);
 		}

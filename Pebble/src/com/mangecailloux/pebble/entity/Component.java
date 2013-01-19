@@ -26,8 +26,13 @@ public abstract class Component
 		return type.cast(entity);
 	}
 	
-	protected void update(float _fDt)		{}
-	
+	public <C extends Component> C getComponent(Class<C> _type)
+	{
+		if(entity != null)
+			return entity.getComponent(_type);
+		return null;
+	}
+		
 	protected void onAddToEntity()			{}
 	
 	protected void onRemoveFromEntity()		{}
@@ -35,4 +40,6 @@ public abstract class Component
 	protected void onAddToWorld()			{}
 	
 	protected void onRemoveFromWorld() 		{}
+	
+	protected void update(float _fDt)		{}
 }
