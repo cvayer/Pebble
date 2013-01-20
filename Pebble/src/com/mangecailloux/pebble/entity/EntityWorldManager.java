@@ -9,7 +9,7 @@ public class EntityWorldManager implements EntityObserver
 		
 	}
 	
-	public void setWorld(EntityWorld _world)
+	protected void setWorld(EntityWorld _world)
 	{
 		world = _world;
 	}
@@ -18,18 +18,25 @@ public class EntityWorldManager implements EntityObserver
 	{
 		return world;
 	}
+	
+	public <M extends EntityWorldManager> M getManager(Class<M> type)
+	{
+		if(world != null)
+			return world.getManager(type);
+		return null;
+	}
 
 	@Override
-	public void onAddToWorld(Entity _entity) {
+	public	void onAddToWorld(Entity _entity) {
 		
 	}
 
 	@Override
-	public void onRemoveFromWorld(Entity _entity) {
+	public	void onRemoveFromWorld(Entity _entity) {
 		
 	}
 	
-	public void update(float _dt)
+	protected void update(float _dt)
 	{
 		
 	}

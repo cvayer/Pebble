@@ -2,6 +2,8 @@ package com.mangecailloux.pebble.entity;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.mangecailloux.pebble.entity.manager.EntityGroupManager;
+import com.mangecailloux.pebble.entity.manager.EntityTagManager;
 
 public class EntityWorld 
 {
@@ -18,6 +20,9 @@ public class EntityWorld
 		managers = new Array<EntityWorldManager>(false, 4);
 		toAdd = new Array<EntityWorldManager>(false, 4);
 		managersPerType = new ObjectMap<Class<? extends EntityWorldManager>, EntityWorldManager>(4);
+		
+		addManager(new EntityGroupManager());
+		addManager(new EntityTagManager());
 	}
 	
 	public EntityManager getEntityManager()
@@ -75,6 +80,7 @@ public class EntityWorld
 		{
 			EntityWorldManager manager = toAdd.get(i);
 			
+			manager.setWorld(this);
 			managers.add(manager);
 			managersPerType.put(manager.getClass(), manager);
 			entityManager.addObserver(manager);

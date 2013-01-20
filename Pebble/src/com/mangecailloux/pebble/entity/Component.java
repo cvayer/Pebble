@@ -32,6 +32,13 @@ public abstract class Component
 			return entity.getComponent(_type);
 		return null;
 	}
+	
+	public <M extends EntityWorldManager> M getManager(Class<M> type)
+	{
+		if(entity != null && entity.getWorld() != null)
+			return  entity.getWorld().getManager(type);
+		return null;
+	}
 		
 	protected void onAddToEntity()			{}
 	

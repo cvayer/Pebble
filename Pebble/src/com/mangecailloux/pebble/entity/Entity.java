@@ -1,5 +1,8 @@
 package com.mangecailloux.pebble.entity;
 
+import com.mangecailloux.pebble.entity.manager.EntityGroup;
+import com.mangecailloux.pebble.entity.manager.EntityGroupManager;
+
 public class Entity 
 {
 	private  		EntityWorld	   	 world;
@@ -44,6 +47,26 @@ public class Entity
 	public <C extends Component> C getComponent(Class<C> _type)
 	{
 		return components.getComponent(_type);
+	}
+	
+	public void addToGroup(EntityGroup _group)
+	{
+		if(world != null)
+		{
+			EntityGroupManager manager = world.getManager(EntityGroupManager.class);
+			if(manager != null)
+				manager.addToGroup(this, _group);
+		}
+	}
+	
+	public void removeFromGroup(EntityGroup _group)
+	{
+		if(world != null)
+		{
+			EntityGroupManager manager = world.getManager(EntityGroupManager.class);
+			if(manager != null)
+				manager.removeFromGroup(this, _group);
+		}
 	}
 	
 	protected void update(float _fDt)
