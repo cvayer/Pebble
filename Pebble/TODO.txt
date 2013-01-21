@@ -1,10 +1,4 @@
 
-Language Manager in the lib
-
-Add screen componant and make menu componant and FSM componant
-
-Separate Menu with Group and Menu tout court
-
-TODO : find a system to automatically register musics and sound to the manager via callbacks
-
 Create a pop up with two parametrable part , one for buttons, one for content.
+
+Rework languageManager to have languages as object
