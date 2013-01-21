@@ -5,14 +5,25 @@ import com.mangecailloux.pebble.entity.manager.EntityGroupManager;
 
 public class Entity 
 {
+	protected 		static int globalCounter = 0;
+	
+	private			int 			 id;
 	private  		EntityWorld	   	 world;
 	private final   ComponentSet	 components;
 	private 		boolean			 deletePending;
 	
 	protected Entity()
 	{
+		// Entity should never be unallocated during runtime, so that should suffice to have an unique id
+		id = globalCounter++;
 		components = new ComponentSet(this);
 		deletePending = false;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Entity " + id;
 	}
 	
 	protected void setDeletePending(boolean	_deletePending)
@@ -40,7 +51,7 @@ public class Entity
 		components.init(_archetype);
 	}
 	
-	protected void deinitComponents() {
+	private void deinitComponents() {
 		components.deinit();
 	}
 	
@@ -82,5 +93,6 @@ public class Entity
 	protected void onRemoveFromWorld()
 	{
 		components.onRemoveFromWorld();
+		deinitComponents();
 	}
 }

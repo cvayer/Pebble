@@ -1,10 +1,12 @@
 package com.mangecailloux.pebble.entity;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pools;
 
 public class EntityManager 
 {
+	private final Logger 				logger;
 	private final EntityWorld	   		world;
 	private final Array<Entity> 		entities;
 	private final Array<Entity> 		toDelete;
@@ -13,6 +15,11 @@ public class EntityManager
 	
 	protected EntityManager(EntityWorld _world)
 	{
+		// reset the global counter as static data can be retained between application instances
+		Entity.globalCounter = 0;
+		
+		logger = new Logger("EntityManager");
+		logger.setLevel(Logger.INFO);
 		world = _world;
 		entities = new Array<Entity>(false, 8);
 		toDelete = new Array<Entity>(false, 4);
@@ -27,17 +34,27 @@ public class EntityManager
 		
 		if(_archetype.getComponentTypesCount() == 0)
 			throw new RuntimeException("EntityManager::NewEntity -> Archetype cannot be empty");
-			
+		
+		 
 		 Entity entity = Pools.obtain(Entity.class);
 		 entity.setWorld(world);
 		 entity.initComponents(_archetype);
+		 logger.info("New" + entity);
 		 return entity;
 	}
 	
 	protected void addEntity(Entity _entity)
 	{
 		if(_entity != null)
-		 toAdd.add(_entity);
+		{
+			logger.info("Add" + _entity);
+			_entity.onAddToWorld();
+			for(int o =0; o < obervers.size; ++o)
+			{
+				obervers.get(o).onAddToWorld(_entity);
+			}
+			toAdd.add(_entity);
+		}
 	}
 	
 	protected Entity addEntity(EntityArchetype _archetype)
@@ -51,7 +68,11 @@ public class EntityManager
 	{
 		if(_entity != null)
 		{
-			_entity.deinitComponents();
+			for(int o =0; o < obervers.size; ++o)
+			{
+				obervers.get(o).onRemoveFromWorld(_entity);
+			}
+			_entity.onRemoveFromWorld();
 			_entity.setWorld(null);
 			_entity.setDeletePending(true);
 			toDelete.add(_entity);
@@ -78,16 +99,8 @@ public class EntityManager
 	{
 		for(int i = 0;  i < toDelete.size; ++i) {
 			Entity e = toDelete.get(i);
-			
 			entities.removeValue(e, true);
-			
-			for(int o =0; o < obervers.size; ++o)
-			{
-				obervers.get(o).onRemoveFromWorld(e);
-			}
-			e.onRemoveFromWorld();
 			e.setDeletePending(false);
-			
 			Pools.free(e);
 		}
 		toDelete.clear();
@@ -97,14 +110,7 @@ public class EntityManager
 	{
 		for(int i = 0;  i < toAdd.size; ++i) {
 			Entity e = toAdd.get(i);
-			
 			entities.add(e);
-			
-			e.onAddToWorld();
-			for(int o =0; o < obervers.size; ++o)
-			{
-				obervers.get(o).onAddToWorld(e);
-			}
 		}
 		toAdd.clear();
 	}

@@ -57,7 +57,28 @@ public class ComponentSet
 	
 	protected <C extends Component> C getComponent(Class<C> _type)
 	{
-		return _type.cast(componentsByType.get(_type));
+		Component c = componentsByType.get(_type);
+		// If we don't find a component we look for a super class
+		if(c == null)
+		{
+			for(int i = 0; i < components.size; ++i)
+			{
+				Component c2 = components.get(i);
+				
+				if(_type.isInstance(c2))
+				{
+					// Is the component is instance of the super class we add it to the components by type to avoid researching  it
+					componentsByType.put(_type, c2);
+					return _type.cast(c2);
+				}
+			}
+		}
+		else
+		{
+			return _type.cast(c);
+		}
+				
+		return null;
 	}
 	
 	protected void update(float _fDt)
