@@ -45,6 +45,11 @@ public class EntityWorld
 		return entityManager;
 	}
 	
+	public void setLogLevel(int _logLevel)
+	{
+		entityManager.logger.setLevel(_logLevel);
+	}
+	
 	public void update(float _dt)
 	{
 		if(toAdd.size > 0)
@@ -81,6 +86,11 @@ public class EntityWorld
 		entityManager.removeEntity(_entity);
 	}
 	
+	public void dispose()
+	{
+		entityManager.removeAllEntities();
+	}
+	
 	public void addManager(EntityWorldManager _manager)
 	{
 		if(_manager != null && !managers.contains(_manager, true))
@@ -107,12 +117,12 @@ public class EntityWorld
 		return type.cast(managersPerType.get(type));
 	}
 	
-	public void addObserver(EntityObserver _observer)
+	public void addObserver(IEntityObserver _observer)
 	{
 		entityManager.addObserver(_observer);
 	}
 	
-	public void removeObserver(EntityObserver _observer)
+	public void removeObserver(IEntityObserver _observer)
 	{
 		entityManager.removeObserver(_observer);
 	}

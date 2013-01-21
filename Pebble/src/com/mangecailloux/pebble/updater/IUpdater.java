@@ -13,47 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.mangecailloux.pebble.entity;
+package com.mangecailloux.pebble.updater;
 
-public class EntityWorldManager implements IEntityObserver
+public interface IUpdater 
 {
-	private EntityWorld	    world;
-	
-	public EntityWorldManager()
-	{
-		
-	}
-	
-	protected void setWorld(EntityWorld _world)
-	{
-		world = _world;
-	}
-	
-	public EntityWorld getWorld()
-	{
-		return world;
-	}
-	
-	public <M extends EntityWorldManager> M getManager(Class<M> type)
-	{
-		if(world != null)
-			return world.getManager(type);
-		return null;
-	}
-
-	@Override
-	public	void onAddToWorld(Entity _entity) {
-		
-	}
-
-	@Override
-	public	void onRemoveFromWorld(Entity _entity) {
-		
-	}
-	
-	protected void update(float _dt)
-	{
-		
-	}
-	
+	public void update(float _dt);
 }

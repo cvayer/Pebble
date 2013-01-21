@@ -41,6 +41,14 @@ public class Entity
 		return "Entity " + id;
 	}
 	
+	public void info(String _string)
+	{
+		if(world != null)
+		{
+			world.getEntityManager().logger.info(toString() + ": " + _string);
+		}
+	}
+	
 	protected void setDeletePending(boolean	_deletePending)
 	{
 		deletePending = _deletePending;
@@ -64,10 +72,6 @@ public class Entity
 	protected void initComponents(EntityArchetype _archetype)
 	{
 		components.init(_archetype);
-	}
-	
-	private void deinitComponents() {
-		components.deinit();
 	}
 	
 	public <C extends Component> C getComponent(Class<C> _type)
@@ -108,6 +112,5 @@ public class Entity
 	protected void onRemoveFromWorld()
 	{
 		components.onRemoveFromWorld();
-		deinitComponents();
 	}
 }

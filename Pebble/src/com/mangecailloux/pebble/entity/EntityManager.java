@@ -21,12 +21,12 @@ import com.badlogic.gdx.utils.Pools;
 
 public class EntityManager 
 {
-	private final Logger 				logger;
-	private final EntityWorld	   		world;
-	private final Array<Entity> 		entities;
-	private final Array<Entity> 		toDelete;
-	private final Array<Entity> 		toAdd;
-	private final Array<EntityObserver> obervers;
+	protected 	final Logger 				logger;
+	private 	final EntityWorld	   		world;
+	private 	final Array<Entity> 		entities;
+	private 	final Array<Entity> 		toDelete;
+	private 	final Array<Entity> 		toAdd;
+	private 	final Array<IEntityObserver> obervers;
 	
 	protected EntityManager(EntityWorld _world)
 	{
@@ -34,12 +34,11 @@ public class EntityManager
 		Entity.globalCounter = 0;
 		
 		logger = new Logger("EntityManager");
-		logger.setLevel(Logger.INFO);
 		world = _world;
 		entities = new Array<Entity>(false, 8);
 		toDelete = new Array<Entity>(false, 4);
 		toAdd = new Array<Entity>(false, 4);
-		obervers = new Array<EntityObserver>(false, 4);
+		obervers = new Array<IEntityObserver>(false, 4);
 	}
 	
 	protected Entity newEntity(EntityArchetype _archetype)
@@ -52,9 +51,9 @@ public class EntityManager
 		
 		 
 		 Entity entity = Pools.obtain(Entity.class);
+		 logger.info("New " + entity);
 		 entity.setWorld(world);
 		 entity.initComponents(_archetype);
-		 logger.info("New" + entity);
 		 return entity;
 	}
 	
@@ -62,7 +61,7 @@ public class EntityManager
 	{
 		if(_entity != null)
 		{
-			logger.info("Add" + _entity);
+			logger.info("AddToWorld " + _entity);
 			_entity.onAddToWorld();
 			for(int o =0; o < obervers.size; ++o)
 			{
@@ -83,6 +82,7 @@ public class EntityManager
 	{
 		if(_entity != null)
 		{
+			logger.info("RemoveFromWorld " + _entity);
 			for(int o =0; o < obervers.size; ++o)
 			{
 				obervers.get(o).onRemoveFromWorld(_entity);
@@ -94,7 +94,16 @@ public class EntityManager
 		}
 	}
 	
-	protected void addObserver(EntityObserver _observer)
+	protected void removeAllEntities()
+	{
+		for(int i = 0; i < entities.size; ++i)
+		{
+			removeEntity(entities.get(i));
+		}
+		deleteEntities();
+	}
+	
+	protected void addObserver(IEntityObserver _observer)
 	{
 		if(_observer != null && !obervers.contains(_observer, true))
 		{
@@ -102,7 +111,7 @@ public class EntityManager
 		}
 	}
 	
-	protected void removeObserver(EntityObserver _observer)
+	protected void removeObserver(IEntityObserver _observer)
 	{
 		if(_observer != null)
 		{

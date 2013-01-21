@@ -55,15 +55,18 @@ public class ComponentSet
 			components.add(component);
 			componentsByType.put(type, component);
 			component.onAddToEntity();
+			
+			entity.info("Adding component : " + type.getSimpleName());
 		}
 	}
 	
-	protected void deinit()
+	private void deinit()
 	{
 		for(int i=0; i < components.size; ++i)
 		{
 			Component component = components.get(i);
 			component.onRemoveFromEntity();
+			entity.info("Removing component : " + component.getClass().getSimpleName());
 			Pools.free(component);
 		}
 		components.clear();
@@ -118,5 +121,6 @@ public class ComponentSet
 		{
 			components.get(i).onRemoveFromWorld();
 		}
+		deinit();
 	}
 }
