@@ -31,11 +31,14 @@ public class PebbleMusicLoaderParameter extends MusicLoader.MusicParameter
 			@Override
 			public void finishedLoading(AssetManager assetManager, String fileName, Class type) {
 				
-				if(!Pebble.musics.contains(fileName))
+				if(type == Music.class)
 				{
-					Music sound = assetManager.get(fileName, type);
-					Pebble.musics.register(fileName, sound);
-				}	
+					if(!Pebble.musics.contains(fileName))
+					{
+						Music sound = assetManager.get(fileName, Music.class);
+						Pebble.musics.register(fileName, sound);
+					}	
+				}
 			}
 		};
 	}

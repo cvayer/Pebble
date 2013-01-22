@@ -15,7 +15,27 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.updater;
 
-public interface IUpdater 
+public abstract class Updater 
 {
-	public void update(float _dt);
+	private final UpdatePriority priority;
+	
+	public Updater(UpdatePriority _priority)
+	{
+		if(_priority == null)
+			throw new IllegalArgumentException("Updater : _priority must not be null");
+		
+		priority = _priority;
+	}
+	
+	public Updater()
+	{
+		this(UpdatePriority.Default);
+	}
+	
+	public UpdatePriority getPriority()
+	{
+		return priority;
+	}
+	
+	public abstract void update(float _dt);
 }

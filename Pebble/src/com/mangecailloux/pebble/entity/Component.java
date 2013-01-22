@@ -15,15 +15,21 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.entity;
 
+import com.badlogic.gdx.utils.Array;
+import com.mangecailloux.pebble.updater.Updater;
+
 public abstract class Component 
 {
 	public static final int InvalidID = -1;
 	
 	private Entity 	entity;
+	private final Array<Updater> updaters;
 	
 	public Component()
 	{
 		entity = null;
+		
+		updaters = new Array<Updater>(false, 2);
 	}
 	
 	protected void setEntity(Entity _entity)
@@ -53,6 +59,42 @@ public abstract class Component
 		if(entity != null && entity.getWorld() != null)
 			return  entity.getWorld().getManager(type);
 		return null;
+	}
+	
+	public void addUpdater(Updater _updater)
+	{
+		if(entity == null || entity.getWorld() == null)
+			return;
+		
+		if(_updater != null && !updaters.contains(_updater, true))
+		{
+			updaters.add(_updater);
+			entity.getWorld().getUpdaterManager().addUpdater(_updater);
+		}
+	}
+	
+	public void removeUpdater(Updater _updater)
+	{
+		if(entity == null || entity.getWorld() == null)
+			return;
+		
+		if(_updater != null && updaters.contains(_updater, true))
+		{
+			updaters.removeValue(_updater, true);
+			entity.getWorld().getUpdaterManager().removeUpdater(_updater);
+		}
+	}
+	
+	public void removeAllUpdaters()
+	{
+		if(entity == null || entity.getWorld() == null)
+			return;
+		
+		for(int i = 0; i < updaters.size; ++i)
+		{
+			entity.getWorld().getUpdaterManager().removeUpdater(updaters.get(i));
+		}
+		updaters.clear();
 	}
 		
 	protected void onAddToEntity()			{}

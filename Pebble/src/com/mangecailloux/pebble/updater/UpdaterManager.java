@@ -1,31 +1,98 @@
+/*******************************************************************************
+ * Copyright 2013 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.mangecailloux.pebble.updater;
-
-import java.util.Comparator;
 
 import com.badlogic.gdx.utils.Array;
 
 public class UpdaterManager 
 {
+	private final Array<UpdateGroup> groups;
+	
 	public UpdaterManager()
 	{
+		groups = new Array<UpdateGroup>(true, 4);
+	}
+	
+	public void update(float _dt)
+	{
+		for(int i = 0; i < groups.size; ++i)
+		{
+			UpdateGroup group = groups.get(i);
+			if(group != null)
+				group.update(_dt);
+		}
+	}
+	
+	public void addUpdater(Updater _updater)
+	{
+		int index = _updater.getPriority().ordinal();
 		
+		// We resize the array is the priority is too high for the array
+		if(index >= groups.size)
+		{
+			int diff = index - (groups.size - 1);
+			groups.ensureCapacity(diff);
+			
+			// A resize method would be good here :)
+			for(int i = 0; i < diff; ++i)
+			{
+				groups.add(null);
+			}
+		}
+		
+		UpdateGroup group = groups.get(index);
+		if(group == null)
+		{
+			group = new UpdateGroup(_updater.getPriority());
+			groups.set(index, group);
+		}
+		
+		group.addUpdater(_updater);
+	}
+	
+	public void removeUpdater(Updater _updater)
+	{
+		int index = _updater.getPriority().ordinal();
+		if(index < groups.size)
+		{
+			UpdateGroup group = groups.get(index);
+			if(group != null)
+				group.removeUpdater(_updater);
+		}
 	}
 	
 	
-	
+	//------------------------------------------------------------
+	//------------------------------------------------------------
+	// UpdateGroup
+	//------------------------------------------------------------
+	//------------------------------------------------------------
 	class UpdateGroup
 	{
 		protected final UpdatePriority 	priority;
-		private final Array<IUpdater>	updaters;
-		private final Array<IUpdater>	toAdd;
-		private final Array<IUpdater>	toRemove;
+		private final Array<Updater>	updaters;
+		private final Array<Updater>	toAdd;
+		private final Array<Updater>	toRemove;
 		
 		public UpdateGroup(UpdatePriority _priority)
 		{
-			priority = _priority;
-			updaters = new Array<IUpdater>(false, 4);
-			toAdd = new Array<IUpdater>(false, 4);
-			toRemove = new Array<IUpdater>(false, 4);
+			priority 	= _priority;
+			updaters 	= new Array<Updater>(false, 4);
+			toAdd 		= new Array<Updater>(false, 4);
+			toRemove 	= new Array<Updater>(false, 4);
 		}
 		
 		public void update(float _dt)
@@ -54,38 +121,16 @@ public class UpdaterManager
 			}
 		}
 		
-		public void addUpdater(IUpdater _updater)
+		public void addUpdater(Updater _updater)
 		{
-			if(_updater != null)
+			if(_updater != null && _updater.getPriority().equals(priority))
 				toAdd.add(_updater);
 		}
 		
-		public void removeUpdater(IUpdater _updater)
+		public void removeUpdater(Updater _updater)
 		{
-			if(_updater != null)
+			if(_updater != null && _updater.getPriority().equals(priority))
 				toRemove.add(_updater);
-		}
-		
-		@Override
-		public boolean equals(Object _o)
-		{
-			if(_o instanceof UpdateGroup)
-				return equals(UpdateGroup.class.cast(_o));
-			return false;
-		}
-		
-		public boolean equals(UpdateGroup _group)
-		{
-			return priority.ordinal() == _group.priority.ordinal();
-		}
+		}		
 	};
-	
-	class UpdateGroupComparator implements Comparator<UpdateGroup>
-	{
-		@Override
-		public int compare(UpdateGroup o1, UpdateGroup o2) {
-			return o1.priority.ordinal() - o2.priority.ordinal();
-		}
-		
-	}
 }

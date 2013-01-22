@@ -19,10 +19,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mangecailloux.pebble.entity.manager.EntityGroupManager;
 import com.mangecailloux.pebble.entity.manager.EntityTagManager;
+import com.mangecailloux.pebble.updater.UpdaterManager;
 
 public class EntityWorld 
 {
 	private final EntityManager entityManager;
+	private final UpdaterManager updaterManager;
 	
 	private final Array<EntityWorldManager> managers;
 	private final Array<EntityWorldManager> toAdd;
@@ -31,6 +33,7 @@ public class EntityWorld
 	public EntityWorld()
 	{
 		entityManager = new EntityManager(this);
+		updaterManager = new UpdaterManager();
 		
 		managers = new Array<EntityWorldManager>(false, 4);
 		toAdd = new Array<EntityWorldManager>(false, 4);
@@ -40,9 +43,14 @@ public class EntityWorld
 		addManager(new EntityTagManager());
 	}
 	
-	public EntityManager getEntityManager()
+	protected EntityManager getEntityManager()
 	{
 		return entityManager;
+	}
+	
+	protected UpdaterManager getUpdaterManager()
+	{
+		return updaterManager;
 	}
 	
 	public void setLogLevel(int _logLevel)
@@ -64,6 +72,8 @@ public class EntityWorld
 		
 		// Update entities
 		entityManager.update(_dt);
+		
+		updaterManager.update(_dt);
 	}
 	
 	public Entity addEntity(EntityArchetype _archetype)
