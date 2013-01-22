@@ -28,6 +28,7 @@ public class PebbleSoundLoaderParameter extends SoundLoader.SoundParameter
 		
 		loadedCallback = new LoadedCallback() 
 		{
+			@SuppressWarnings("rawtypes")
 			@Override
 			public void finishedLoading(AssetManager assetManager, String fileName, Class type) {
 				
