@@ -15,23 +15,16 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.entity;
 
-import com.badlogic.gdx.utils.Array;
-import com.mangecailloux.pebble.updater.Updater;
+import com.mangecailloux.pebble.updater.Updatable;
 
-public abstract class Component 
+public abstract class Component extends Updatable
 {
 	public static final int InvalidID = -1;
 	
 	private Entity 	entity;
-	private final Array<Updater> updaters;
-	private		  boolean		 updatersRegistred;
-	
 	public Component()
 	{
 		entity = null;
-		
-		updaters = new Array<Updater>(false, 2);
-		updatersRegistred = false;
 	}
 	
 	protected void setEntity(Entity _entity)
@@ -61,40 +54,6 @@ public abstract class Component
 		if(entity != null && entity.getWorld() != null)
 			return  entity.getWorld().getManager(type);
 		return null;
-	}
-	
-	public void addUpdater(Updater _updater)
-	{
-		if(_updater != null && !updaters.contains(_updater, true))
-		{
-			updaters.add(_updater);
-			if(updatersRegistred)
-				entity.getWorld().getUpdaterManager().addUpdater(_updater);
-		}
-	}
-	
-	protected void registerAllUpdaters()
-	{
-		if(entity == null || entity.getWorld() == null)
-			throw new RuntimeException("Component::registerAllUpdaters : entity or world is null");
-		
-		for(int i = 0; i < updaters.size; ++i)
-		{
-			entity.getWorld().getUpdaterManager().addUpdater(updaters.get(i));
-		}
-		updatersRegistred = true;
-	}
-	
-	protected void unregisterAllUpdaters()
-	{
-		if(entity == null || entity.getWorld() == null)
-			throw new RuntimeException("Component::registerAllUpdaters : entity or world is null");
-		
-		for(int i = 0; i < updaters.size; ++i)
-		{
-			entity.getWorld().getUpdaterManager().removeUpdater(updaters.get(i));
-		}
-		updatersRegistred = false;
 	}
 		
 	protected void onAddToEntity()			{}

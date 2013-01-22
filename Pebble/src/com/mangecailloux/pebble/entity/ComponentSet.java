@@ -104,7 +104,7 @@ public class ComponentSet
 		for(int i = 0; i < components.size; ++i)
 		{
 			components.get(i).onAddToWorld();
-			components.get(i).registerAllUpdaters();
+			components.get(i).setUpdaterManager(entity.getWorld().getUpdaterManager());
 		}
 	}
 	
@@ -112,7 +112,7 @@ public class ComponentSet
 	{
 		for(int i = 0; i < components.size; ++i)
 		{
-			components.get(i).unregisterAllUpdaters();
+			components.get(i).setUpdaterManager(null);
 			components.get(i).onRemoveFromWorld();
 		}
 		deinit();

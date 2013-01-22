@@ -17,5 +17,5 @@ package com.mangecailloux.pebble.updater;
 
 public interface IUpdatePriority 
 {
-
+	int getIndex(); 
 }

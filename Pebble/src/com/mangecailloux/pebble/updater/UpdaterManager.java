@@ -38,7 +38,7 @@ public class UpdaterManager
 	
 	public void addUpdater(Updater _updater)
 	{
-		int index = ((Enum<?>) _updater.getPriority()).ordinal();
+		int index = _updater.getPriority().getIndex();
 		
 		// We resize the array is the priority is too high for the array
 		if(index >= groups.size)
@@ -65,7 +65,7 @@ public class UpdaterManager
 	
 	public void removeUpdater(Updater _updater)
 	{
-		int index = ((Enum<?>) _updater.getPriority()).ordinal();
+		int index = _updater.getPriority().getIndex();
 		if(index < groups.size)
 		{
 			UpdateGroup group = groups.get(index);
