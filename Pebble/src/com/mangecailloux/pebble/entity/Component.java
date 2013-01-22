@@ -24,12 +24,14 @@ public abstract class Component
 	
 	private Entity 	entity;
 	private final Array<Updater> updaters;
+	private		  boolean		 updatersRegistred;
 	
 	public Component()
 	{
 		entity = null;
 		
 		updaters = new Array<Updater>(false, 2);
+		updatersRegistred = false;
 	}
 	
 	protected void setEntity(Entity _entity)
@@ -63,38 +65,36 @@ public abstract class Component
 	
 	public void addUpdater(Updater _updater)
 	{
-		if(entity == null || entity.getWorld() == null)
-			return;
-		
 		if(_updater != null && !updaters.contains(_updater, true))
 		{
 			updaters.add(_updater);
-			entity.getWorld().getUpdaterManager().addUpdater(_updater);
+			if(updatersRegistred)
+				entity.getWorld().getUpdaterManager().addUpdater(_updater);
 		}
 	}
 	
-	public void removeUpdater(Updater _updater)
+	protected void registerAllUpdaters()
 	{
 		if(entity == null || entity.getWorld() == null)
-			return;
+			throw new RuntimeException("Component::registerAllUpdaters : entity or world is null");
 		
-		if(_updater != null && updaters.contains(_updater, true))
+		for(int i = 0; i < updaters.size; ++i)
 		{
-			updaters.removeValue(_updater, true);
-			entity.getWorld().getUpdaterManager().removeUpdater(_updater);
+			entity.getWorld().getUpdaterManager().addUpdater(updaters.get(i));
 		}
+		updatersRegistred = true;
 	}
 	
-	public void removeAllUpdaters()
+	protected void unregisterAllUpdaters()
 	{
 		if(entity == null || entity.getWorld() == null)
-			return;
+			throw new RuntimeException("Component::registerAllUpdaters : entity or world is null");
 		
 		for(int i = 0; i < updaters.size; ++i)
 		{
 			entity.getWorld().getUpdaterManager().removeUpdater(updaters.get(i));
 		}
-		updaters.clear();
+		updatersRegistred = false;
 	}
 		
 	protected void onAddToEntity()			{}
@@ -104,6 +104,4 @@ public abstract class Component
 	protected void onAddToWorld()			{}
 	
 	protected void onRemoveFromWorld() 		{}
-	
-	protected void update(float _fDt)		{}
 }

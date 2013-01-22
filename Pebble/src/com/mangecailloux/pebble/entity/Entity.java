@@ -25,14 +25,12 @@ public class Entity
 	private			int 			 id;
 	private  		EntityWorld	   	 world;
 	private final   ComponentSet	 components;
-	private 		boolean			 deletePending;
 	
 	protected Entity()
 	{
 		// Entity should never be unallocated during runtime, so that should suffice to have an unique id
 		id = globalCounter++;
 		components = new ComponentSet(this);
-		deletePending = false;
 	}
 	
 	@Override
@@ -47,16 +45,6 @@ public class Entity
 		{
 			world.getEntityManager().logger.info(toString() + ": " + _string);
 		}
-	}
-	
-	protected void setDeletePending(boolean	_deletePending)
-	{
-		deletePending = _deletePending;
-	}
-	
-	protected boolean isDeletePending()
-	{
-		return deletePending;
 	}
 	
 	protected void setWorld(EntityWorld _world)
@@ -81,27 +69,22 @@ public class Entity
 	
 	public void addToGroup(EntityGroup _group)
 	{
-		if(world != null)
-		{
-			EntityGroupManager manager = world.getManager(EntityGroupManager.class);
-			if(manager != null)
-				manager.addToGroup(this, _group);
-		}
+		if(world == null)
+			throw new RuntimeException("Entity::addToGroup : entity has not been added to world yet");
+		
+		EntityGroupManager manager = world.getManager(EntityGroupManager.class);
+		if(manager != null)
+			manager.addToGroup(this, _group);
 	}
 	
 	public void removeFromGroup(EntityGroup _group)
 	{
-		if(world != null)
-		{
-			EntityGroupManager manager = world.getManager(EntityGroupManager.class);
-			if(manager != null)
-				manager.removeFromGroup(this, _group);
-		}
-	}
-	
-	protected void update(float _fDt)
-	{
-		components.update(_fDt);
+		if(world == null)
+			throw new RuntimeException("Entity::removeFromGroup : entity has already been added removed from the world");
+
+		EntityGroupManager manager = world.getManager(EntityGroupManager.class);
+		if(manager != null)
+			manager.removeFromGroup(this, _group);
 	}
 	
 	protected void onAddToWorld()

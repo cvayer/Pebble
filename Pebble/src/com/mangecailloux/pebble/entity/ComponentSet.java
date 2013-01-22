@@ -99,19 +99,12 @@ public class ComponentSet
 		return null;
 	}
 	
-	protected void update(float _fDt)
-	{
-		for(int i = 0; i < components.size; ++i)
-		{
-			components.get(i).update(_fDt);
-		}
-	}
-	
 	public void onAddToWorld()
 	{
 		for(int i = 0; i < components.size; ++i)
 		{
 			components.get(i).onAddToWorld();
+			components.get(i).registerAllUpdaters();
 		}
 	}
 	
@@ -119,7 +112,7 @@ public class ComponentSet
 	{
 		for(int i = 0; i < components.size; ++i)
 		{
-			components.get(i).removeAllUpdaters();
+			components.get(i).unregisterAllUpdaters();
 			components.get(i).onRemoveFromWorld();
 		}
 		deinit();

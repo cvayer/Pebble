@@ -27,7 +27,6 @@ public class EntityWorld
 	private final UpdaterManager updaterManager;
 	
 	private final Array<EntityWorldManager> managers;
-	private final Array<EntityWorldManager> toAdd;
 	private final ObjectMap<Class<? extends EntityWorldManager>, EntityWorldManager> managersPerType;
 	
 	public EntityWorld()
@@ -36,7 +35,6 @@ public class EntityWorld
 		updaterManager = new UpdaterManager();
 		
 		managers = new Array<EntityWorldManager>(false, 4);
-		toAdd = new Array<EntityWorldManager>(false, 4);
 		managersPerType = new ObjectMap<Class<? extends EntityWorldManager>, EntityWorldManager>(4);
 		
 		addManager(new EntityGroupManager());
@@ -60,19 +58,7 @@ public class EntityWorld
 	
 	public void update(float _dt)
 	{
-		if(toAdd.size > 0)
-		{
-			addManagers();
-		}
-		
-		for(int i = 0; i < managers.size; ++i)
-		{
-			managers.get(i).update(_dt);
-		}
-		
-		// Update entities
-		entityManager.update(_dt);
-		
+		// Update all registered updater (from component or managers)
 		updaterManager.update(_dt);
 	}
 	
@@ -105,22 +91,13 @@ public class EntityWorld
 	{
 		if(_manager != null && !managers.contains(_manager, true))
 		{
-			toAdd.add(_manager);
-		}
-	}
-	
-	private void addManagers()
-	{
-		for(int i = 0;  i < toAdd.size; ++i)
-		{
-			EntityWorldManager manager = toAdd.get(i);
+			_manager.setWorld(this);
+			_manager.registerAllUpdaters();
 			
-			manager.setWorld(this);
-			managers.add(manager);
-			managersPerType.put(manager.getClass(), manager);
-			entityManager.addObserver(manager);
+			managers.add(_manager);
+			managersPerType.put(_manager.getClass(), _manager);
+			entityManager.addObserver(_manager);
 		}
-		toAdd.clear();
 	}
 	
 	public <M extends EntityWorldManager> M getManager(Class<M> type) {

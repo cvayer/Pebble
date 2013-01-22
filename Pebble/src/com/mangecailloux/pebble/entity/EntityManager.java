@@ -21,12 +21,10 @@ import com.badlogic.gdx.utils.Pools;
 
 public class EntityManager 
 {
-	protected 	final Logger 				logger;
-	private 	final EntityWorld	   		world;
-	private 	final Array<Entity> 		entities;
-	private 	final Array<Entity> 		toDelete;
-	private 	final Array<Entity> 		toAdd;
-	private 	final Array<IEntityObserver> obervers;
+	protected 	final Logger 					logger;
+	private 	final EntityWorld	   			world;
+	private 	final Array<Entity> 			entities;
+	private 	final Array<IEntityObserver> 	obervers;
 	
 	protected EntityManager(EntityWorld _world)
 	{
@@ -36,8 +34,6 @@ public class EntityManager
 		logger = new Logger("EntityManager");
 		world = _world;
 		entities = new Array<Entity>(false, 8);
-		toDelete = new Array<Entity>(false, 4);
-		toAdd = new Array<Entity>(false, 4);
 		obervers = new Array<IEntityObserver>(false, 4);
 	}
 	
@@ -52,7 +48,6 @@ public class EntityManager
 		 
 		 Entity entity = Pools.obtain(Entity.class);
 		 logger.info("New " + entity);
-		 entity.setWorld(world);
 		 entity.initComponents(_archetype);
 		 return entity;
 	}
@@ -62,12 +57,13 @@ public class EntityManager
 		if(_entity != null)
 		{
 			logger.info("AddToWorld " + _entity);
+			_entity.setWorld(world);
 			_entity.onAddToWorld();
 			for(int o =0; o < obervers.size; ++o)
 			{
 				obervers.get(o).onAddToWorld(_entity);
 			}
-			toAdd.add(_entity);
+			entities.add(_entity);
 		}
 	}
 	
@@ -82,25 +78,39 @@ public class EntityManager
 	{
 		if(_entity != null)
 		{
-			logger.info("RemoveFromWorld " + _entity);
-			for(int o =0; o < obervers.size; ++o)
+			if(entities.removeValue(_entity, true))
 			{
-				obervers.get(o).onRemoveFromWorld(_entity);
+				logger.info("RemoveFromWorld " + _entity);
+				for(int o = 0; o < obervers.size; ++o)
+				{
+					obervers.get(o).onRemoveFromWorld(_entity);
+				}
+				_entity.onRemoveFromWorld();
+				_entity.setWorld(null);
+				Pools.free(_entity);
 			}
-			_entity.onRemoveFromWorld();
-			_entity.setWorld(null);
-			_entity.setDeletePending(true);
-			toDelete.add(_entity);
 		}
 	}
 	
 	protected void removeAllEntities()
 	{
+		if(entities.size == 0)
+			return;
+		
 		for(int i = 0; i < entities.size; ++i)
 		{
-			removeEntity(entities.get(i));
+			Entity entity = entities.get(i);
+			
+			logger.info("RemoveFromWorld " + entity);
+			for(int o = 0; o < obervers.size; ++o)
+			{
+				obervers.get(o).onRemoveFromWorld(entity);
+			}
+			entity.onRemoveFromWorld();
+			entity.setWorld(null);
+			Pools.free(entity);
 		}
-		deleteEntities();
+		entities.clear();
 	}
 	
 	protected void addObserver(IEntityObserver _observer)
@@ -116,46 +126,6 @@ public class EntityManager
 		if(_observer != null)
 		{
 			obervers.removeValue(_observer, true);
-		}
-	}
-	
-	private void deleteEntities() 
-	{
-		for(int i = 0;  i < toDelete.size; ++i) {
-			Entity e = toDelete.get(i);
-			entities.removeValue(e, true);
-			e.setDeletePending(false);
-			Pools.free(e);
-		}
-		toDelete.clear();
-	}
-	
-	private void addEntities() 
-	{
-		for(int i = 0;  i < toAdd.size; ++i) {
-			Entity e = toAdd.get(i);
-			entities.add(e);
-		}
-		toAdd.clear();
-	}
-	
-	protected void update(float _fDt)
-	{
-		if(toDelete.size > 0)
-		{
-			deleteEntities();
-		}
-		
-		if(toAdd.size > 0)
-		{
-			addEntities();
-		}
-		
-		for(int i = 0; i < entities.size; ++i)
-		{
-			Entity e = entities.get(i);
-			if(!e.isDeletePending())
-				e.update(_fDt);
 		}
 	}
 }

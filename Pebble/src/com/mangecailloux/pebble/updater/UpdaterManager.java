@@ -38,7 +38,7 @@ public class UpdaterManager
 	
 	public void addUpdater(Updater _updater)
 	{
-		int index = _updater.getPriority().ordinal();
+		int index = ((Enum<?>) _updater.getPriority()).ordinal();
 		
 		// We resize the array is the priority is too high for the array
 		if(index >= groups.size)
@@ -65,7 +65,7 @@ public class UpdaterManager
 	
 	public void removeUpdater(Updater _updater)
 	{
-		int index = _updater.getPriority().ordinal();
+		int index = ((Enum<?>) _updater.getPriority()).ordinal();
 		if(index < groups.size)
 		{
 			UpdateGroup group = groups.get(index);
@@ -82,12 +82,12 @@ public class UpdaterManager
 	//------------------------------------------------------------
 	class UpdateGroup
 	{
-		protected final UpdatePriority 	priority;
+		protected final IUpdatePriority 	priority;
 		private final Array<Updater>	updaters;
 		private final Array<Updater>	toAdd;
 		private final Array<Updater>	toRemove;
 		
-		public UpdateGroup(UpdatePriority _priority)
+		public UpdateGroup(IUpdatePriority _priority)
 		{
 			priority 	= _priority;
 			updaters 	= new Array<Updater>(false, 4);
