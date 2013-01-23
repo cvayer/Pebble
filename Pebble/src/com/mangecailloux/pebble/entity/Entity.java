@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.entity;
 
+import com.badlogic.gdx.utils.Pools;
 import com.mangecailloux.pebble.entity.manager.EntityGroup;
 import com.mangecailloux.pebble.entity.manager.EntityGroupManager;
 
@@ -95,5 +96,24 @@ public class Entity
 	protected void onRemoveFromWorld()
 	{
 		components.onRemoveFromWorld();
+	}
+	
+	protected <E extends EntityEvent> E getEvent(Class<E> _type)
+	{
+		E event = Pools.obtain(_type);
+		event.setEntity(this);
+		return event;
+	}
+	
+	protected void sendEvent(EntityEvent _event)
+	{
+		if(world != null)
+		{
+			world.getEntityManager().sendEvent(this, _event);
+		}
+		
+		components.sendEvent(_event);
+		_event.setEntity(null);
+		Pools.free(_event);
 	}
 }

@@ -128,4 +128,12 @@ public class EntityManager
 			obervers.removeValue(_observer, true);
 		}
 	}
+	
+	protected void sendEvent(Entity _entity, EntityEvent _event)
+	{
+		for(int o = 0; o < obervers.size; ++o)
+		{
+			obervers.get(o).onEntityEvent(_entity, _event);
+		}
+	}
 }

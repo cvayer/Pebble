@@ -55,12 +55,21 @@ public abstract class Component extends Updatable
 			return  entity.getWorld().getManager(type);
 		return null;
 	}
+	
+	public <E extends EntityEvent> E getEvent(Class<E> _type)
+	{
+		if(entity != null)
+			return entity.getEvent(_type);
+		return null;
+	}
+	
+	protected void onEvent(EntityEvent _event) 	{}
 		
-	protected void onAddToEntity()			{}
+	protected void onAddToEntity()				{}
 	
-	protected void onRemoveFromEntity()		{}
+	protected void onRemoveFromEntity()			{}
 	
-	protected void onAddToWorld()			{}
+	protected void onAddToWorld()				{}
 	
-	protected void onRemoveFromWorld() 		{}
+	protected void onRemoveFromWorld() 			{}
 }

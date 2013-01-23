@@ -17,7 +17,7 @@ package com.mangecailloux.pebble.entity;
 
 import com.mangecailloux.pebble.updater.Updatable;
 
-public class EntityWorldManager extends Updatable implements IEntityObserver
+public abstract class EntityWorldManager extends Updatable implements IEntityObserver
 {
 	private 		EntityWorld	    world;
 	
@@ -47,4 +47,7 @@ public class EntityWorldManager extends Updatable implements IEntityObserver
 
 	@Override
 	public	void onRemoveFromWorld(Entity _entity) {}
+
+	@Override
+	public void onEntityEvent(Entity _entity, EntityEvent _event) {}
 }

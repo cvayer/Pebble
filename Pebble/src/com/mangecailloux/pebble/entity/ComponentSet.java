@@ -117,4 +117,12 @@ public class ComponentSet
 		}
 		deinit();
 	}
+	
+	protected void sendEvent(EntityEvent _event)
+	{
+		for(int i = 0; i < components.size; ++i)
+		{
+			components.get(i).onEvent(_event);
+		}
+	}
 }
