@@ -51,8 +51,8 @@ public abstract class Component extends Updatable
 	
 	public <M extends EntityWorldManager> M getManager(Class<M> type)
 	{
-		if(entity != null && entity.getWorld() != null)
-			return  entity.getWorld().getManager(type);
+		if(entity != null)
+			return  entity.getManager(type);
 		return null;
 	}
 	

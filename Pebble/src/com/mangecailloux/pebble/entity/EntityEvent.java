@@ -25,7 +25,7 @@ public abstract class EntityEvent implements Poolable
 		return type;
 	}
 	
-	public void setEntity(Entity _entity)
+	protected void setEntity(Entity _entity)
 	{
 		entity = _entity;
 	}

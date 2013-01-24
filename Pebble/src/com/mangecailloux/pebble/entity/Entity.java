@@ -68,6 +68,13 @@ public class Entity
 		return components.getComponent(_type);
 	}
 	
+	public <M extends EntityWorldManager> M getManager(Class<M> type)
+	{
+		if(world != null)
+			return  world.getManager(type);
+		return null;
+	}
+	
 	public void addToGroup(EntityGroup _group)
 	{
 		if(world == null)
@@ -98,7 +105,7 @@ public class Entity
 		components.onRemoveFromWorld();
 	}
 	
-	protected <E extends EntityEvent> E getEvent(Class<E> _type)
+	public <E extends EntityEvent> E getEvent(Class<E> _type)
 	{
 		E event = Pools.obtain(_type);
 		event.setEntity(this);
