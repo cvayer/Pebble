@@ -39,5 +39,5 @@ public abstract class EntityEvent implements Poolable
 	}
 
 	@Override
-	public void reset() {}
+	public abstract void reset();
 }
