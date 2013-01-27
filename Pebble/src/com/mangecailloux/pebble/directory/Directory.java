@@ -49,7 +49,7 @@ public class Directory <E extends DirectoryElement>
 	@SuppressWarnings("rawtypes")
 	private static final ByNameDirectoryComparator  directoryComparator = new ByNameDirectoryComparator();
 	/** Separator regex used to split a constant path. */
-	private static final String directorySeparator = "\\\\";
+	private static final String directorySeparator = "\\\\|/";
 	
 	/** {@link StringWriter} to format the directory into a String */
 	private static final StringWriter stringWriter 	= new StringWriter();

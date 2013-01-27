@@ -117,7 +117,8 @@ public class UpdaterManager
 			
 			for(int i = 0; i < updaters.size; ++i )
 			{
-				updaters.get(i).update(_dt);
+				if(!updaters.get(i).isPaused())
+					updaters.get(i).update(_dt);
 			}
 		}
 		

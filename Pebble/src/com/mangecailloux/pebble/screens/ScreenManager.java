@@ -91,10 +91,12 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     public void create ()
     {
     	appCreated = true;
+    	init();
     	setScreen(getInitialScreen());
     	onDebug (isDebug()); 
     }
     
+    protected abstract void   init();
     protected abstract Screen getInitialScreen();
 
     @Override

@@ -15,9 +15,9 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.entity;
 
-import com.mangecailloux.pebble.updater.Updatable;
+import com.mangecailloux.pebble.updater.UpdatersHandler;
 
-public abstract class Component extends Updatable
+public abstract class Component extends UpdatersHandler
 {
 	public static final int InvalidID = -1;
 	

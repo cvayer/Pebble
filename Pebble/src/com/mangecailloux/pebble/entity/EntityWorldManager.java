@@ -15,9 +15,9 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.entity;
 
-import com.mangecailloux.pebble.updater.Updatable;
+import com.mangecailloux.pebble.updater.UpdatersHandler;
 
-public abstract class EntityWorldManager extends Updatable implements IEntityObserver
+public abstract class EntityWorldManager extends UpdatersHandler implements IEntityObserver
 {
 	private 		EntityWorld	    world;
 	
