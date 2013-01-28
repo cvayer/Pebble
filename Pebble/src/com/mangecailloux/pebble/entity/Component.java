@@ -17,16 +17,21 @@ package com.mangecailloux.pebble.entity;
 
 import com.mangecailloux.pebble.updater.UpdatersHandler;
 
-public abstract class Component extends UpdatersHandler
+public abstract class Component
 {
-	public static final int InvalidID = -1;
-	
 	private Entity 	entity;
+	private final UpdatersHandler updatersHandler;
+	
 	public Component()
 	{
 		entity = null;
+		updatersHandler = new UpdatersHandler();
 	}
 	
+	protected UpdatersHandler getUpdatersHandler() {
+		return updatersHandler;
+	}
+
 	protected void setEntity(Entity _entity)
 	{
 		entity = _entity;

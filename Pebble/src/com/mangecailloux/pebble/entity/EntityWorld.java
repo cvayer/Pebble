@@ -92,7 +92,7 @@ public class EntityWorld
 		if(_manager != null && !managers.contains(_manager, true))
 		{
 			_manager.setWorld(this);
-			_manager.setUpdaterManager(updaterManager);
+			_manager.getUpdatersHandler().setUpdaterManager(updaterManager);
 			
 			managers.add(_manager);
 			managersPerType.put(_manager.getClass(), _manager);

@@ -17,12 +17,18 @@ package com.mangecailloux.pebble.entity;
 
 import com.mangecailloux.pebble.updater.UpdatersHandler;
 
-public abstract class EntityWorldManager extends UpdatersHandler implements IEntityObserver
+public abstract class EntityWorldManager implements IEntityObserver
 {
 	private 		EntityWorld	    world;
+	private final 	UpdatersHandler updatersHandler;
 	
 	public EntityWorldManager()
 	{
+		updatersHandler = new UpdatersHandler();
+	}
+	
+	protected UpdatersHandler getUpdatersHandler() {
+		return updatersHandler;
 	}
 	
 	protected void setWorld(EntityWorld _world)
