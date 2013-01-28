@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.entity;
 
+import com.badlogic.gdx.utils.Array;
 import com.mangecailloux.pebble.updater.UpdatersHandler;
 
 public abstract class Component
@@ -22,10 +23,14 @@ public abstract class Component
 	private Entity 	entity;
 	private final UpdatersHandler updatersHandler;
 	
+	private final Array<EntityEventHandler<?>> eventHandlers;
+	
 	public Component()
 	{
 		entity = null;
 		updatersHandler = new UpdatersHandler();
+		
+		eventHandlers = new Array<EntityEventHandler<?>>(false, 2);
 	}
 	
 	protected UpdatersHandler getUpdatersHandler() {
@@ -68,8 +73,29 @@ public abstract class Component
 		return null;
 	}
 	
-	protected void onEvent(EntityEvent _event) 	{}
+	protected void addEventHandler(EntityEventHandler<?> _handler)
+	{
+		if(_handler != null && eventHandlers.contains(_handler, true))
+		{
+			eventHandlers.add(_handler);
+			if(entity != null)
+			{
+				entity.registerEventHandler(_handler);
+			}
+		}
+	}
+	
+	protected void registerEventHandlers()
+	{
+		if(entity == null)
+			return;
 		
+		for(int i = 0; i < eventHandlers.size; ++i)
+		{
+			entity.registerEventHandler(eventHandlers.get(i));
+		}
+	}
+			
 	protected void onAddToEntity()				{}
 	
 	protected void onRemoveFromEntity()			{}

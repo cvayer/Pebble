@@ -51,10 +51,13 @@ public class ComponentSet
 			if(getComponent(type) != null)
 				throw new RuntimeException("ComponentSet::setup -> Component is duplicated : " + type.getSimpleName());
 			
+			// TODO  : put all that in one function
 			component.setEntity(entity);
+			component.registerEventHandlers();
+			component.onAddToEntity();
+			
 			components.add(component);
 			componentsByType.put(type, component);
-			component.onAddToEntity();
 			
 			entity.info("Adding component : " + type.getSimpleName());
 		}
@@ -65,7 +68,10 @@ public class ComponentSet
 		for(int i=0; i < components.size; ++i)
 		{
 			Component component = components.get(i);
+			// TODO : put all that in one function
 			component.onRemoveFromEntity();
+			component.setEntity(null);
+			
 			entity.info("Removing component : " + component.getClass().getSimpleName());
 			Pools.free(component);
 		}
@@ -103,6 +109,7 @@ public class ComponentSet
 	{
 		for(int i = 0; i < components.size; ++i)
 		{
+			//TODO put that in one function
 			components.get(i).onAddToWorld();
 			components.get(i).getUpdatersHandler().setUpdaterManager(entity.getWorld().getUpdaterManager());
 		}
@@ -112,17 +119,10 @@ public class ComponentSet
 	{
 		for(int i = 0; i < components.size; ++i)
 		{
+			//TODO put that in one function
 			components.get(i).getUpdatersHandler().setUpdaterManager(null);
 			components.get(i).onRemoveFromWorld();
 		}
 		deinit();
-	}
-	
-	protected void sendEvent(EntityEvent _event)
-	{
-		for(int i = 0; i < components.size; ++i)
-		{
-			components.get(i).onEvent(_event);
-		}
 	}
 }

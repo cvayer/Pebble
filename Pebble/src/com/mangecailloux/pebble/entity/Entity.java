@@ -15,7 +15,11 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.entity;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.ObjectMap.Values;
 import com.mangecailloux.pebble.entity.manager.EntityGroup;
 import com.mangecailloux.pebble.entity.manager.EntityGroupManager;
 
@@ -27,10 +31,22 @@ public class Entity
 	private  		EntityWorld	   	 world;
 	private final   ComponentSet	 components;
 	
+	private final	ObjectMap<Class<?>, Array<EntityEventHandler<?>>> 	eventsHandlerByType;
+	private final 	Pool<Array<EntityEventHandler<?>>>					eventsHandlerArrayPool;
+	
 	protected Entity()
 	{
 		// Entity should never be unallocated during runtime, so that should suffice to have an unique id
 		id = globalCounter++;
+		
+		eventsHandlerByType = new ObjectMap<Class<?>, Array<EntityEventHandler<?>>>(4);
+		eventsHandlerArrayPool = new Pool<Array<EntityEventHandler<?>>>()
+		{
+			@Override
+			protected Array<EntityEventHandler<?>> newObject() {
+				return new Array<EntityEventHandler<?>>(false, 4);
+			}
+		};
 		components = new ComponentSet(this);
 	}
 	
@@ -103,6 +119,7 @@ public class Entity
 	protected void onRemoveFromWorld()
 	{
 		components.onRemoveFromWorld();
+		unregisterAllEventHandlers();
 	}
 	
 	public <E extends EntityEvent> E getEvent(Class<E> _type)
@@ -119,8 +136,45 @@ public class Entity
 			world.getEntityManager().sendEvent(this, _event);
 		}
 		
-		components.sendEvent(_event);
+		Array<EntityEventHandler<?>> handlers = eventsHandlerByType.get(_event.getClass());
+		
+		if(handlers != null)
+		{
+			for(int i=0; i < handlers.size; ++i)
+			{
+				handlers.get(i).handle(_event);
+			}
+		}
+		
 		_event.setEntity(null);
 		Pools.free(_event);
+	}
+	
+	protected void registerEventHandler(EntityEventHandler<?> _handler)
+	{
+		if(_handler == null)
+			return;
+		
+		Array<EntityEventHandler<?>> handlers = eventsHandlerByType.get(_handler.getType());
+		if(handlers == null)
+			handlers = eventsHandlerArrayPool.obtain();
+		
+		if(!handlers.contains(_handler, true))
+		{
+			handlers.add(_handler);
+		}
+	}
+	
+	protected void unregisterAllEventHandlers()
+	{
+		Values<Array<EntityEventHandler<?>>> values = eventsHandlerByType.values();
+		
+		while(values.hasNext())
+    	{
+			Array<EntityEventHandler<?>> handlers = values.next();
+			handlers.clear();
+			eventsHandlerArrayPool.free(handlers);
+    	}
+		eventsHandlerByType.clear();
 	}
 }
