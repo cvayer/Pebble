@@ -1,41 +1,25 @@
 package com.mangecailloux.pebble.entity;
 
-import com.badlogic.gdx.utils.Pool.Poolable;
+import com.mangecailloux.pebble.event.Event;
 
-public abstract class EntityEvent implements Poolable
+public abstract class EntityEvent extends Event
 {
-	public static final int INVALID_TYPE = -1;
-	
 	protected Entity entity;
-	protected final int type; // Use the type is you want to make fast type check ( instead of using reflection )
-	
-	protected EntityEvent(int _type)
-	{
-		entity = null;
-		type = _type;
-	}
-	
+
 	protected EntityEvent()
 	{
-		this(INVALID_TYPE);
+		super();
+		entity = null;
 	}
-	
-	public int type()
-	{
-		return type;
-	}
-	
+		
 	protected void setEntity(Entity _entity)
 	{
 		entity = _entity;
 	}
 	
-	public void send()
+	public Entity getEntity()
 	{
-		if(entity == null)
-			throw new RuntimeException("EntityEvent::send -> entity must not be null");
-		
-		entity.sendEvent(this);
+		return entity;
 	}
 
 	@Override

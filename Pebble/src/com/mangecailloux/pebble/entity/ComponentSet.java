@@ -53,9 +53,7 @@ public class ComponentSet
 			
 			// TODO  : put all that in one function
 			component.setEntity(entity);
-			component.registerEventHandlers();
 			component.onAddToEntity();
-			
 			components.add(component);
 			componentsByType.put(type, component);
 			
@@ -110,8 +108,9 @@ public class ComponentSet
 		for(int i = 0; i < components.size; ++i)
 		{
 			//TODO put that in one function
-			components.get(i).onAddToWorld();
 			components.get(i).getUpdatersHandler().setUpdaterManager(entity.getWorld().getUpdaterManager());
+			components.get(i).getEventHandlersCollection().setManager(entity.getEventManager());
+			components.get(i).onAddToWorld();
 		}
 	}
 	
@@ -120,8 +119,9 @@ public class ComponentSet
 		for(int i = 0; i < components.size; ++i)
 		{
 			//TODO put that in one function
-			components.get(i).getUpdatersHandler().setUpdaterManager(null);
 			components.get(i).onRemoveFromWorld();
+			components.get(i).getEventHandlersCollection().setManager(null);
+			components.get(i).getUpdatersHandler().setUpdaterManager(null);
 		}
 		deinit();
 	}

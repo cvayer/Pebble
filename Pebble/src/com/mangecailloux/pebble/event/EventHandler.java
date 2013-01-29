@@ -1,10 +1,10 @@
-package com.mangecailloux.pebble.entity;
+package com.mangecailloux.pebble.event;
 
-public abstract class EntityEventHandler<T extends EntityEvent> 
+public abstract class EventHandler<T extends Event> 
 {
 	private final Class<T> type;
 	
-	public EntityEventHandler(Class<T> _type)
+	public EventHandler(Class<T> _type)
 	{
 		type = _type;
 	}
@@ -14,7 +14,7 @@ public abstract class EntityEventHandler<T extends EntityEvent>
 		return type;
 	}
 
-	public void handle(EntityEvent _event) 
+	public void handle(Event _event) 
 	{
 		onHandle(type.cast(_event));
 	}

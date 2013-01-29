@@ -15,26 +15,30 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.entity;
 
-import com.badlogic.gdx.utils.Array;
+import com.mangecailloux.pebble.event.EventHandler;
+import com.mangecailloux.pebble.event.EventHandlersCollection;
 import com.mangecailloux.pebble.updater.UpdatersHandler;
 
 public abstract class Component
 {
-	private Entity 	entity;
-	private final UpdatersHandler updatersHandler;
-	
-	private final Array<EntityEventHandler<?>> eventHandlers;
+	private 	  Entity 					entity;
+	private final UpdatersHandler 			updatersHandler;
+	private final EventHandlersCollection 	eventHandlers;
 	
 	public Component()
 	{
 		entity = null;
 		updatersHandler = new UpdatersHandler();
 		
-		eventHandlers = new Array<EntityEventHandler<?>>(false, 2);
+		eventHandlers = new EventHandlersCollection();
 	}
 	
 	protected UpdatersHandler getUpdatersHandler() {
 		return updatersHandler;
+	}
+	
+	protected EventHandlersCollection getEventHandlersCollection() {
+		return eventHandlers;
 	}
 
 	protected void setEntity(Entity _entity)
@@ -73,27 +77,9 @@ public abstract class Component
 		return null;
 	}
 	
-	protected void addEventHandler(EntityEventHandler<?> _handler)
+	protected void addEventHandler(EventHandler<?> _handler)
 	{
-		if(_handler != null && eventHandlers.contains(_handler, true))
-		{
-			eventHandlers.add(_handler);
-			if(entity != null)
-			{
-				entity.registerEventHandler(_handler);
-			}
-		}
-	}
-	
-	protected void registerEventHandlers()
-	{
-		if(entity == null)
-			return;
-		
-		for(int i = 0; i < eventHandlers.size; ++i)
-		{
-			entity.registerEventHandler(eventHandlers.get(i));
-		}
+		eventHandlers.addEventHandler(_handler);
 	}
 			
 	protected void onAddToEntity()				{}
