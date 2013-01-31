@@ -18,5 +18,4 @@ package com.mangecailloux.pebble.entity;
 public interface IEntityObserver {
 	void onAddToWorld(Entity _entity);
 	void onRemoveFromWorld(Entity _entity);
-	void onEntityEvent(Entity _entity, EntityEvent _event);
 }

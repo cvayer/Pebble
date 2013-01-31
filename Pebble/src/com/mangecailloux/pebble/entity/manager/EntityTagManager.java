@@ -19,9 +19,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 import com.mangecailloux.pebble.entity.Entity;
-import com.mangecailloux.pebble.entity.EntityWorldManager;
+import com.mangecailloux.pebble.entity.EntityManager;
 
-public class EntityTagManager extends EntityWorldManager
+public class EntityTagManager extends EntityManager
 {
 	private final ObjectMap<String, Entity> 		entityByTags;
 	private final ObjectMap<Entity, Array<String>> 	tagsByEntity;
@@ -88,6 +88,12 @@ public class EntityTagManager extends EntityWorldManager
 	}
 	
 	@Override
+	public void onAddToWorld(Entity _entity) 
+	{
+		
+	}
+	
+	@Override
 	public	void onRemoveFromWorld(Entity _entity) 
 	{
 		Array<String> tags = tagsByEntity.remove(_entity);
@@ -102,5 +108,5 @@ public class EntityTagManager extends EntityWorldManager
 			stringArrayPool.free(tags);
 		}
 		
-	}
+	}	
 }

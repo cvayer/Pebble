@@ -19,9 +19,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 import com.mangecailloux.pebble.entity.Entity;
-import com.mangecailloux.pebble.entity.EntityWorldManager;
+import com.mangecailloux.pebble.entity.EntityManager;
 
-public class EntityGroupManager extends EntityWorldManager
+public class EntityGroupManager extends EntityManager
 {
 	private final ObjectMap<EntityGroup, Array<Entity>> groups;
 	private final ObjectMap<Entity, Array<EntityGroup>> groupsByEntity;
@@ -43,6 +43,18 @@ public class EntityGroupManager extends EntityWorldManager
 			}
 			
 		};
+	}
+	
+	@Override
+	public void onAddToWorld(Entity _entity) 
+	{
+		
+	}
+	
+	@Override
+	public	void onRemoveFromWorld(Entity _entity) 
+	{
+		unregisterFromAllGroups(_entity);
 	}
 	
 	public Array<Entity> getGroup(EntityGroup _group)
@@ -89,11 +101,6 @@ public class EntityGroupManager extends EntityWorldManager
 			groups.put(_group, group);
 		}
 		group.add(_entity);
-	}
-	
-	@Override
-	public	void onRemoveFromWorld(Entity _entity) {
-		unregisterFromAllGroups(_entity);
 	}
 
 	private void unregisterFromAllGroups(Entity _entity) {

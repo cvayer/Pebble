@@ -2,17 +2,17 @@ package com.mangecailloux.pebble.updater;
 
 import com.badlogic.gdx.utils.Array;
 
-public class UpdatersHandler 
+public class Updaters 
 {
 	private final Array<Updater> updaters;
 	private 	  UpdaterManager manager;
 	
-	public UpdatersHandler()
+	public Updaters()
 	{
 		updaters = new Array<Updater>(false, 2);
 	}
 	
-	public void setUpdaterManager(UpdaterManager _manager)
+	public void setManager(UpdaterManager _manager)
 	{
 		if(manager != null)
 		{

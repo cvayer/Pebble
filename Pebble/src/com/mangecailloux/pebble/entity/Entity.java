@@ -25,8 +25,7 @@ public class Entity
 	
 	private			int 			 id;
 	private  		EntityWorld	   	 world;
-	private final   ComponentSet	 components;
-	
+	private final   ComponentSet	 components;	
 	private final	EventManager	 eventManager;
 	
 	protected Entity()
@@ -47,13 +46,19 @@ public class Entity
 	{
 		if(world != null)
 		{
-			world.getEntityManager().logger.info(toString() + ": " + _string);
+			world.getEntitiesManager().logger.info(toString() + ": " + _string);
 		}
 	}
 	
 	protected void setWorld(EntityWorld _world)
 	{
+		if(world != null)
+			onRemoveFromWorld();
+		
 		world = _world;
+		
+		if(world != null)
+			onAddToWorld();
 	}
 	
 	public EntityWorld getWorld()
@@ -76,7 +81,7 @@ public class Entity
 		return components.getComponent(_type);
 	}
 	
-	public <M extends EntityWorldManager> M getManager(Class<M> type)
+	public <M extends EntityManager> M getManager(Class<M> type)
 	{
 		if(world != null)
 			return  world.getManager(type);
@@ -103,15 +108,17 @@ public class Entity
 			manager.removeFromGroup(this, _group);
 	}
 	
-	protected void onAddToWorld()
+	private void onAddToWorld()
 	{
+		eventManager.setListener(world.getEventManagerListener());
 		components.onAddToWorld();
 	}
 	
-	protected void onRemoveFromWorld()
+	private void onRemoveFromWorld()
 	{
 		components.onRemoveFromWorld();
 		eventManager.unregisterAllEventHandlers();
+		eventManager.setListener(null);
 	}
 	
 	public <E extends EntityEvent> E getEvent(Class<E> _type)

@@ -2,12 +2,12 @@ package com.mangecailloux.pebble.event;
 
 import com.badlogic.gdx.utils.Array;
 
-public class EventHandlersCollection 
+public class EventHandlers 
 {
 	private		 	EventManager manager;
 	private final 	Array<EventHandler<?>> eventHandlers;
 	
-	public EventHandlersCollection()
+	public EventHandlers()
 	{
 		eventHandlers = new Array<EventHandler<?>>(false, 2);
 	}

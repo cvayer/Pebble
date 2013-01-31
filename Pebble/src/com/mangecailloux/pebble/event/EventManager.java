@@ -10,6 +10,7 @@ public class EventManager
 {
 	private final	ObjectMap<Class<?>, Array<EventHandler<?>>> 	eventsHandlerByType;
 	private final 	Pool<Array<EventHandler<?>>>					eventsHandlerArrayPool;
+	private 		EventManagerListener							listener;
 	
 	public EventManager()
 	{
@@ -22,7 +23,12 @@ public class EventManager
 			}
 		};
 	}
-	
+
+	public void setListener(EventManagerListener _listener)
+	{
+		listener = _listener;
+	}
+
 	public <E extends Event> E getEvent(Class<E> _type)
 	{
 		E event = Pools.obtain(_type);
@@ -30,7 +36,7 @@ public class EventManager
 		return event;
 	}
 	
-	protected void sendEvent(Event _event)
+	public void handleEvent(Event _event)
 	{
 		Array<EventHandler<?>> handlers = eventsHandlerByType.get(_event.getClass());
 		
@@ -42,6 +48,13 @@ public class EventManager
 			}
 		}
 		
+		if(listener != null)
+			listener.onEvent(_event);
+	}
+	
+	protected void sendEvent(Event _event)
+	{
+		handleEvent(_event);
 		_event.setManager(null);
 		Pools.free(_event);
 	}
@@ -76,4 +89,10 @@ public class EventManager
     	}
 		eventsHandlerByType.clear();
 	}
+	
+	public static interface EventManagerListener
+	{
+		void onEvent(Event _event);
+	}
+	
 }

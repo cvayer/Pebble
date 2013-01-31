@@ -19,29 +19,44 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mangecailloux.pebble.entity.manager.EntityGroupManager;
 import com.mangecailloux.pebble.entity.manager.EntityTagManager;
+import com.mangecailloux.pebble.event.Event;
+import com.mangecailloux.pebble.event.EventManager;
+import com.mangecailloux.pebble.event.EventManager.EventManagerListener;
 import com.mangecailloux.pebble.updater.UpdaterManager;
 
 public class EntityWorld 
 {
-	private final EntityManager entityManager;
+	private final EntitiesManager  entityManager;
 	private final UpdaterManager updaterManager;
 	
-	private final Array<EntityWorldManager> managers;
-	private final ObjectMap<Class<? extends EntityWorldManager>, EntityWorldManager> managersPerType;
+	private final EventManager	 		eventManager;
+	private final EventManagerListener	eventManagerListener;
+	
+	private final Array<EntityManager> managers;
+	private final ObjectMap<Class<? extends EntityManager>, EntityManager> managersPerType;
 	
 	public EntityWorld()
 	{
-		entityManager = new EntityManager(this);
+		entityManager = new EntitiesManager(this);
 		updaterManager = new UpdaterManager();
-		
-		managers = new Array<EntityWorldManager>(false, 4);
-		managersPerType = new ObjectMap<Class<? extends EntityWorldManager>, EntityWorldManager>(4);
+		eventManager = new EventManager();
+
+		managers = new Array<EntityManager>(false, 4);
+		managersPerType = new ObjectMap<Class<? extends EntityManager>, EntityManager>(4);
 		
 		addManager(new EntityGroupManager());
 		addManager(new EntityTagManager());
+		
+		eventManagerListener = new EventManagerListener() {
+
+			@Override
+			public void onEvent(Event _event) {
+				eventManager.handleEvent(_event);
+			}
+		};
 	}
 	
-	protected EntityManager getEntityManager()
+	protected EntitiesManager getEntitiesManager()
 	{
 		return entityManager;
 	}
@@ -49,6 +64,16 @@ public class EntityWorld
 	protected UpdaterManager getUpdaterManager()
 	{
 		return updaterManager;
+	}
+	
+	protected EventManager getEventManager()
+	{
+		return eventManager;
+	}
+	
+	protected EventManagerListener getEventManagerListener()
+	{
+		return eventManagerListener;
 	}
 	
 	public void setLogLevel(int _logLevel)
@@ -67,16 +92,6 @@ public class EntityWorld
 		 return entityManager.addEntity(_archetype);
 	}
 	
-	public Entity newEntity(EntityArchetype _archetype)
-	{
-		return entityManager.newEntity(_archetype);
-	}
-	
-	protected void addEntity(Entity _entity)
-	{
-		 entityManager.addEntity(_entity);
-	}
-	
 	public void removeEntity(Entity _entity)
 	{
 		entityManager.removeEntity(_entity);
@@ -87,20 +102,18 @@ public class EntityWorld
 		entityManager.removeAllEntities();
 	}
 	
-	public void addManager(EntityWorldManager _manager)
+	public void addManager(EntityManager _manager)
 	{
 		if(_manager != null && !managers.contains(_manager, true))
 		{
 			_manager.setWorld(this);
-			_manager.getUpdatersHandler().setUpdaterManager(updaterManager);
-			
 			managers.add(_manager);
 			managersPerType.put(_manager.getClass(), _manager);
 			entityManager.addObserver(_manager);
 		}
 	}
 	
-	public <M extends EntityWorldManager> M getManager(Class<M> type) {
+	public <M extends EntityManager> M getManager(Class<M> type) {
 		return type.cast(managersPerType.get(type));
 	}
 	

@@ -15,125 +15,53 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.entity;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Logger;
-import com.badlogic.gdx.utils.Pools;
+import com.mangecailloux.pebble.event.EventHandler;
+import com.mangecailloux.pebble.event.EventHandlers;
+import com.mangecailloux.pebble.updater.Updater;
+import com.mangecailloux.pebble.updater.Updaters;
 
-public class EntityManager 
+public abstract class EntityManager implements IEntityObserver
 {
-	protected 	final Logger 					logger;
-	private 	final EntityWorld	   			world;
-	private 	final Array<Entity> 			entities;
-	private 	final Array<IEntityObserver> 	obervers;
+	private 		EntityWorld	    			world;
+	private final 	Updaters 			updatersHandler;
+	private final 	EventHandlers 		eventHandlers;
 	
-	protected EntityManager(EntityWorld _world)
+	public EntityManager()
 	{
-		// reset the global counter as static data can be retained between application instances
-		Entity.globalCounter = 0;
-		
-		logger = new Logger("EntityManager");
+		updatersHandler = new Updaters();
+		eventHandlers = new EventHandlers();
+	}
+	
+	protected void addEventHandler(EventHandler<?> _handler)
+	{
+		eventHandlers.addEventHandler(_handler);
+	}
+	
+	protected void addUpdater(Updater _updater)
+	{
+		updatersHandler.addUpdater(_updater);
+	}
+	
+	protected void setWorld(EntityWorld _world)
+	{
 		world = _world;
-		entities = new Array<Entity>(false, 8);
-		obervers = new Array<IEntityObserver>(false, 4);
-	}
-	
-	protected Entity newEntity(EntityArchetype _archetype)
-	{
-		if(_archetype == null)
-			throw new RuntimeException("EntityManager::NewEntity -> Archetype cannot be null");
 		
-		if(_archetype.getComponentTypesCount() == 0)
-			throw new RuntimeException("EntityManager::NewEntity -> Archetype cannot be empty");
-		
-		 
-		 Entity entity = Pools.obtain(Entity.class);
-		 logger.info("New " + entity);
-		 entity.initComponents(_archetype);
-		 return entity;
-	}
-	
-	protected void addEntity(Entity _entity)
-	{
-		if(_entity != null)
+		if(world != null)
 		{
-			logger.info("AddToWorld " + _entity);
-			_entity.setWorld(world);
-			_entity.onAddToWorld();
-			for(int o =0; o < obervers.size; ++o)
-			{
-				obervers.get(o).onAddToWorld(_entity);
-			}
-			entities.add(_entity);
+			updatersHandler.setManager(world.getUpdaterManager());
+			eventHandlers.setManager(world.getEventManager());
 		}
 	}
 	
-	protected Entity addEntity(EntityArchetype _archetype)
+	public EntityWorld getWorld()
 	{
-		Entity entity = newEntity(_archetype);
-		addEntity(entity);
-		return entity;
+		return world;
 	}
 	
-	protected void removeEntity(Entity _entity)
+	public <M extends EntityManager> M getManager(Class<M> type)
 	{
-		if(_entity != null)
-		{
-			if(entities.removeValue(_entity, true))
-			{
-				logger.info("RemoveFromWorld " + _entity);
-				for(int o = 0; o < obervers.size; ++o)
-				{
-					obervers.get(o).onRemoveFromWorld(_entity);
-				}
-				_entity.onRemoveFromWorld();
-				_entity.setWorld(null);
-				Pools.free(_entity);
-			}
-		}
-	}
-	
-	protected void removeAllEntities()
-	{
-		if(entities.size == 0)
-			return;
-		
-		for(int i = 0; i < entities.size; ++i)
-		{
-			Entity entity = entities.get(i);
-			
-			logger.info("RemoveFromWorld " + entity);
-			for(int o = 0; o < obervers.size; ++o)
-			{
-				obervers.get(o).onRemoveFromWorld(entity);
-			}
-			entity.onRemoveFromWorld();
-			entity.setWorld(null);
-			Pools.free(entity);
-		}
-		entities.clear();
-	}
-	
-	protected void addObserver(IEntityObserver _observer)
-	{
-		if(_observer != null && !obervers.contains(_observer, true))
-		{
-			obervers.add(_observer);
-		}
-	}
-	
-	protected void removeObserver(IEntityObserver _observer)
-	{
-		if(_observer != null)
-		{
-			obervers.removeValue(_observer, true);
-		}
-	}
-	
-	protected void sendEvent(Entity _entity, EntityEvent _event)
-	{
-		for(int o = 0; o < obervers.size; ++o)
-		{
-			obervers.get(o).onEntityEvent(_entity, _event);
-		}
+		if(world != null)
+			return world.getManager(type);
+		return null;
 	}
 }
