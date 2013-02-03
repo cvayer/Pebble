@@ -25,19 +25,32 @@ import com.mangecailloux.pebble.audio.MusicManager;
 import com.mangecailloux.pebble.audio.SoundManager;
 import com.mangecailloux.pebble.debug.Debuggable;
 import com.mangecailloux.pebble.language.LanguagesManager;
+import com.mangecailloux.pebble.updater.UpdaterManager;
 import com.mangecailloux.pebble.vibration.VibrationManager;
 import com.mangecailloux.pebble.webpage.WebPageManager;
 
-public abstract class ScreenManager extends Debuggable implements ApplicationListener {
-    private Screen  	 screen;
-    private Screen  	 nextScreen;
-    private boolean		 changeScreenPending;
-    private boolean 	 manageScreenDisposal;
-    private boolean		 appCreated;
+public abstract class ScreenManager extends Debuggable implements ApplicationListener 
+{
+    private 		Screen  	 			screen;
+    private 		Screen  	 			nextScreen;
+    private 		boolean		 			changeScreenPending;
+    private 		boolean 	 			manageScreenDisposal;
+    private 		boolean		 			appCreated;
+    private final 	UpdaterManager 			updateManager;
+    private final   ScreenManagerParameters parameters;
     
     public ScreenManager(ScreenManagerParameters _parameters)
     {
     	super();
+    	
+    	updateManager = new UpdaterManager();
+    	manageScreenDisposal = true;
+    	appCreated = false;
+    	parameters = _parameters;
+    }
+    
+    private void initPebble()
+    {
     	// Pebble creation
     	Pebble.assets = new AssetsManager();
     	Pebble.musics = new MusicManager();
@@ -46,17 +59,32 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     	Pebble.vibrations = new VibrationManager();
     	Pebble.ads = new AdsManager();
     	Pebble.webpages = new WebPageManager();
-    
-    	manageScreenDisposal = true;
-    	appCreated = false;
     	
-		Pebble.ads.setInterface(_parameters.adsInterface);
-		Pebble.webpages.setInterface(_parameters.webPageInterface);
+    	Pebble.ads.setInterface(parameters.adsInterface);
+		Pebble.webpages.setInterface(parameters.webPageInterface);
     }
     
-    public void manageScreenDisposal(boolean _Manage)
+    private void deinitPebble()
     {
-    	manageScreenDisposal = _Manage;
+    	Pebble.assets.dispose();
+		
+		Pebble.assets 		= null;
+    	Pebble.musics 		= null;
+    	Pebble.sounds 		= null;
+    	Pebble.languages 	= null;
+    	Pebble.vibrations 	= null;
+    	Pebble.ads 			= null;
+    	Pebble.webpages 	= null;
+    }
+    
+    protected UpdaterManager getUpdateManager()
+    {
+    	return updateManager;
+    }
+    
+    public void manageScreenDisposal(boolean _manage)
+    {
+    	manageScreenDisposal = _manage;
     }
     
     @Override
@@ -76,21 +104,14 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     @Override
     public void dispose () {
     		applyNextScreen(null);
-    		Pebble.assets.dispose();
-    		
-    		Pebble.assets 		= null;
-        	Pebble.musics 		= null;
-        	Pebble.sounds 		= null;
-        	Pebble.languages 	= null;
-        	Pebble.vibrations 	= null;
-        	Pebble.ads 			= null;
-        	Pebble.webpages 	= null;
+    		deinitPebble();
     }
     
     @Override
     public void create ()
     {
     	appCreated = true;
+    	initPebble();
     	init();
     	setScreen(getInitialScreen());
     	onDebug (isDebug()); 
@@ -124,6 +145,8 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     			applyNextScreen(nextScreen);
     			changeScreenPending = false;
     		}
+    		
+    		updateManager.update(Gdx.graphics.getDeltaTime());
     	
             if (screen != null)
             {
@@ -154,6 +177,7 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
             	screen.unload();
             	if(manageScreenDisposal)
             		screen.dispose();
+            	screen.setManager(null);
             }
             
             screen = _screen;
@@ -161,6 +185,7 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
             if(screen != null)
             {
 	            Gdx.input.setInputProcessor(screen.getInputMultiplexer());
+	            screen.setManager(this);
 		        screen.activate(true);
 		        screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             }

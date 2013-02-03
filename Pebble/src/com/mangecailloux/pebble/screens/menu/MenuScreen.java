@@ -21,15 +21,15 @@ import com.mangecailloux.pebble.menu.MenuListener;
 import com.mangecailloux.pebble.menu.Page;
 import com.mangecailloux.pebble.menu.PageDescriptor;
 import com.mangecailloux.pebble.screens.Screen;
-import com.mangecailloux.pebble.screens.ScreenManager;
 
 public abstract class MenuScreen extends Screen implements MenuListener {
 	
 	protected final Stage							stage;
 	protected final ScreenMenu						menu;
 	
-	public MenuScreen(String _name, ScreenManager _Manager) {
-		super(_name, _Manager);
+	public MenuScreen(String _name) 
+	{
+		super(_name);
 		
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		

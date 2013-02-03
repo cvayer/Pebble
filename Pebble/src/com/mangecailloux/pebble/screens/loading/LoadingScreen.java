@@ -20,7 +20,8 @@ import com.mangecailloux.pebble.screens.Screen;
 import com.mangecailloux.pebble.screens.ScreenManager;
 
 
-public abstract class LoadingScreen extends Screen {
+public abstract class LoadingScreen extends Screen 
+{
 	
 	protected final Screen 	screenToLoad;
 	protected final boolean autoScreenChange;
@@ -28,9 +29,9 @@ public abstract class LoadingScreen extends Screen {
 	private			float		timer;
 	private final	float		duration;
 	
-	private LoadingScreen(String _name, ScreenManager _Manager, Screen _ToLoad, boolean _autoScreenChange, float _duration)
+	private LoadingScreen(String _name, Screen _ToLoad, boolean _autoScreenChange, float _duration)
 	{
-		super(_name, _Manager);
+		super(_name);
 		
 		if(_ToLoad == null)
 			throw new IllegalArgumentException("Screen to load must not be null");
@@ -45,12 +46,12 @@ public abstract class LoadingScreen extends Screen {
 	
 	public LoadingScreen(String _name, ScreenManager _Manager, Screen _ToLoad, boolean _autoScreenChange)
 	{
-		this(_name, _Manager, _ToLoad, _autoScreenChange, -1.0f);
+		this(_name, _ToLoad, _autoScreenChange, -1.0f);
 	}
 	
 	public LoadingScreen(String _name, ScreenManager _Manager, Screen _ToLoad, float _duration)
 	{
-		this(_name, _Manager, _ToLoad, true, _duration);
+		this(_name, _ToLoad, true, _duration);
 	}
 
 	@Override

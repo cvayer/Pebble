@@ -19,31 +19,34 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.math.MathUtils;
 import com.mangecailloux.pebble.debug.Debuggable;
+import com.mangecailloux.pebble.updater.Updater;
+import com.mangecailloux.pebble.updater.Updaters;
 
 public abstract class Screen  extends Debuggable {
 	
 	protected final String 				name;
-	protected final ScreenManager 		manager;
+	protected       ScreenManager 		manager;
 	protected 		boolean				loaded;
 	protected final InputMultiplexer 	inputMultiplexer;
 	protected		boolean				hasBeenActivated;
-	
+	private   final Updaters			updaters;
     private 		float updateDt;
     private 		float maxUpdateDt;
     private 		float updateTimer;
 	
-	public Screen(String _name, ScreenManager _Manager)
+	public Screen(String _name)
 	{
 		super();
-		
-		if(_Manager == null) 
-			throw new IllegalArgumentException("Screen : ScreenManager must not be null");
 		
 		if(_name != null)
 			name = _name;
 		else
 			name = this.getClass().getSimpleName();
-		manager = _Manager;
+		
+		manager = null;
+		
+		updaters = new Updaters();
+		
 		
 		updateTimer = 0.0f;
     	updateDt = -1.0f;
@@ -56,6 +59,27 @@ public abstract class Screen  extends Debuggable {
 	public ScreenManager getManager()
 	{
 		return manager;
+	}
+	
+	protected void setManager(ScreenManager _manager)
+	{
+		if(manager != _manager)
+		{
+			manager = _manager;
+			if(manager != null)
+			{
+				updaters.setManager(manager.getUpdateManager());
+			}
+			else
+			{
+				updaters.setManager(null);
+			}
+		}
+	}
+	
+	public void addUpdater(Updater _updater)
+	{
+		updaters.addUpdater(_updater);
 	}
 	
     public void setUpdateFPS(int _FPS)
