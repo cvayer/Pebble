@@ -31,7 +31,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.mangecailloux.pebble.Pebble;
 import com.mangecailloux.pebble.screens.Screen;
-import com.mangecailloux.pebble.screens.ScreenManager;
 
 public class MangeCaillouxSplashScreen extends LoadingScreen
 {
@@ -52,8 +51,8 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 	
 	private  	final	 Sound					crunch;
 	
-	public MangeCaillouxSplashScreen(ScreenManager _Manager, Screen _ToLoad) {
-		super("MangeCaillouxSplashScreen", _Manager, _ToLoad, false);
+	public MangeCaillouxSplashScreen(Screen _ToLoad) {
+		super("MangeCaillouxSplashScreen", _ToLoad, false);
 		
 		String folder = "HD/";
 		if(Gdx.graphics.getWidth() < (800 + 480)/2)

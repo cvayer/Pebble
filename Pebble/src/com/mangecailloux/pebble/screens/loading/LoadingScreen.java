@@ -44,7 +44,7 @@ public abstract class LoadingScreen extends Screen
 		timer = duration;
 	}
 	
-	public LoadingScreen(String _name, ScreenManager _Manager, Screen _ToLoad, boolean _autoScreenChange)
+	public LoadingScreen(String _name, Screen _ToLoad, boolean _autoScreenChange)
 	{
 		this(_name, _ToLoad, _autoScreenChange, -1.0f);
 	}
