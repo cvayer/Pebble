@@ -30,8 +30,8 @@ public class WebPageInterface implements IWebPageInterface
 	private final String HTTPS = "https://";
 	
 	@Override
-	public void open(String _url, EMode _mode) {
-		if(_mode == EMode.eURL)
+	public void open(String _url, EType _mode) {
+		if(_mode == EType.eURL)
 		{
 			if (!_url.startsWith(HTTP) && !_url.startsWith(HTTPS)) 
 				_url = HTTPS + _url;

@@ -19,11 +19,11 @@ public class WebPageInterface implements IWebPageInterface
 	}
 	
 	@Override
-	public void open(String _url, EMode _mode) {
+	public void open(String _url, EType _mode) {
 		
-		if(_mode == EMode.eURL)
+		if(_mode == EType.eURL)
 			data.putInt("mode", 0);
-		else if (_mode == EMode.eMarket)
+		else if (_mode == EType.eMarket)
 			data.putInt("mode", 1);
 		else
 			data.putInt("mode", 0);

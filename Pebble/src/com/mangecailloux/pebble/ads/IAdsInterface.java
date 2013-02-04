@@ -15,6 +15,16 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.ads;
 
-public interface IAdsInterface {
+/** <p>
+ * This interface is handled by the {@link AdsManager}. IAdsInterface are instantiated per platform and can be null,
+ * for instance on the Desktop. They are given to the AdsManager through the {@link ScreenManagerParameters}.
+ * </p>
+ * <p>
+ * See Pebble-Android for an implementation example.
+ * </p>
+ */
+public interface IAdsInterface 
+{
+	/**@param _show show or hide the ads*/
 	public void showAds(boolean _show);
 }

@@ -57,11 +57,8 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     	Pebble.sounds = new SoundManager();
     	Pebble.languages = new LanguagesManager();
     	Pebble.vibrations = new VibrationManager();
-    	Pebble.ads = new AdsManager();
-    	Pebble.webpages = new WebPageManager();
-    	
-    	Pebble.ads.setInterface(parameters.adsInterface);
-		Pebble.webpages.setInterface(parameters.webPageInterface);
+    	Pebble.ads = new AdsManager(parameters.adsInterface);
+    	Pebble.webpages = new WebPageManager(parameters.webPageInterface);
     }
     
     private void deinitPebble()

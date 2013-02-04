@@ -19,11 +19,11 @@ package com.mangecailloux.pebble.webpage;
 
 public interface IWebPageInterface {
 	
-	public enum EMode
+	public enum EType
 	{
 		eURL,
 		eMarket
 	};
 	
-	public void open(String _url, EMode _mode);
+	public void open(String _url, EType _mode);
 }

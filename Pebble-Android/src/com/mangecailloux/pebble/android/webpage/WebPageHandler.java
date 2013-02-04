@@ -26,7 +26,7 @@ public class WebPageHandler extends Handler
     	if(mode == 0)
 		{
         	if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) 
-        		finalUrl = "http://" + url;
+        		finalUrl = "https://" + url;
 		}
 		else if(mode == 1)
 		{

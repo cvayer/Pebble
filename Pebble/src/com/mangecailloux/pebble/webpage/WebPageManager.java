@@ -15,33 +15,41 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.webpage;
 
+/** <p>
+ * This manager handles an {@link IWebPageInterface}. IWebPageInterface are instantiated per platform and can be null. 
+ * It's given to the WebPageManager through the {@link ScreenManagerParameters}.
+ * </p>
+ * <p>
+ * See Pebble-Android and Pebble-Desktop for an implementation examples.
+ * </p>
+ */
 public class WebPageManager {
 	
-	private IWebPageInterface pageOpener;
+	/** the platform dependent implementation of the WebPage interface*/
+	private final IWebPageInterface webpage;
 	
-	public WebPageManager()
+	public WebPageManager(IWebPageInterface _webpage)
 	{
-		
+		webpage = _webpage;
 	}
 	
-	public void setInterface(IWebPageInterface _pageOpener)
-	{
-		pageOpener = _pageOpener;
-	}
-	
+	/** open a webpage
+	 * 
+	 * @param _url URL of the page, "http://" in front of the URL is optional, it will be added if missing.
+	 */
 	public void openPage(String _url)
 	{
-		if(pageOpener != null)
+		if(webpage != null)
 		{
-			pageOpener.open(_url, IWebPageInterface.EMode.eURL);
+			webpage.open(_url, IWebPageInterface.EType.eURL);
 		}
 	}
 	
 	public void openMarket(String _appID)
 	{
-		if(pageOpener != null)
+		if(webpage != null)
 		{
-			pageOpener.open(_appID, IWebPageInterface.EMode.eMarket);
+			webpage.open(_appID, IWebPageInterface.EType.eMarket);
 		}
 	}
 }
