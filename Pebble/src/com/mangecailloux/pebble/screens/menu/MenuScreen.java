@@ -21,6 +21,9 @@ import com.mangecailloux.pebble.menu.MenuListener;
 import com.mangecailloux.pebble.menu.Page;
 import com.mangecailloux.pebble.menu.PageDescriptor;
 import com.mangecailloux.pebble.screens.Screen;
+import com.mangecailloux.pebble.screens.ScreenUpdatePriority;
+import com.mangecailloux.pebble.updater.Updater;
+import com.mangecailloux.pebble.updater.impl.ConstantUpdater;
 
 public abstract class MenuScreen extends Screen implements MenuListener {
 	
@@ -56,6 +59,7 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 	@Override
 	protected void onDebug (boolean _debug)
 	{
+		
 	}
 	
 	protected abstract PageDescriptor<? extends Page> 	getStartPageDescriptor();
@@ -78,14 +82,12 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 		stage.dispose();
 	}
 
-	@Override
 	protected void onUpdate(float _fDt) {
 		stage.act(_fDt);	
 		menu.update(_fDt);
 	}
 
 	//! Renders the stage
-	@Override
 	protected void onRender(float _fDt) {
 		menu.render(_fDt);
 		stage.draw();
@@ -98,7 +100,10 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 	}
 	
 	@Override
-	protected void onFirstActivation() {
+	protected void onFirstActivation() 
+	{
+		addUpdater(update);
+		addUpdater(render);
 	}
 
 	@Override
@@ -111,4 +116,21 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 		menu.clear();
 		stage.clear();
 	}
+	
+	Updater update = new ConstantUpdater(ScreenUpdatePriority.BeforeRender) 
+	{
+		@Override
+		public void doUpdate(float _dt) 
+		{
+			onUpdate(_dt);
+		}
+	};
+	
+	Updater render = new Updater(ScreenUpdatePriority.Render) 
+	{
+		@Override
+		public void update(float _dt) {
+			onRender(_dt);
+		}
+	};
 }

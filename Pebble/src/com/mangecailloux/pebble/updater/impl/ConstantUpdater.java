@@ -42,12 +42,12 @@ public abstract class ConstantUpdater extends Updater
     }
 
 	@Override
-	public void update(float _dt) 
+	public final void update(float _dt) 
 	{
 		float maxedDt = MathUtils.clamp(_dt, 0.0f, maxUpdateDt);
 		if(updateDt <= 0.0f)
     	{
-    		onUpdate(maxedDt);
+			doUpdate(maxedDt);
     	}
     	else
     	{
@@ -55,11 +55,11 @@ public abstract class ConstantUpdater extends Updater
         	if(updateTimer <= 0.0f)
         	{
         		updateTimer += updateDt;
-        		onUpdate(updateDt);	
+        		doUpdate(updateDt);	
         	}
     	}
 	}
 	
-	public abstract void onUpdate(float _dt);
+	public abstract void doUpdate(float _dt);
 
 }

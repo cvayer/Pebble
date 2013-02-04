@@ -18,8 +18,6 @@ package com.mangecailloux.pebble.screens;
 public interface ScreenListener 
 {
    public void onDispose ();
-   public void onUpdate (float _fDt);
-   public void onRender (float _fDt);
    public void onResize (int width, int height);
    public void onFirstActivation();
    public void onActivation();
@@ -31,12 +29,6 @@ public interface ScreenListener
    {
 	@Override
 	public void onDispose() {}
-
-	@Override
-	public void onUpdate(float _fDt) {}
-
-	@Override
-	public void onRender(float _fDt) {}
 
 	@Override
 	public void onResize(int width, int height) {}

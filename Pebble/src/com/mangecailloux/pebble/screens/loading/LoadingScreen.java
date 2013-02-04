@@ -18,6 +18,9 @@ package com.mangecailloux.pebble.screens.loading;
 import com.mangecailloux.pebble.Pebble;
 import com.mangecailloux.pebble.screens.Screen;
 import com.mangecailloux.pebble.screens.ScreenManager;
+import com.mangecailloux.pebble.screens.ScreenUpdatePriority;
+import com.mangecailloux.pebble.updater.Updater;
+import com.mangecailloux.pebble.updater.impl.ConstantUpdater;
 
 
 public abstract class LoadingScreen extends Screen 
@@ -54,7 +57,6 @@ public abstract class LoadingScreen extends Screen
 		this(_name, _ToLoad, true, _duration);
 	}
 
-	@Override
 	protected void onUpdate(float _fDt) 
 	{		
 		if(screenToLoad != null && !nextIsLoaded)
@@ -75,6 +77,11 @@ public abstract class LoadingScreen extends Screen
 		timer = duration;
 	}
 	
+	protected void onFirstActivation()
+	{
+		addUpdater(update);
+	}
+	
 	protected void onLoad ()
 	{
 		if(screenToLoad != null)
@@ -90,4 +97,13 @@ public abstract class LoadingScreen extends Screen
 	{
 		manager.setScreen(screenToLoad);
 	}
+	
+	Updater update = new ConstantUpdater(ScreenUpdatePriority.BeforeRender) 
+	{
+		@Override
+		public void doUpdate(float _dt) 
+		{
+			onUpdate(_dt);
+		}
+	};
 }

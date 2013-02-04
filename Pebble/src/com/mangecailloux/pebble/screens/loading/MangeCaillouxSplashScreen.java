@@ -31,6 +31,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.mangecailloux.pebble.Pebble;
 import com.mangecailloux.pebble.screens.Screen;
+import com.mangecailloux.pebble.screens.ScreenUpdatePriority;
+import com.mangecailloux.pebble.updater.Updater;
 
 public class MangeCaillouxSplashScreen extends LoadingScreen
 {
@@ -233,9 +235,8 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 			changeScreen();
 	}
 
-	@Override
-	protected void onRender(float _fDt) {
-		
+	protected void onRender(float _fDt)
+	{
 		GL20 gl = Gdx.graphics.getGL20();
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(0.0f, 0.0f,0.0f, 1.0f);
@@ -252,11 +253,6 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 	}
 
 	@Override
-	protected void onFirstActivation() {
-		
-	}
-
-	@Override
 	protected void onPause() {
 		
 	}
@@ -265,4 +261,19 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 	protected void onResume() {
 		
 	}
+	
+	@Override
+	protected void onFirstActivation() 
+	{
+		super.onFirstActivation();
+		addUpdater(render);
+	}
+	
+	Updater render = new Updater(ScreenUpdatePriority.Render) 
+	{
+		@Override
+		public void update(float _dt) {
+			onRender(_dt);
+		}
+	};
 }

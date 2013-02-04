@@ -147,11 +147,6 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     		}
     		
     		updateManager.update(Gdx.graphics.getDeltaTime());
-    	
-            if (screen != null)
-            {
-            	screen.render();
-            }
     }
 
     @Override

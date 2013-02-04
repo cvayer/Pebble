@@ -17,7 +17,6 @@ package com.mangecailloux.pebble.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.math.MathUtils;
 import com.mangecailloux.pebble.debug.Debuggable;
 import com.mangecailloux.pebble.updater.Updater;
 import com.mangecailloux.pebble.updater.Updaters;
@@ -30,9 +29,6 @@ public abstract class Screen  extends Debuggable {
 	protected final InputMultiplexer 	inputMultiplexer;
 	protected		boolean				hasBeenActivated;
 	private   final Updaters			updaters;
-    private 		float updateDt;
-    private 		float maxUpdateDt;
-    private 		float updateTimer;
 	
 	public Screen(String _name)
 	{
@@ -44,13 +40,7 @@ public abstract class Screen  extends Debuggable {
 			name = this.getClass().getSimpleName();
 		
 		manager = null;
-		
 		updaters = new Updaters();
-		
-		
-		updateTimer = 0.0f;
-    	updateDt = -1.0f;
-    	maxUpdateDt = 1/24.0f;
     	loaded = false;
     	hasBeenActivated = false;
     	inputMultiplexer = new InputMultiplexer();
@@ -81,60 +71,15 @@ public abstract class Screen  extends Debuggable {
 	{
 		updaters.addUpdater(_updater);
 	}
-	
-    public void setUpdateFPS(int _FPS)
-    {
-    	if(_FPS > 0)
-    		updateDt = 1.0f / _FPS;
-    }
-    
-    public void setMaxUpdateFPS(int _FPS)
-    {
-    	if(_FPS > 0)
-    		maxUpdateDt = 1.0f / _FPS;
-    }
     
     public Boolean isLoaded()
     {
     	return loaded;
     }
     
-    public float getUpdateDt()
-    {
-    	return updateDt;
-    }
-    
-    public float getMaxUpdateDt()
-    {
-    	return maxUpdateDt;
-    }
-    
     public InputMultiplexer getInputMultiplexer()
     {
     	return inputMultiplexer;
-    }
-    
-    public void render()
-    {
-    	float fDt = manager.getDt();
-    	
-    	if(updateDt <= 0.0f)
-    	{
-    		float maxedDt = MathUtils.clamp(fDt, 0.0f, maxUpdateDt);
-    		onUpdate(maxedDt);
-    	}
-    	else
-    	{
-    		float maxedDt = MathUtils.clamp(fDt, 0.0f, maxUpdateDt);
-    		updateTimer -= maxedDt;
-        	if(updateTimer <= 0.0f)
-        	{
-        		updateTimer += updateDt;
-        		onUpdate(updateDt);	
-        	}
-    	}
-    		
-    	onRender(fDt);
     }
     
     public void log(String _message)
@@ -180,7 +125,6 @@ public abstract class Screen  extends Debuggable {
     			hasBeenActivated = true;
     		}
     		onActivation();
-    		updateTimer = -1.0f;
     	}
     	else
     	{
@@ -210,8 +154,6 @@ public abstract class Screen  extends Debuggable {
     }
     
     protected 		abstract void onDispose ();
-    protected 		abstract void onUpdate (float _fDt);
-    protected 		abstract void onRender (float _fDt);
     protected		abstract void onLoad ();
     protected		abstract void onUnload ();
     protected 		abstract void onResize (int width, int height);
