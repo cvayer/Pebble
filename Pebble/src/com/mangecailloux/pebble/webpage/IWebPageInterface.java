@@ -15,15 +15,30 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.webpage;
 
-
-
+/** <p>
+ * This interface is handled by the {@link WebPageManager}. IWebPageInterface are instantiated per platform and can be null.
+ * They are given to the WebPageManager through the {@link ScreenManagerParameters}.
+ * </p>
+ * <p>
+ * Implementations are located in Pebble-Desktop and Pebble-Android.
+ * </p>
+ * @author clement.vayer
+ */
 public interface IWebPageInterface {
 	
+	/**
+	 * Type of the page to open, eMarket will try to open the app page via Google Play
+	 */
 	public enum EType
 	{
 		eURL,
 		eMarket
 	};
 	
-	public void open(String _url, EType _mode);
+	/**
+	 * opens a webpage
+	 * @param _url	URL to open, or app ID
+	 * @param _type type for opening method
+	 */
+	public void open(String _url, EType _type);
 }

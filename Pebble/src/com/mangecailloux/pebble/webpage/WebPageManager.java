@@ -22,6 +22,7 @@ package com.mangecailloux.pebble.webpage;
  * <p>
  * See Pebble-Android and Pebble-Desktop for an implementation examples.
  * </p>
+ * @author clement.vayer
  */
 public class WebPageManager {
 	
@@ -35,7 +36,8 @@ public class WebPageManager {
 	
 	/** open a webpage
 	 * 
-	 * @param _url URL of the page, "http://" in front of the URL is optional, it will be added if missing.
+	 * @param _url URL of the page, with the current android and desktop implementations, 
+	 * "http://" in front of the URL is optional, it will be added if missing.
 	 */
 	public void openPage(String _url)
 	{
@@ -45,6 +47,13 @@ public class WebPageManager {
 		}
 	}
 	
+	/** go to the Google Play Store, to the page of the app
+	 * 
+	 * @param _appID id of the app on the market. it's the main package of the app ( ex : com.me.mygame ).
+	 * <p>
+	 * On android is no Google play is found, opens an internet browser with the right page
+	 * </p>
+	 */
 	public void openMarket(String _appID)
 	{
 		if(webpage != null)

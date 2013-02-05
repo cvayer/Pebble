@@ -23,6 +23,7 @@ package com.mangecailloux.pebble.ads;
  * <p>
  * See Pebble-Android for an implementation example.
  * </p>
+ * @author clement.vayer
  */
 public class AdsManager {
 	    

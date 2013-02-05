@@ -20,8 +20,9 @@ package com.mangecailloux.pebble.ads;
  * for instance on the Desktop. They are given to the AdsManager through the {@link ScreenManagerParameters}.
  * </p>
  * <p>
- * See Pebble-Android for an implementation example.
+ * Implementation is located in Pebble-Android.
  * </p>
+ * @author clement.vayer
  */
 public interface IAdsInterface 
 {

@@ -24,6 +24,11 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Logger;
 import com.mangecailloux.pebble.Pebble;
 
+/**
+ * 
+ * @author clement.vayer
+ *
+ */
 public class AssetsManager 
 {
 	private final AssetManager assetManager;
@@ -36,7 +41,8 @@ public class AssetsManager
 			if(_params != null && !(_params instanceof PebbleSoundLoaderParameter))
 				throw new IllegalArgumentException("AssetsManager::newDescriptor : sound parameter must be a PebbleSoundLoaderParameter");
 			
-			_params = (AssetLoaderParameters<T>) new PebbleSoundLoaderParameter();
+			if(_params == null)
+				_params = (AssetLoaderParameters<T>) new PebbleSoundLoaderParameter();
 		}
 		
 		if(_type == Music.class)
@@ -44,7 +50,8 @@ public class AssetsManager
 			if(_params != null && !(_params instanceof PebbleMusicLoaderParameter))
 				throw new IllegalArgumentException("AssetsManager::newDescriptor : music parameter must be a PebbleMusicLoaderParameter");
 			
-			_params = (AssetLoaderParameters<T>) new PebbleMusicLoaderParameter();
+			if(_params == null)
+				_params = (AssetLoaderParameters<T>) new PebbleMusicLoaderParameter();
 		}
 		
 		return new AssetDescriptor<T>(_fileName, _type, _params);
