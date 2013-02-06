@@ -36,6 +36,7 @@ import com.mangecailloux.pebble.Pebble;
  */
 public class AssetsManager 
 {
+	/** LibGdx {@link AssetManager } to store and load all assets */
 	private final AssetManager assetManager;
 	
 	/**
@@ -48,8 +49,10 @@ public class AssetsManager
 	 */
 	public static <T> AssetDescriptor<T> newDescriptor(String _fileName, Class<T> _type, AssetLoaderParameters<T> _params)
 	{
+		// if we load a sound
 		if(_type == Sound.class)
 		{
+			//
 			if(_params != null && !(_params instanceof PebbleSoundLoaderParameter))
 				throw new IllegalArgumentException("AssetsManager::newDescriptor : sound parameter must be a PebbleSoundLoaderParameter");
 			
@@ -87,6 +90,9 @@ public class AssetsManager
 		assetManager = new AssetManager();
 	}
 	
+	/**
+	 * Dispose of all assets, clear {@link SoundManager} and {@link SoundManager}
+	 */
 	public synchronized void dispose () 
 	{
 		assetManager.dispose();
@@ -94,12 +100,13 @@ public class AssetsManager
 		Pebble.musics.clear();
 	}
 	
-	public void debug(boolean _debug)
+	/**
+	 * @param _level is the ones set in {@link Logger}.<br/>
+	 * Can be Logger.DEBUG, Logger.INFO, Logger.ERROR, or Logger.NONE
+	 */
+	public void setLogLevel(int _level)
 	{
-		if(_debug)
-			assetManager.getLogger().setLevel(Logger.DEBUG);
-		else
-			assetManager.getLogger().setLevel(Logger.ERROR);
+		assetManager.getLogger().setLevel(_level);
 	}
 	
 	public synchronized <T> T get (AssetDescriptor<T> _descriptor) 

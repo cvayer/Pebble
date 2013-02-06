@@ -94,8 +94,6 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
 	    	else
 	    		Gdx.app.setLogLevel(Application.LOG_ERROR);
     	}
-    	
-    	Pebble.assets.debug(_debug);
     }
 
     @Override
