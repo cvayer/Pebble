@@ -25,15 +25,27 @@ import com.badlogic.gdx.utils.Logger;
 import com.mangecailloux.pebble.Pebble;
 
 /**
- * 
+ * <p>
+ * That class is basically a wrapper around libGdx {@link AssetManager}, it allows loading, unloading and get of assets.
+ * </p>
+ * <p>
+ * For {@link Sound} and {@link Music}, {@link PebbleSoundLoaderParameter} and {@link PebbleMusicLoaderParameter} should be used 
+ * , so that they will be automatically added to the {@link SoundManager} and the {@link MusicManager}.
+ * </p>
  * @author clement.vayer
- *
  */
 public class AssetsManager 
 {
 	private final AssetManager assetManager;
 	
-	@SuppressWarnings("unchecked")
+	/**
+	 * Convenience method for creating {@link AssetDescriptor}. <br/> {@link PebbleSoundLoaderParameter} and {@link PebbleMusicLoaderParameter} will
+	 * be automatically checked, or added if needed.
+	 * @param _fileName path to the asset, relative to the Assets folder in the Android project
+	 * @param _type	type of the asset
+	 * @param _params optionnal parameters, can be null
+	 * @return the newly created AssetDescriptor. Store it somewhere for easy access to the asset.
+	 */
 	public static <T> AssetDescriptor<T> newDescriptor(String _fileName, Class<T> _type, AssetLoaderParameters<T> _params)
 	{
 		if(_type == Sound.class)
@@ -42,7 +54,7 @@ public class AssetsManager
 				throw new IllegalArgumentException("AssetsManager::newDescriptor : sound parameter must be a PebbleSoundLoaderParameter");
 			
 			if(_params == null)
-				_params = (AssetLoaderParameters<T>) new PebbleSoundLoaderParameter();
+				_params =  (AssetLoaderParameters<T>) new PebbleSoundLoaderParameter();
 		}
 		
 		if(_type == Music.class)
@@ -57,6 +69,13 @@ public class AssetsManager
 		return new AssetDescriptor<T>(_fileName, _type, _params);
 	}
 	
+	/**
+	 * Convenience method for creating {@link AssetDescriptor}. <br/> {@link PebbleSoundLoaderParameter} and {@link PebbleMusicLoaderParameter} will
+	 * be automatically added.
+	 * @param _fileName path to the asset, relative to the Assets folder in the Android project
+	 * @param _type	type of the asset
+	 * @return the newly created AssetDescriptor. Store it somewhere for easy access to the asset.
+	 */
 	public static <T> AssetDescriptor<T> newDescriptor(String _fileName, Class<T> _type)
 	{
 		return newDescriptor(_fileName, _type, null);
