@@ -38,6 +38,7 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     private 		boolean		 			appCreated;
     private final 	UpdaterManager 			updateManager;
     private final   ScreenManagerParameters parameters;
+    private 		boolean					pebbleInit;
     
     public ScreenManager(ScreenManagerParameters _parameters)
     {
@@ -47,31 +48,42 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     	manageScreenDisposal = true;
     	appCreated = false;
     	parameters = _parameters;
+    	pebbleInit = false;
     }
     
     private void initPebble()
     {
-    	// Pebble creation
-    	Pebble.assets = new AssetsManager();
-    	Pebble.musics = new MusicManager();
-    	Pebble.sounds = new SoundManager();
-    	Pebble.languages = new LanguagesManager();
-    	Pebble.vibrations = new VibrationManager();
-    	Pebble.ads = new AdsManager(parameters.adsInterface);
-    	Pebble.webpages = new WebPageManager(parameters.webPageInterface);
+    	if(!pebbleInit)
+    	{
+	    	// Pebble creation
+	    	Pebble.assets = new AssetsManager();
+	    	Pebble.musics = new MusicManager();
+	    	Pebble.sounds = new SoundManager();
+	    	Pebble.languages = new LanguagesManager();
+	    	Pebble.vibrations = new VibrationManager();
+	    	Pebble.ads = new AdsManager(parameters.adsInterface);
+	    	Pebble.webpages = new WebPageManager(parameters.webPageInterface);
+	    	
+	    	pebbleInit = true;
+    	}
     }
     
     private void deinitPebble()
     {
-    	Pebble.assets.dispose();
-		
-		Pebble.assets 		= null;
-    	Pebble.musics 		= null;
-    	Pebble.sounds 		= null;
-    	Pebble.languages 	= null;
-    	Pebble.vibrations 	= null;
-    	Pebble.ads 			= null;
-    	Pebble.webpages 	= null;
+    	if(pebbleInit)
+    	{
+	    	Pebble.assets.dispose();
+			
+			Pebble.assets 		= null;
+	    	Pebble.musics 		= null;
+	    	Pebble.sounds 		= null;
+	    	Pebble.languages 	= null;
+	    	Pebble.vibrations 	= null;
+	    	Pebble.ads 			= null;
+	    	Pebble.webpages 	= null;
+	    	
+	    	pebbleInit = false;
+    	}
     }
     
     protected UpdaterManager getUpdateManager()
@@ -116,46 +128,46 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     protected abstract Screen getInitialScreen();
 
     @Override
-    public void pause () {
-            if (screen != null) 
-            	screen.pause(true);
-    }
-
-    @Override
-    public void resume () {
-            if (screen != null) 
-            	screen.pause(false);
-    }
-    
-    public float getDt()
+    public void pause () 
     {
-    	return Gdx.graphics.getDeltaTime();
+        if (screen != null) 
+        	screen.pause(true);
     }
 
     @Override
-    public void render () {
-
-    		if(changeScreenPending)
-    		{
-    			applyNextScreen(nextScreen);
-    			changeScreenPending = false;
-    		}
-    		
-    		updateManager.update(Gdx.graphics.getDeltaTime());
+    public void resume () 
+    {
+        if (screen != null) 
+        	screen.pause(false);
     }
 
     @Override
-    public void resize (int _width, int _height) {
-            if (screen != null) 
-            	screen.resize(_width, _height);
+    public void render () 
+    {
+		if(changeScreenPending)
+		{
+			applyNextScreen(nextScreen);
+			changeScreenPending = false;
+		}
+		
+		updateManager.update(Gdx.graphics.getDeltaTime());
     }
 
-    public void setScreen (Screen _screen) {
+    @Override
+    public void resize (int _width, int _height) 
+    {
+        if (screen != null) 
+        	screen.resize(_width, _height);
+    }
+
+    public void setScreen (Screen _screen) 
+    {
     	changeScreenPending = true;
     	nextScreen = _screen;
     }
 
-    private void applyNextScreen (Screen _screen) {
+    private void applyNextScreen (Screen _screen) 
+    {
     	if(appCreated && _screen != screen)
         {   
     		 if(_screen != null && !_screen.isLoaded())
@@ -182,7 +194,8 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
         }
     }
 
-    public Screen getScreen () {
-            return screen;
+    public Screen getScreen () 
+    {
+        return screen;
     }
 }

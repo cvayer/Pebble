@@ -18,6 +18,7 @@ package com.mangecailloux.pebble.screens.loading;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -237,7 +238,7 @@ public class MangeCaillouxSplashScreen extends LoadingScreen
 
 	protected void onRender(float _fDt)
 	{
-		GL20 gl = Gdx.graphics.getGL20();
+		GLCommon gl = Gdx.gl;
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		gl.glClearColor(0.0f, 0.0f,0.0f, 1.0f);
 		
