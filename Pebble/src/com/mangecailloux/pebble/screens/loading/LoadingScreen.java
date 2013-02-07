@@ -61,7 +61,7 @@ public abstract class LoadingScreen extends Screen
 	{		
 		if(screenToLoad != null && !nextIsLoaded)
 		{
-			if(Pebble.assets.isFinishedLoading())
+			if(Pebble.assets.processLoadingQueue())
 				nextIsLoaded = true;
 		}
 		

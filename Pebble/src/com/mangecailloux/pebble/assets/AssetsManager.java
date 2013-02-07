@@ -47,6 +47,7 @@ public class AssetsManager
 	 * @param _params optionnal parameters, can be null
 	 * @return the newly created AssetDescriptor. Store it somewhere for easy access to the asset.
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> AssetDescriptor<T> newDescriptor(String _fileName, Class<T> _type, AssetLoaderParameters<T> _params)
 	{
 		// if we load a sound
@@ -91,7 +92,7 @@ public class AssetsManager
 	}
 	
 	/**
-	 * Dispose of all assets, clear {@link SoundManager} and {@link SoundManager}
+	 * Dispose of all assets, clear {@link SoundManager} and {@link MusicManager}
 	 */
 	public synchronized void dispose () 
 	{
@@ -109,11 +110,20 @@ public class AssetsManager
 		assetManager.getLogger().setLevel(_level);
 	}
 	
+	/**
+	 * @param _descriptor {@link AssetDescriptor} of the asset you want to retrieve.
+	 * @return the wanted asset if found, else null.
+	 */
 	public synchronized <T> T get (AssetDescriptor<T> _descriptor) 
 	{
 		return assetManager.get(_descriptor.fileName, _descriptor.type);
 	}
 	
+	/**
+	 * Adds the Asset to the loading queue.<br/>
+	 * The queue must then be processed by calling processLoadingQueue() every frame until it returns true.
+	 * @param _descriptor {@link AssetDescriptor} of the asset you want to load.
+	 */
 	public synchronized void load (AssetDescriptor<?> _descriptor) 
 	{
 		if(_descriptor.type == Sound.class)
@@ -131,6 +141,12 @@ public class AssetsManager
 		assetManager.load(_descriptor);
 	}
 	
+	/**
+	 * Unload an asset. <br/>
+	 * Note : Assets are refcounted, so depending on dependencies the asset might still be loaded in memory.<br/>
+	 * If no more instance of a {@link Sound} or {@link Music} are loaded, it will be removed from the matching manager.
+	 * @param _descriptor {@link AssetDescriptor} of the asset you want to unload.
+	 */
 	public synchronized void unload (AssetDescriptor<?> _descriptor) 
 	{
 		assetManager.unload(_descriptor.fileName);
@@ -154,7 +170,11 @@ public class AssetsManager
 		}
 	}
 	
-	public boolean isFinishedLoading()
+	/**
+	 * Must be called every frame after call to {@link #load(AssetDescriptor)}. When it returns true, you can stop calling it every frame.
+	 * @return true if all assets in the loading queue are loaded.
+	 */
+	public boolean processLoadingQueue()
 	{
 		return assetManager.update();
 	}
