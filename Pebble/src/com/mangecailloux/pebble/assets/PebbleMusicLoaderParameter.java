@@ -20,11 +20,33 @@ import com.badlogic.gdx.assets.loaders.MusicLoader;
 import com.badlogic.gdx.audio.Music;
 import com.mangecailloux.pebble.Pebble;
 
+/**
+ * AssetDescriptorParameter that must be used when using the {@link AssetsManager}. <br/>
+ * Will automatically put the loaded music in the {@link MusicManager}.<br/>
+ * Users can defined their own callback that will also be called.
+ * @author clement.vayer
+ *
+ */
 public class PebbleMusicLoaderParameter extends MusicLoader.MusicParameter
 {
+	/** user callback */
+	private final LoadedCallback userCallBack;
+	
+	/**
+	 * Default ctor with no user callback
+	 */
 	public PebbleMusicLoaderParameter()
 	{
+		this(null);
+	}
+	
+	/**
+	 * @param _userCallback user callback to process the music if needed. It will already be added to the manager.
+	 */
+	public PebbleMusicLoaderParameter(LoadedCallback _userCallback)
+	{
 		super();
+		userCallBack = null;
 		
 		loadedCallback = new LoadedCallback() 
 		{
@@ -34,11 +56,16 @@ public class PebbleMusicLoaderParameter extends MusicLoader.MusicParameter
 				
 				if(type == Music.class)
 				{
+					// Register the music to the manager is it's not already the case
 					if(!Pebble.musics.contains(fileName))
 					{
 						Music sound = assetManager.get(fileName, Music.class);
 						Pebble.musics.register(fileName, sound);
 					}	
+					
+					// Call the user callback if needed.
+					if(userCallBack != null)
+						userCallBack.finishedLoading(assetManager, fileName, type);
 				}
 			}
 		};

@@ -149,25 +149,25 @@ public class AssetsManager
 	 */
 	public synchronized void unload (AssetDescriptor<?> _descriptor) 
 	{
-		assetManager.unload(_descriptor.fileName);
-		
+		// Unregister the Sound and Music from the managers before effectively unloading it.
 		if(_descriptor.type == Sound.class)
 		{
-			// no more sound instance
-			if(! assetManager.isLoaded(_descriptor.fileName))
+			// Remove the Sound only if it will not be loaded anymore (refcount will be 0 after the next unload call)
+			if(assetManager.getReferenceCount(_descriptor.fileName) == 1)
 			{
 				Pebble.sounds.unregister(_descriptor.fileName);
 			}
 		}
-		
-		if(_descriptor.type == Music.class)
+		else if(_descriptor.type == Music.class)
 		{
-			// no more music instance
-			if(! assetManager.isLoaded(_descriptor.fileName))
+			// Remove the Music only if it will not be loaded anymore (refcount will be 0 after the next unload call)
+			if(assetManager.getReferenceCount(_descriptor.fileName) == 1)
 			{
 				Pebble.musics.unregister(_descriptor.fileName);
 			}
 		}
+		
+		assetManager.unload(_descriptor.fileName);
 	}
 	
 	/**
@@ -179,6 +179,11 @@ public class AssetsManager
 		return assetManager.update();
 	}
 	
+	/**
+	 * Set the loader to use for a given type.
+	 * @param _type Type of the Asset to process.
+	 * @param _loader Associated {@link AssetLoader}.
+	 */
 	public synchronized <T, P extends AssetLoaderParameters<T>> void setLoader (Class<T> _type, AssetLoader<T, P> _loader) {
 		assetManager.setLoader(_type, _loader);
 	}
