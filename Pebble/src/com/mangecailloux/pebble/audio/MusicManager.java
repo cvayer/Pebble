@@ -40,7 +40,7 @@ public class MusicManager
 	}
 	
 	/**
-	 * Sets the default activation state, must be called before the creation of the manager. (e.g. Before the init() call of {@link ScreenManager} )
+	 * Sets the default activation state, must be called before the creation of the manager. (e.g. Before {@link ScreenManager#init()} )
 	 * @param _activated
 	 */
 	public static void setDefaultActivation(boolean _activated)
@@ -49,7 +49,7 @@ public class MusicManager
 	}
 	// /Static ----------------------------------------------
 	
-	/** if false, not music will be played */
+	/** if false, no music will be played */
 	private boolean activated;
 	/** all the loaded musics, when loaded through the {@link AssetsManager} the key is the filepath */
 	private final 	ObjectMap<String, Music>	musics;
@@ -127,7 +127,6 @@ public class MusicManager
 	
 	/**
 	 * Register the {@link Music} into the manager.
-	 * {@link Asset} {@link #get(String)}
 	 * @param _key ID of the music instance.
 	 * @param _music music instance.
 	 */
@@ -139,7 +138,9 @@ public class MusicManager
 		musics.put(_key, _music);
 	}
 	
-	/** Remove a {@link Music} */
+	/** Remove a {@link Music}. This will not unload the music. 
+	 * @param _key ID of the music instance.
+	 */
 	public void unregister(String _key)
 	{
 		Music music = musics.get(_key);
@@ -149,7 +150,7 @@ public class MusicManager
 	}
 	
 	/**
-	 * Stop and remove all music instances. Be careful, this will not unload the musics.
+	 * Stop and remove all music instances. This will not unload the musics.
 	 */
 	public void clear()
 	{
@@ -252,9 +253,8 @@ public class MusicManager
 
 	//******************************************
 	/**
-	 * Interface to permof a task on each music stored
+	 * Interface to perform a task on each music stored
 	 * @author clement.vayer
-	 *
 	 */
 	private interface MusicVisitor
 	{
