@@ -27,7 +27,8 @@ public class AdsInterface implements IAdsInterface
 	}
 	
 	@Override
-	public void showAds(boolean _show) {
+	public void showAds(boolean _show) 
+	{
 		handler.sendEmptyMessage(_show ? AdsHandler.SHOW_ADS : AdsHandler.HIDE_ADS);
 	}
 

@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -38,6 +39,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 import com.esotericsoftware.tablelayout.Cell;
 import com.mangecailloux.pebble.directory.Directory;
+import com.mangecailloux.pebble.tools.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -802,5 +804,103 @@ public class ConstantEditor  implements Disposable
 	}
 	//------------------------------------------------------------------
 	// </ConstantTextFieldListener>
+	//------------------------------------------------------------------
+	
+	//------------------------------------------------------------------
+	// <ConstantEditorListener>
+	//------------------------------------------------------------------
+	/** 
+	 * Interface to listen to {@link ConstantEditor} events (opening, closing, etc.)
+	*/
+	public static interface ConstantEditorListener 
+	{
+		/** Called when the constantEditor is opening.*/
+		void		onOpening();
+		/** Called when the constantEditor is closing.*/
+		void		onClosing();
+		/** Called when the value of a {@link Constant} has changed.
+		 * @param _constant Constant that have just changed.*/
+		void		onConstantChanged(Constant _constant);
+	}
+	//------------------------------------------------------------------
+	// </ConstantEditorListener>
+	//------------------------------------------------------------------
+	
+	//------------------------------------------------------------------
+	// <ConstantTable>
+	//------------------------------------------------------------------
+	/** 
+	 * <p>
+	 * ConstantTable is a custom Table to display a {@link Constant}, it extends {@link Table}.
+	 * </p>
+	 * <p>
+	 * It contains  : 
+	 * a {@link Label} to display the constant's name and
+	 * a {@link TextField} to display and edit the constant's value.
+	 * </p>
+	*/
+	static class ConstantTable extends Table
+	{		
+		/** {@link Label} to display the Constant name  */
+		private final Label 		label;
+		/** {@link Label} to display the Constant name  */
+		private final TextField 	textField;
+
+		/** @param _name Name of the {@link Table}, @see Actor 
+		 *  @param _skin {@link Skin} to use for the {@link Label} and {@link TextField}. 
+		 *  @param _id Unique ID, used to have unique names for the Table, Label and TextField.
+		 *  @param _minimalHeight minimal height for the Label and TextField.
+		 *  @param _listener {@link TextFieldListener} to know when a TextField is focused.
+		 * */
+		protected ConstantTable(Skin _skin, int _id, int _minimalHeight, TextFieldListener _listener)
+		{
+			super();
+			LabelStyle labelstyle = null;
+			// Try to get the constantEditor style per default, else get the default one.
+			if(_skin.has("constantEditor", LabelStyle.class))
+				labelstyle = _skin.get("constantEditor", LabelStyle.class);
+			else
+				labelstyle = _skin.get(LabelStyle.class);
+			
+			// Create new Label, set the right name with the _id
+			label = new Label("", labelstyle);
+			
+			TextFieldStyle textFieldStyle = null;
+			// Try to get the constantEditor style per default, else get the default one.
+			if(_skin.has("constantEditor", TextFieldStyle.class))
+				textFieldStyle = _skin.get("constantEditor", TextFieldStyle.class);
+			else
+				textFieldStyle = _skin.get(TextFieldStyle.class);
+			
+			// Create new Label, set the right name with the _id
+			textField = new TextField("", textFieldStyle);
+			textField.setName("textField" + _id);
+			// set the listener
+			textField.setTextFieldListener(_listener);
+			
+			// Label is above the TextField, each have the same min Height to have a symmetrical table.
+			add(label).expand().minHeight(_minimalHeight);
+			row();
+			add(textField).expand().fill().minHeight(_minimalHeight);
+		}
+		
+		/** Initializes the ConstantTable from the constant, sets the text and the textFieldListener.
+		 *  @param _constant {@link Constant} used to initialize the ConstantTable. 
+		 * */
+		protected void initFromConstant(Constant _constant)
+		{
+			// sets the texts
+			label.setText(_constant.name);
+			textField.setText(_constant.toString());
+			
+			//sets the filter
+			if(_constant instanceof ConstantFloat)
+				textField.setTextFieldFilter(TextFieldFilter.floatFilter);
+			else if(_constant instanceof ConstantInt)
+				textField.setTextFieldFilter(TextFieldFilter.intFilter);
+		}
+	}
+	//------------------------------------------------------------------
+	// </ConstantTable>
 	//------------------------------------------------------------------
 }
