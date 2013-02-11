@@ -34,12 +34,12 @@ public class OrthoCamBehavior
 		controller = _controller;
 	}
 	
-	protected boolean NeedUpdate()
+	protected boolean needUpdate()
 	{
 		return needUpdate;
 	}
 	
-	protected void SetNeedUpdate(boolean _needUpdate)
+	protected void setNeedUpdate(boolean _needUpdate)
 	{
 		needUpdate = _needUpdate;
 	}

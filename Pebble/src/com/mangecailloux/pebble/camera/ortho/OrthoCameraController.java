@@ -20,6 +20,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.mangecailloux.pebble.camera.ortho.behavior.OrthoMoveBehavior;
 import com.mangecailloux.pebble.camera.ortho.behavior.OrthoZoomBehavior;
 
+/**
+ * Orthographic Camera Controller. 
+ * @author clement.vayer
+ *
+ */
 public class OrthoCameraController 
 {
 	protected final OrthographicCamera  camera;
