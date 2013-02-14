@@ -59,7 +59,7 @@ public abstract class LoadingScreen extends Screen
 
 	protected void onUpdate(float _fDt) 
 	{		
-		if(screenToLoad != null && !nextIsLoaded)
+		if(Pebble.assets != null && screenToLoad != null && !nextIsLoaded)
 		{
 			if(Pebble.assets.processLoadingQueue())
 				nextIsLoaded = true;
