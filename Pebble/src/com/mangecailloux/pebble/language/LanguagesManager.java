@@ -126,7 +126,7 @@ public class LanguagesManager {
                      for (int i = 0; i < numLanguages; ++i)
                      {
                     	Node language = languages.item(i);    
-                        if (language.getAttributes().getNamedItem("name").getTextContent().equals(_languageName)) 
+                        if (language.getAttributes().getNamedItem("name").getNodeValue().equals(_languageName)) 
                         {
                     	 	currentLanguage = _languageName;
                     	 	languageMap.clear();
