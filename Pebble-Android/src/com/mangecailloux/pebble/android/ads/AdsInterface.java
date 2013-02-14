@@ -19,16 +19,29 @@ import com.mangecailloux.pebble.ads.IAdsInterface;
 
 public class AdsInterface implements IAdsInterface
 {
-	private final AdsHandler handler;
+	private int handlerIndex = 0;
+	private final AdsHandler handler1;
+	private final AdsHandler handler2;
 	
-	public AdsInterface(AdsHandler _handler)
+	// Temp solution with two handlers to avoid crashes
+	public AdsInterface(AdsHandler _handler1, AdsHandler _handler2)
 	{
-		handler = _handler;
+		handler1 = _handler1;
+		handler2 = _handler2;
 	}
 	
 	@Override
 	public void showAds(boolean _show) 
 	{
+		AdsHandler handler = null;
+		
+		if(handlerIndex%2 == 0)
+			handler = handler1;
+		else
+			handler = handler2;
+		
+		handlerIndex ++;
+		
 		handler.sendEmptyMessage(_show ? AdsHandler.SHOW_ADS : AdsHandler.HIDE_ADS);
 	}
 
