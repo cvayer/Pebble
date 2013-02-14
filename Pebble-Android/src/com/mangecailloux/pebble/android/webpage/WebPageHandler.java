@@ -17,7 +17,8 @@ public class WebPageHandler extends Handler
 	}
 	
 	 @Override
-     public void handleMessage(Message msg) {
+     public void handleMessage(Message msg) 
+	 {
 		Bundle data = msg.getData();
     	String url = data.getString("url");
     	int mode = data.getInt("mode");
