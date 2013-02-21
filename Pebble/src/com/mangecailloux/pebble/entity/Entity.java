@@ -24,16 +24,19 @@ public class Entity
 	protected 		static int globalCounter = 0;
 	
 	private			int 			 id;
+	private			int				 handle;
 	private  		EntityWorld	   	 world;
+	private			EntitiesManager	 manager;
 	private final   ComponentSet	 components;	
 	private final	EventManager	 eventManager;
 	
-	protected Entity()
+	Entity()
 	{
 		// Entity should never be unallocated during runtime, so that should suffice to have an unique id
 		id = globalCounter++;
 		eventManager = new EventManager();
 		components = new ComponentSet(this);
+		manager = null;
 	}
 	
 	@Override
@@ -50,7 +53,22 @@ public class Entity
 		}
 	}
 	
-	protected void setWorld(EntityWorld _world)
+	void setEntityManager(EntitiesManager	 _manager)
+	{
+		manager = _manager;
+	}
+	
+	EntitiesManager getEntityManager()
+	{
+		return manager;
+	}
+	
+	int	getHandle()
+	{
+		return handle;
+	}
+	
+	void setWorld(EntityWorld _world, int _handle)
 	{
 		if(world != null)
 			onRemoveFromWorld();
@@ -58,7 +76,7 @@ public class Entity
 		world = _world;
 		
 		if(world != null)
-			onAddToWorld();
+			onAddToWorld(_handle);
 	}
 	
 	public EntityWorld getWorld()
@@ -66,12 +84,12 @@ public class Entity
 		return world;
 	}
 	
-	protected EventManager getEventManager()
+	EventManager getEventManager()
 	{
 		return eventManager;
 	}
 	
-	protected void initComponents(EntityArchetype _archetype)
+	void initComponents(EntityArchetype _archetype)
 	{
 		components.init(_archetype);
 	}
@@ -108,14 +126,16 @@ public class Entity
 			manager.removeFromGroup(this, _group);
 	}
 	
-	private void onAddToWorld()
+	private void onAddToWorld(int _handle)
 	{
+		handle = _handle;
 		eventManager.setListener(world.getEventManagerListener());
 		components.onAddToWorld();
 	}
 	
 	private void onRemoveFromWorld()
 	{
+		handle = EntityHandle.InvalidHandle;
 		components.onRemoveFromWorld();
 		eventManager.unregisterAllEventHandlers();
 		eventManager.setListener(null);

@@ -16,6 +16,7 @@
 package com.mangecailloux.pebble.entity;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pools;
 
@@ -25,6 +26,8 @@ public class EntitiesManager
 	private 	final EntityWorld	   			world;
 	private 	final Array<Entity> 			entities;
 	private 	final Array<IEntityObserver> 	obervers;
+	private		final IntMap<Entity>			entitiesByHandle;
+	private		 	  int						currentHandle;
 	
 	protected EntitiesManager(EntityWorld _world)
 	{
@@ -35,6 +38,9 @@ public class EntitiesManager
 		world = _world;
 		entities = new Array<Entity>(false, 8);
 		obervers = new Array<IEntityObserver>(false, 4);
+		
+		entitiesByHandle = new IntMap<Entity>(8);
+		currentHandle = 0;
 	}
 	
 	private Entity newEntity(EntityArchetype _archetype)
@@ -57,12 +63,16 @@ public class EntitiesManager
 		if(_entity != null)
 		{
 			logger.info("AddToWorld " + _entity);
-			_entity.setWorld(world);
+			_entity.setWorld(world, currentHandle);
+			
 			for(int o =0; o < obervers.size; ++o)
 			{
 				obervers.get(o).onAddToWorld(_entity);
 			}
 			entities.add(_entity);
+			entitiesByHandle.put(currentHandle, _entity);
+			
+			currentHandle ++;
 		}
 	}
 	
@@ -84,7 +94,10 @@ public class EntitiesManager
 				{
 					obervers.get(o).onRemoveFromWorld(_entity);
 				}
-				_entity.setWorld(null);
+				
+				entitiesByHandle.remove(_entity.getHandle());
+				
+				_entity.setWorld(null, EntityHandle.InvalidHandle);
 				Pools.free(_entity);
 			}
 		}
@@ -104,7 +117,8 @@ public class EntitiesManager
 			{
 				obervers.get(o).onRemoveFromWorld(entity);
 			}
-			entity.setWorld(null);
+			entitiesByHandle.remove(entity.getHandle());
+			entity.setWorld(null, EntityHandle.InvalidHandle);
 			Pools.free(entity);
 		}
 		entities.clear();
@@ -124,5 +138,13 @@ public class EntitiesManager
 		{
 			obervers.removeValue(_observer, true);
 		}
+	}
+	
+	Entity getEntityByHandle(int _handle)
+	{
+		if(_handle == EntityHandle.InvalidHandle)
+			return null;
+		
+		return entitiesByHandle.get(_handle);
 	}
 }
