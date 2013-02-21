@@ -38,8 +38,6 @@ public class OrthoMoveBehavior extends OrthoCamBehavior
 		return limiter;
 	}
 	
-	public final float radius = 200.f;
-	
 	public void Move(float _x, float _y)
 	{
 		camera.position.add(_x, _y, 0.0f);
