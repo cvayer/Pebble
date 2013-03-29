@@ -15,12 +15,13 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.entity;
 
+import com.badlogic.gdx.utils.Disposable;
 import com.mangecailloux.pebble.event.EventHandler;
 import com.mangecailloux.pebble.event.EventHandlers;
 import com.mangecailloux.pebble.updater.Updater;
 import com.mangecailloux.pebble.updater.Updaters;
 
-public abstract class EntityManager implements IEntityObserver
+public abstract class EntityManager implements IEntityObserver, Disposable
 {
 	private 		EntityWorld	    			world;
 	private final 	Updaters 			updatersHandler;

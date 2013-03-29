@@ -150,4 +150,13 @@ public class EntityGroupManager extends EntityManager
 			entityGroupArrayPool.free(groupsForThisEntity);
 		}
 	}
+
+	@Override
+	public void dispose() {
+		
+		groups.clear();
+		groupsByEntity.clear();
+		entityGroupArrayPool.clear();
+		
+	}
 }

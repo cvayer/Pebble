@@ -100,6 +100,12 @@ public class EntityWorld
 	public void dispose()
 	{
 		entityManager.removeAllEntities();
+		
+		for(int i=0; i < managers.size; ++i)
+		{
+			managers.get(i).dispose();
+		}
+		managers.clear();
 	}
 	
 	public void addManager(EntityManager _manager)

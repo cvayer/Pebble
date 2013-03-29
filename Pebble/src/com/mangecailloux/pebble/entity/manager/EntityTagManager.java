@@ -108,5 +108,13 @@ public class EntityTagManager extends EntityManager
 			stringArrayPool.free(tags);
 		}
 		
+	}
+
+	@Override
+	public void dispose() 
+	{
+		entityByTags.clear();
+		tagsByEntity.clear();
+		stringArrayPool.clear();
 	}	
 }
