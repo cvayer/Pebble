@@ -86,6 +86,22 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
     	}
     }
     
+    @Override
+    public void dispose () {
+    		applyNextScreen(null);
+    		deinitPebble();
+    }
+    
+    @Override
+    public void create ()
+    {
+    	appCreated = true;
+    	initPebble();
+    	init();
+    	setScreen(getInitialScreen());
+    	onDebug (isDebug()); 
+    }
+    
     protected UpdaterManager getUpdateManager()
     {
     	return updateManager;
@@ -106,22 +122,6 @@ public abstract class ScreenManager extends Debuggable implements ApplicationLis
 	    	else
 	    		Gdx.app.setLogLevel(Application.LOG_ERROR);
     	}
-    }
-
-    @Override
-    public void dispose () {
-    		applyNextScreen(null);
-    		deinitPebble();
-    }
-    
-    @Override
-    public void create ()
-    {
-    	appCreated = true;
-    	initPebble();
-    	init();
-    	setScreen(getInitialScreen());
-    	onDebug (isDebug()); 
     }
     
     protected abstract void   init();
