@@ -17,6 +17,7 @@ package com.mangecailloux.pebble.entity;
 
 import com.mangecailloux.pebble.entity.manager.EntityGroup;
 import com.mangecailloux.pebble.entity.manager.EntityGroupManager;
+import com.mangecailloux.pebble.entity.manager.EntityTagManager;
 import com.mangecailloux.pebble.event.EventManager;
 
 public class Entity 
@@ -124,6 +125,26 @@ public class Entity
 		EntityGroupManager manager = world.getManager(EntityGroupManager.class);
 		if(manager != null)
 			manager.removeFromGroup(this, _group);
+	}
+	
+	public void addTag(String tag)
+	{
+		if(world == null)
+			throw new RuntimeException("Entity::addToGroup : entity has not been added to world yet");
+		
+		EntityTagManager manager = world.getManager(EntityTagManager.class);
+		if(manager != null)
+			manager.addTag(tag, this);
+	}
+	
+	public void removeTag(String tag)
+	{
+		if(world == null)
+			throw new RuntimeException("Entity::addToGroup : entity has not been added to world yet");
+		
+		EntityTagManager manager = world.getManager(EntityTagManager.class);
+		if(manager != null)
+			manager.removeTag(tag);
 	}
 	
 	private void onAddToWorld(int _handle)
