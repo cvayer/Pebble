@@ -27,7 +27,7 @@ import com.mangecailloux.pebble.camera.ortho.behavior.OrthoZoomBehavior;
  */
 public class OrthoCameraController 
 {
-	protected final OrthographicCamera  camera;
+	protected  		OrthographicCamera  camera;
 	protected final Vector3			 	centerCamPosition;	
 	
 	protected final OrthoZoomBehavior	 zoom;
@@ -45,12 +45,27 @@ public class OrthoCameraController
 		move.init(this, camera);
 	}
 	
-	public OrthoZoomBehavior GetZoom()
+	public OrthoCameraController(OrthoZoomBehavior _zoom, OrthoMoveBehavior _move)
+	{
+		this(null, _zoom, _move);
+	}
+	
+	public void setCamera(OrthographicCamera  _camera)
+	{
+		if(camera != _camera)
+		{
+			camera = _camera;
+			move.init(this, camera);
+			zoom.init(this, camera);
+		}
+	}
+	
+	public OrthoZoomBehavior getZoom()
 	{
 		return zoom;
 	}
 	
-	public OrthoMoveBehavior GetMove()
+	public OrthoMoveBehavior getMove()
 	{
 		return move;
 	}
@@ -66,13 +81,21 @@ public class OrthoCameraController
 	
 	public void setCameraToCenterPos()
 	{
-		camera.position.set(centerCamPosition);
-		move.Move(0.0f, 0.0f);
-		camera.update();
+		if(camera != null)
+		{
+			camera.position.set(centerCamPosition);
+			move.Move(0.0f, 0.0f);
+			camera.update();
+		}
 	}
 	
-	public Vector3 GetCenterPosition()
+	public Vector3 getCenterPosition()
 	{
 		return centerCamPosition;
+	}
+	
+	public void update(float _dt)
+	{
+		
 	}
 }
