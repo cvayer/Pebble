@@ -1,4 +1,4 @@
-package com.mangecailloux.pebble.physics;
+package com.mangecailloux.pebble.entity.physics;
 
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;

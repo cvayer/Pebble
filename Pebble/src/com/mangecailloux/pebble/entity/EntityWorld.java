@@ -119,8 +119,29 @@ public class EntityWorld
 		}
 	}
 	
-	public <M extends EntityManager> M getManager(Class<M> type) {
-		return type.cast(managersPerType.get(type));
+	public <M extends EntityManager> M getManager(Class<M> _type) {
+		
+		EntityManager m = managersPerType.get(_type);
+		// If we don't find a manager we look for a super class
+		if(m == null)
+		{
+			for(int i = 0; i < managers.size; ++i)
+			{
+				EntityManager m2 = managers.get(i);
+				
+				if(_type.isInstance(m2))
+				{
+					// Is the component is instance of the super class we add it to the components by type to avoid researching  it
+					managersPerType.put(_type, m2);
+					return _type.cast(m2);
+				}
+			}
+		}
+		else
+		{
+			return _type.cast(m);
+		}
+		return null;
 	}
 	
 	public void addObserver(IEntityObserver _observer)

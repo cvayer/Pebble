@@ -84,7 +84,7 @@ public class OrthoCameraController
 		if(camera != null)
 		{
 			camera.position.set(centerCamPosition);
-			move.Move(0.0f, 0.0f);
+			move.move(0.0f, 0.0f);
 			camera.update();
 		}
 	}

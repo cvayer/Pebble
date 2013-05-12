@@ -1,4 +1,4 @@
-package com.mangecailloux.pebble.entity;
+package com.mangecailloux.pebble.entity.camera;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;

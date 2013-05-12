@@ -1,4 +1,4 @@
-package com.mangecailloux.pebble.entity;
+package com.mangecailloux.pebble.entity.input;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;

@@ -38,7 +38,7 @@ public class OrthoMoveBehavior extends OrthoCamBehavior
 		return limiter;
 	}
 	
-	public void Move(float _x, float _y)
+	public void move(float _x, float _y)
 	{
 		camera.position.add(_x, _y, 0.0f);
 		

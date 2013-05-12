@@ -1,33 +1,17 @@
-package com.mangecailloux.pebble.entity;
+package com.mangecailloux.pebble.entity.camera;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.mangecailloux.pebble.camera.ortho.OrthoCameraController;
 import com.mangecailloux.pebble.entity.Component;
 
 public class OrthographicCameraComponent extends Component
 {
 	protected final 	OrthographicCamera 		camera;
-	protected 			OrthoCameraController 	controller;
 	protected 			boolean					isActive;
 	protected			CameraManager			manager;
 	
 	public OrthographicCameraComponent()
 	{
 		camera = new OrthographicCamera();
-	}
-	
-	public void setController(OrthoCameraController _controller)
-	{
-		if(controller != null)
-		{
-			controller.setCamera(null);
-		}
-		controller = _controller;
-		
-		if(controller != null)
-		{
-			controller.setCamera(camera);
-		}
 	}
 	
 	public OrthographicCamera getCamera()
