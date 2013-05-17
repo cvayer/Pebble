@@ -13,6 +13,16 @@ public class EntityHandle
 		handle = InvalidHandle;
 	}
 	
+	public EntityHandle(EntityHandle _handle)
+	{
+		copy(_handle);
+	}
+	
+	public EntityHandle(Entity _entity)
+	{
+		set(_entity);
+	}
+	
 	public void clear()
 	{
 		manager = null;
@@ -61,5 +71,10 @@ public class EntityHandle
 			return null;
 		
 		return manager.getEntityByHandle(handle);
+	}
+	
+	public boolean isValid()
+	{
+		return get() != null;
 	}
 }
