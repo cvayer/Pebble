@@ -53,6 +53,7 @@ public class EntitiesManager
 		
 		 
 		 Entity entity = Pools.obtain(Entity.class);
+		 entity.setEntityManager(this);
 		 logger.info("New " + entity);
 		 entity.initComponents(_archetype);
 		 return entity;
