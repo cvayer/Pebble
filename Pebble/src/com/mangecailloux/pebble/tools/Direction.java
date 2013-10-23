@@ -24,6 +24,8 @@ public class Direction
 	public static final int START  	= 0;
 	public static final int MAX	= 8;
 	
+	public static final int	QUARTER_INDEX_INCREMENT = 2;
+	
 	public static final int NONE  = 0;
 	public static final int N  	= (1<<0);
 	public static final int NW 	= (1<<1);
