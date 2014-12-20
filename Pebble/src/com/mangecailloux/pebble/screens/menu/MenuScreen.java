@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.mangecailloux.pebble.screens.menu;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mangecailloux.pebble.menu.MenuListener;
 import com.mangecailloux.pebble.menu.Page;
@@ -34,7 +33,7 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 	{
 		super(_name);
 		
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		stage = new Stage();
 		
 		menu = new ScreenMenu(this);
 		
@@ -95,7 +94,7 @@ public abstract class MenuScreen extends Screen implements MenuListener {
 
 	@Override
 	protected void onResize(int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 		menu.resize(width, height);
 	}
 	

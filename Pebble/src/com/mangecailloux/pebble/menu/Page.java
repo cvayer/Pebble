@@ -17,12 +17,12 @@ package com.mangecailloux.pebble.menu;
 
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Table.Debug;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
-import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 import com.mangecailloux.pebble.debug.Debuggable;
 
 public abstract class Page extends Debuggable 

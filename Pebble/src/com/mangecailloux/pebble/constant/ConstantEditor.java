@@ -26,9 +26,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table.Debug;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -36,8 +38,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
-import com.esotericsoftware.tablelayout.Cell;
 import com.mangecailloux.pebble.directory.Directory;
 import com.mangecailloux.pebble.tools.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -320,10 +320,10 @@ public class ConstantEditor  implements Disposable
 	 * @param _height New height of your stage.
 	 * @param _stretch Stretch parameter for the Stage. See {@link Stage#setViewport}.
 	 */
-	public void resize(int _width, int _height, boolean _stretch)
+	public void resize(int _width, int _height)
 	{
 		if(stage != null)
-			stage.setViewport(_width, _height, _stretch);
+			stage.getViewport().update(_width, _height, true);
 		
 		mainTable.setWidth(_width);
 		mainTable.setHeight(_height);
@@ -367,8 +367,9 @@ public class ConstantEditor  implements Disposable
 			stage.act(_fDt);
 			stage.draw();
 			
-			if(debug)
-				Table.drawDebug(stage);
+			// TODO : replug debug infos
+		//	if(debug)
+			//	Table.drawDebug(stage);
 		}
 	}
 	
