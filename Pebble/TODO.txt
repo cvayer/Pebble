@@ -1,6 +1,0 @@
-
-Create a pop up with two parametrable part , one for buttons, one for content.
-
-Rework languageManager to have languages as object
-
-remove Debuggable
